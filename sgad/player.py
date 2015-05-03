@@ -19,7 +19,7 @@ from sgad.db import db_ob, my_table
 
 class Player(db_ob.Instantiable):
 
-    foriegn_key_cols = [sqlalchemy.Column('feature_distribution_id', sqlalchemy.INTEGER, nullable = False),
+    foreign_key_cols = [sqlalchemy.Column('feature_distribution_id', sqlalchemy.INTEGER, nullable = False),
                         sqlalchemy.Column('utility_function_id', sqlalchemy.INTEGER, nullable = False)]
 
     other_cols = [sqlalchemy.Column('class_name', sqlalchemy.VARCHAR(63), nullable = False),
@@ -27,7 +27,7 @@ class Player(db_ob.Instantiable):
 
     table, primary_key_col = my_table.MyTableFactory.create_table(
         'player',
-        foriegn_key_cols = foriegn_key_cols,
+        foreign_key_cols = foreign_key_cols,
         other_cols = other_cols)
 
     player_type_id = None
