@@ -1,2 +1,2 @@
-# sgadx
+# sgadex
 signaling game ad exchange
