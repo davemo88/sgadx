@@ -33,27 +33,26 @@ class Player(db_ob.Instantiable):
     player_type_id = None
 
 
-    def __init__(self, feature_distribution, utility_function, features = None, opponents_features = {}):
+    def __init__(self, feature_distribution, utility_function, **kwargs):
         """
 
         """
 
-## probability distribution to draw features from
         self.features_distribution = features_distribution
         
-## features vector
-        if features != None:
-            self.features = features
+        if 'features' in kwargs:
+            self.features = kwargs['features']
         else:
             self.features = self.get_features(features)
 
-## function to compute utility based on 
         self.utility_function = utility_function
+
+        self.kwargs = kwargs
 
         super(Player, self).__init__()
 
 
-    def get_features(self):
+    def get_features(self, **kwargs):
         """use the given distribution to draw the features
 
         """
@@ -65,7 +64,7 @@ class Player(db_ob.Instantiable):
         return features
 
 
-    def compare_features(self, opponent_features):
+    def compare_features(self, opponent_features, **kwargs):
         """compare features to another player's
 
         """
@@ -73,7 +72,7 @@ class Player(db_ob.Instantiable):
         return dot(self.features, opponent_features)
 
 
-    def get_message(self):
+    def get_message(self, **kwargs):
         """generate a message as a perturbed features vector
 
         """
@@ -85,7 +84,7 @@ class Player(db_ob.Instantiable):
         return perturbed_features
 
 
-    def get_action(self, message, sender):
+    def get_action(self, message, sender, **kwargs):
         """perform an action
 
         """
@@ -97,7 +96,7 @@ class Player(db_ob.Instantiable):
         return max(comparison, 0)
 
 
-    def get_insert_values(self):
+    def get_insert_values(self, **kwargs):
         """
 
         """
@@ -117,6 +116,22 @@ class User(Player):
 
 
 class Advertiser(Player):
+    """
+
+    """
+
+    pass
+
+
+class Recommender(Player):
+    """
+
+    """
+
+    pass
+
+
+class Verifier(Player):
     """
 
     """
