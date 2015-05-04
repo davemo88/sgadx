@@ -9,8 +9,8 @@ from datetime import datetime
 
 import sqlalchemy
 
-from sgad.db import engine
-from sgad.util import util
+from sgadx.db import engine
+from sgadx.util import util
 
 
 db_engine = engine.Engine()

@@ -10,9 +10,9 @@ from numpy.linalg import norm
 
 from config import NUM_FEATURES
 
-from sgad import db_engine
+from sgadx import db_engine
 
-from sgad.db import db_ob, my_table
+from sgadx.db import db_ob, my_table
 
 
 

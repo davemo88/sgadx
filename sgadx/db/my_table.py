@@ -6,7 +6,7 @@ import copy
 
 import sqlalchemy
 
-from sgad.db import engine
+from sgadx.db import engine
 
 db_engine = engine.Engine()
 
