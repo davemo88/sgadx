@@ -84,12 +84,12 @@ class Player(db_ob.Instantiable):
         return perturbed_features
 
 
-    def get_action(self, message, sender, **kwargs):
+    def get_action(self, sender_id, message, **kwargs):
         """perform an action
 
         """
 
-        average = (sender_features + message) / norm(sender_features + message)
+        average = (sender.features + message) / norm(sender.features + message)
 
         comparison = self.compare_features(average)
 

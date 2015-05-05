@@ -14,6 +14,8 @@ from sgadx.db import db_ob, my_table
 class UtilityFunction(db_ob.Instantiable):
     """ must return value between -1 and 1
 
+    inputs are sender features, receiver features, and action
+
     """
 
     natural_key = sqlalchemy.Index('natural', 'func_name', 'func_params', unique = True)
@@ -40,5 +42,15 @@ class UtilityFunction(db_ob.Instantiable):
 
         pass
 
-    def __call__(self, 
+    def __call__(self, sender_features, receiver_features, action, **kwargs):
+
+        func_val = self.func(**kwargs)
+
+        if func_val >= 0:
+
+            return min(1, func_val)
+
+        else:
+
+            return max(-1, func_val)
 
