@@ -1,4 +1,4 @@
-"""
+"""Game
 
 """
 
@@ -24,8 +24,6 @@ class AuctionGame(object):
 
             bids[a.id] = a.get_action(user.id, content_request)
 
-        bids = {a.id : a.get_action(user.id, content_request) for a in advertisers}
-
 ## what about ties?
         winning_advertiser_id = max(bids.iterkeys(), key = (lambda key: bids[key]))
 
@@ -38,6 +36,7 @@ class AuctionGame(object):
                 'winning_bid' : winning_bid,
                 'second_price' : second_price}
 
+
 class AdGame(object):
 
     @classmethod
@@ -46,8 +45,6 @@ class AdGame(object):
         ad = advertiser.get_message()
 
         interaction = user.get_action(advertiser.id, ad)
-
-        return 
 
 
 

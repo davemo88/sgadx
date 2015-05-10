@@ -110,9 +110,17 @@ class Player(db_ob.Instantiable):
 class User(Player):
     """
 
+    TODO: should add click / convert probability. when a user clicks / converts
+    the advertiser can infer that the user's type is probably similar to the ad
+    or advertiser's type 
+
     """
 
-    pass
+    def get_action(self, sender_id, message, **kwargs):
+
+        average = (sender.features + message) / norm(sender.features + message)
+
+        comparison = self.compare_features(average)
 
 
 class Advertiser(Player):
