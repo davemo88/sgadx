@@ -49,6 +49,8 @@ class Player(db_ob.Instantiable):
 
         self.kwargs = kwargs
 
+        self.state = [...]
+
         super(Player, self).__init__()
 
 
@@ -113,6 +115,8 @@ class User(Player):
     TODO: should add click / convert probability. when a user clicks / converts
     the advertiser can infer that the user's type is probably similar to the ad
     or advertiser's type 
+
+    TODO: DMP frustration parameter. how much information does this user give to each DMP (this is per DMP)
 
     """
 
