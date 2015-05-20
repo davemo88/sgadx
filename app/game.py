@@ -2,9 +2,7 @@
 
 """
 
-from sgadx import player
-
-
+from app import player
 
 
 
