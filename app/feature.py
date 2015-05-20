@@ -4,7 +4,7 @@
 
 from app import db
 
-class Feature(db.model):
+class Feature(db.Model):
     __table_name__ = 'feature'
 
     id = db.Column(db.Integer, primary_key = True)

@@ -9,10 +9,11 @@ import fysom
 from numpy import array, dot
 from numpy.linalg import norm
 
-from app import db
+from app import db, feature, ad
 
-
+## these will be properties of the player's sim
 NUM_FEATURES = 10
+NUM_ADS = 5
 
 class Player(db.Model):
     __table_name__ = 'player'
@@ -20,9 +21,10 @@ class Player(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     type = db.Column(db.String(63))
 
-
     distribution = db.relationship('Distribution')
     distribution_id = db.Column(db.Integer, db.ForeignKey('distribution.id'))
+    sim = db.relationship('Sim')
+    sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
     _features = db.relationship('Feature')
 
     __mapper_args__ = {
@@ -30,36 +32,20 @@ class Player(db.Model):
     'polymorphic_on' : type
     }
 
-    def __init__(self, distribution):
+    def __init__(self, distribution, **kwargs):
 
         self.distribution = distribution
 
-        self.features = self.distribution.draw_unit_vector()
+        self.features = self.distribution.draw_unit_vector(NUM_FEATURES)
 
         super(Player, self).__init__()
 
+        self._features = [feature.Feature(player_id=self.id, value=val) for val in self.features]
 
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):
 
-
-
-
-    def get_features(self, **kwargs):
-        """use the given distribution to draw the features
-
-        """
-
-        
-        
-        features = array([self.distribution.sample() for i in range(NUM_FEATURES)])
-        
-        features = features / norm(features)
-
-
-
-        return features
-
+        self.features = array([f.value for f in self._features])
 
     def compare_features(self, opponent_features, **kwargs):
         """compare features to another player's
@@ -69,18 +55,24 @@ class Player(db.Model):
         return dot(self.features, opponent_features)
 
 
-    def get_message(self, **kwargs):
+    def get_perturbed_features(self, **kwargs):
         """generate a message as a perturbed features vector
 
         """
 
-        perturbation = array([self.distribution.sample() for i in range(len(self.features))])
-        
-        perturbation = perturbation / norm(perturbation)
+        perturbation = self.distribution.draw_unit_vector(NUM_FEATURES)
 
         perturbed_features = (self.features + perturbation) / norm(self.features + perturbation)
 
         return perturbed_features
+
+
+    def get_message(self, receiver, **kwargs):
+        """
+
+        """
+
+        return self.get_perturbed_features(**kwargs)
 
 
     def get_action(self, sender, message, **kwargs):
@@ -128,41 +120,25 @@ class Consumer(Player):
     state_machine = fysom.Fysom({
             'events' : [('init', '*', 'awareness'),
                         ('click', 'awareness', 'consideration'),
+                        ('click', 'consideration', 'consideration'),
                         ('conversion', 'awareness', 'purchase'),
                         ('conversion', 'consideration', 'purchase')]})
 
-    state_threshold_multipliers = {
+    state_multipliers = {
         'awareness' : 1,
         'consideration' : 10,
 ## once a user has purchased, they will no longer respond to ads     
         'purchase' : 0}
 
-    def __init__(feature_distribution, click_threshold, conversion_threshold, **kwargs):
 
-        self.feature_distribution = feature_distribution
-        self.click_threshold = click_threshold
-        self.conversion_threshold = conversion_threshold
+    def get_action(self, advertiser_id, ad, **kwargs):
+        """
 
-        self.state_machine = fysom.Fysom({
-            'events' : [('init', '*', 'awareness'),
-                        ('click', 'awareness', 'consideration'),
-                        ('click', 'consideration', 'consideration'),
-                        ('conversion', 'awareness', 'purchase'),
-                        ('conversion', 'consideration', 'purchase')]})
-
-    @sqlalchemy.orm.reconstructor
-    def init_on_load(self):
-        self.state_machine = fysom.Fysom({
-            'events' : [('init', '*', 'awareness'),
-                        ('click', 'awareness', 'consideration'),
-                        ('conversion', 'awareness', 'purchase'),
-                        ('conversion', 'consideration', 'purchase')]})
-
-    def get_action(self, sender_id, message, **kwargs):
+        """
 
         average = (sender.features + message) / norm(sender.features + message)
 
-        comparison = self.compare_features(average) * state_threshold_multipliers[self.state_machine.current]
+        comparison = self.compare_features(average) * state_multipliers[self.state_machine.current]
 
         if comparison > self.conversion_threshold:
 
@@ -181,7 +157,6 @@ class Consumer(Player):
             return 'impression'
 
 
-
 class Advertiser(Player):
     """
 
@@ -190,10 +165,17 @@ class Advertiser(Player):
     __table_name__ = 'advertiser'
 
     id = db.Column(db.Integer, db.ForeignKey('player.id'), primary_key = True)
+    ads = db.relationship('Ad')
 
     __mapper_args__ = {
         'polymorphic_identity' : 'Advertiser'
     }
+
+    def __init__(self, distribution, **kwargs):
+
+        super(Advertiser, self).__init__(distribution)
+
+        self.ads = [ad.Ad(self) for i in range(NUM_ADS)]
 
 
 class Recommender(Player):
@@ -207,7 +189,6 @@ class Recommender(Player):
     __mapper_args__ = {
         'polymorphic_identity' : 'Recommender'
     }
-
 
 
 class Verifier(Player):

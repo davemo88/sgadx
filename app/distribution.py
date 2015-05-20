@@ -20,8 +20,8 @@ class Distribution(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     
-    dist_name = db.Column(db.Text)
-    dist_params = db.Column(db.Text, default = '{}')
+    dist_name = db.Column(db.String)
+    dist_params = db.Column(db.String, default = '{}')
 
     # natural_key = sqlalchemy.Index('natural', 'dist_name', 'dist_params', unique = True)
     sqlalchemy.Index('natural', 'dist_name', 'dist_params', unique = True)
@@ -41,8 +41,6 @@ class Distribution(db.Model):
     def sample(self):
         """
 
-        must return value between 0 and 1
-
         """
 
         return random.__dict__[self.dist_name](**literal_eval(self.dist_params))
@@ -53,7 +51,7 @@ class Distribution(db.Model):
 
         """
 
-        v = array([self.sample for i in range(dim)])
+        v = array([self.sample() for i in range(dim)])
 
         return v / norm(v)
 

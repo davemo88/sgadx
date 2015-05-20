@@ -2,8 +2,40 @@
 
 """
 
-from app import player
+from app import db, player
 
+
+class AuctionGameResult(db.Model):
+    """
+
+    """
+    __table_name__ = 'auction_game_result'
+
+    id = db.Column(db.Integer, primary_key=True)
+    # consumer = db.relationship('Consumer')
+    consumer_id = db.Column(db.Integer, db.ForeignKey('consumer.id'))
+    # winning_advertiser = db.relationship('Advertiser')
+    advertiser_id = db.Column(db.Integer, db.ForeignKey('advertiser.id'))
+    winning_bid = db.Column(db.DECIMAL(10,9))
+    second_price = db.Column(db.DECIMAL(10,9))
+
+
+class AdGameResult(db.Model):
+    """
+
+    """
+    __table_name__ = 'ad_game_result'
+
+    id = db.Column(db.Integer, primary_key=True)
+    # consumer = db.relationship('Consumer')
+    consumer_id = db.Column(db.Integer, db.ForeignKey('consumer.id'))
+    # winning_advertiser = db.relationship('Advertiser')
+    advertiser_id = db.Column(db.Integer, db.ForeignKey('advertiser.id'))
+    # ad = db.relationship('Ad')
+    ad_id = db.Column(db.Integer, db.ForeignKey('ad.id'))
+    consumer_action = db.Column(db.String(63))
+    advertiser_payoff = db.Column(db.DECIMAL(5,2))
+    consumer_payoff = db.Column(db.DECIMAL(5,2))
 
 
 class AuctionGame(object):
