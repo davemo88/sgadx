@@ -11,9 +11,6 @@ from numpy.linalg import norm
 
 from app import db, feature, ad
 
-## these will be properties of the player's sim
-NUM_FEATURES = 10
-NUM_ADS = 5
 
 class Player(db.Model):
     __table_name__ = 'player'
@@ -32,13 +29,15 @@ class Player(db.Model):
     'polymorphic_on' : type
     }
 
-    def __init__(self, distribution, **kwargs):
+    def __init__(self, sim, distribution, **kwargs):
+
+        super(Player, self).__init__()
+
+        self.sim = sim
 
         self.distribution = distribution
 
-        self.features = self.distribution.draw_unit_vector(NUM_FEATURES)
-
-        super(Player, self).__init__()
+        self.features = self.distribution.draw_unit_vector(self.sim.num_features)
 
         self._features = [feature.Feature(player_id=self.id, value=val) for val in self.features]
 
@@ -60,14 +59,14 @@ class Player(db.Model):
 
         """
 
-        perturbation = self.distribution.draw_unit_vector(NUM_FEATURES)
+        perturbation = self.distribution.draw_unit_vector(self.sim.num_features)
 
         perturbed_features = (self.features + perturbation) / norm(self.features + perturbation)
 
         return perturbed_features
 
 
-    def get_message(self, receiver, **kwargs):
+    def get_message(self, **kwargs):
         """
 
         """
@@ -117,44 +116,63 @@ class Consumer(Player):
         'polymorphic_identity' : 'consumer'
     }
 
-    state_machine = fysom.Fysom({
-            'events' : [('init', '*', 'awareness'),
-                        ('click', 'awareness', 'consideration'),
-                        ('click', 'consideration', 'consideration'),
-                        ('conversion', 'awareness', 'purchase'),
-                        ('conversion', 'consideration', 'purchase')]})
-
     state_multipliers = {
         'awareness' : 1,
         'consideration' : 10,
-## once a user has purchased, they will no longer respond to ads     
+## once a user has purchased, they will no longer respond to ads  
         'purchase' : 0}
 
+
+    def __init__(self, sim, distribution, click_threshold, conversion_threshold):
+
+        super(Consumer, self).__init__(sim, distribution)
+
+        self.click_threshold = click_threshold
+
+        self.conversion_threshold = conversion_threshold
+
+        self.advertiser_state_machines = {}
+
+    @sqlalchemy.orm.reconstructor
+    def init_on_load(self):
+
+        self.features = array([f.value for f in self._features])
+        
+        self.advertiser_state_machines = {}
 
     def get_action(self, advertiser_id, ad, **kwargs):
         """
 
         """
 
-        average = (sender.features + message) / norm(sender.features + message)
+        # average = (sender.features + message) / norm(sender.features + message)
 
-        comparison = self.compare_features(average) * state_multipliers[self.state_machine.current]
+        comparison = self.compare_features(ad) * self.state_multipliers[self.advertiser_state_machines[advertiser_id].current]
 
         if comparison > self.conversion_threshold:
 
-            self.state_machine.conversion()
+            self.advertiser_state_machines[advertiser_id].conversion()
 
             return 'conversion'
 
         elif comparison > self.click_threshold:
 
-            self.state_machine.click()
+            self.advertiser_state_machines[advertiser_id].click()
 
             return 'click'
 
         else:
 
             return 'impression'
+
+    def get_state_machine(self):
+
+        return fysom.Fysom({
+            'events' : [('init', '*', 'awareness'),
+                        ('click', 'awareness', 'consideration'),
+                        ('click', 'consideration', 'consideration'),
+                        ('conversion', 'awareness', 'purchase'),
+                        ('conversion', 'consideration', 'purchase')]})
 
 
 class Advertiser(Player):
@@ -171,11 +189,43 @@ class Advertiser(Player):
         'polymorphic_identity' : 'Advertiser'
     }
 
-    def __init__(self, distribution, **kwargs):
+    def __init__(self, sim, distribution, **kwargs):
 
-        super(Advertiser, self).__init__(distribution)
+        super(Advertiser, self).__init__(sim, distribution)
 
-        self.ads = [ad.Ad(self) for i in range(NUM_ADS)]
+        self.ads = [ad.Ad(self) for i in range(self.sim.num_ads)]
+
+## should know at least last message and if the user has converted
+        self.consumer_history = {}
+
+    @sqlalchemy.orm.reconstructor
+    def init_on_load(self):
+
+        self.features = array([f.value for f in self._features])
+
+## should know at least last message and if the user has converted
+        self.consumer_history = {}        
+
+
+    def get_message(self, consumer, **kwargs):
+        """
+
+        """
+
+        best_fit = 0
+        best_fit_index = None
+
+        for ad in self.ads:
+
+            fit = dot(self.consumer_history[consumer.id]['last_content_request'], ad.ad_features)
+
+            if fit > best_fit:
+
+                best_fit = fit
+
+                best_fit_index = self.ads.index(ad)
+
+        return self.ads[best_fit_index]
 
 
 class Recommender(Player):

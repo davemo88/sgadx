@@ -10,7 +10,7 @@ from numpy import array, random
 from numpy.linalg import norm
 
 from ast import literal_eval
-
+import decimal
 
 class Distribution(db.Model):
     """
@@ -23,8 +23,7 @@ class Distribution(db.Model):
     dist_name = db.Column(db.String)
     dist_params = db.Column(db.String, default = '{}')
 
-    # natural_key = sqlalchemy.Index('natural', 'dist_name', 'dist_params', unique = True)
-    sqlalchemy.Index('natural', 'dist_name', 'dist_params', unique = True)
+    __table_args__ = (sqlalchemy.Index('natural', 'dist_name', 'dist_params', unique = True), )
 
     def __init__(self, dist_name, **dist_params):
 
@@ -33,6 +32,13 @@ class Distribution(db.Model):
         self.dist_params = unicode(repr(dist_params))
 
         super(Distribution, self).__init__()
+
+        self.dist = random.__dict__[self.dist_name]
+
+    @sqlalchemy.orm.reconstructor
+    def init_on_load(self):
+
+        self.dist = random.__dict__[self.dist_name]
 
     def __repr__(self):
 
@@ -43,7 +49,7 @@ class Distribution(db.Model):
 
         """
 
-        return random.__dict__[self.dist_name](**literal_eval(self.dist_params))
+        return decimal.Decimal(self.dist(**literal_eval(self.dist_params)))
 
 
     def draw_unit_vector(self, dim):
@@ -54,6 +60,4 @@ class Distribution(db.Model):
         v = array([self.sample() for i in range(dim)])
 
         return v / norm(v)
-
-
 
