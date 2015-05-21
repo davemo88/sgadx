@@ -166,7 +166,5 @@ class AdExchange(Sim):
             db.session.add(d)
             db.session.commit()
 
-        print kwargs
-
         return [player_class(sim=self, distribution=d, **kwargs) for i in range(num_players)]
 
