@@ -9,7 +9,7 @@ import fysom
 from numpy import array, dot
 from numpy.linalg import norm
 
-from app import db, feature, ad
+from app import db, feature, ad, distribution
 
 
 class Player(db.Model):
@@ -20,26 +20,24 @@ class Player(db.Model):
 
     distribution = db.relationship('Distribution')
     distribution_id = db.Column(db.Integer, db.ForeignKey('distribution.id'))
-    sim = db.relationship('Sim')
-    sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
-    _features = db.relationship('Feature')
+    _features = db.relationship('PlayerFeature', order_by=sqlalchemy.asc('index'))
 
     __mapper_args__ = {
     'polymorphic_identity' : 'Player',
     'polymorphic_on' : type
     }
 
-    def __init__(self, sim, distribution, **kwargs):
+    def __init__(self, distribution, num_features, **kwargs):
 
         super(Player, self).__init__()
 
-        self.sim = sim
-
         self.distribution = distribution
 
-        self.features = self.distribution.draw_unit_vector(self.sim.num_features)
+        self.num_features = num_features
 
-        self._features = [feature.Feature(player_id=self.id, value=val) for val in self.features]
+        self.features = self.distribution.draw_unit_vector(self.num_features)
+
+        self._features = [feature.PlayerFeature(player_id=self.id, value=val) for val in self.features]
 
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):
@@ -59,7 +57,7 @@ class Player(db.Model):
 
         """
 
-        perturbation = self.distribution.draw_unit_vector(self.sim.num_features)
+        perturbation = self.distribution.draw_unit_vector(self.num_features)
 
         perturbed_features = (self.features + perturbation) / norm(self.features + perturbation)
 
@@ -113,7 +111,7 @@ class Consumer(Player):
     conversion_threshold = db.Column(db.DECIMAL(10,9))
 
     __mapper_args__ = {
-        'polymorphic_identity' : 'consumer'
+        'polymorphic_identity' : 'Consumer'
     }
 
     state_multipliers = {
@@ -123,9 +121,9 @@ class Consumer(Player):
         'purchase' : 0}
 
 
-    def __init__(self, sim, distribution, click_threshold, conversion_threshold):
+    def __init__(self, distribution, num_features, click_threshold, conversion_threshold):
 
-        super(Consumer, self).__init__(sim, distribution)
+        super(Consumer, self).__init__(distribution, num_features)
 
         self.click_threshold = click_threshold
 
@@ -189,11 +187,11 @@ class Advertiser(Player):
         'polymorphic_identity' : 'Advertiser'
     }
 
-    def __init__(self, sim, distribution, **kwargs):
+    def __init__(self, distribution, num_features, num_ads, **kwargs):
 
-        super(Advertiser, self).__init__(sim, distribution)
+        super(Advertiser, self).__init__(distribution, num_features)
 
-        self.ads = [ad.Ad(self) for i in range(self.sim.num_ads)]
+        self.ads = [ad.Ad(self) for i in range(num_ads)]
 
 ## should know at least last message and if the user has converted
         self.consumer_history = {}
