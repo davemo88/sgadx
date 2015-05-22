@@ -20,7 +20,8 @@ class Player(db.Model):
 
     distribution = db.relationship('Distribution')
     distribution_id = db.Column(db.Integer, db.ForeignKey('distribution.id'))
-    _features = db.relationship('PlayerFeature', order_by=sqlalchemy.asc('index'))
+    sims = db.relationship('SimPlayer')
+    _features = db.relationship('PlayerFeature', order_by=sqlalchemy.asc('position'))
 
     __mapper_args__ = {
     'polymorphic_identity' : 'Player',
@@ -37,7 +38,7 @@ class Player(db.Model):
 
         self.features = self.distribution.draw_unit_vector(self.num_features)
 
-        self._features = [feature.PlayerFeature(player_id=self.id, value=val) for val in self.features]
+        self._features = [feature.PlayerFeature(player_id=self.id, position = i, value=self.features[i]) for i in range(len(self.features))]
 
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):

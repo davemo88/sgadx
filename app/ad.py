@@ -14,7 +14,7 @@ class Ad(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     advertiser = db.relationship('Advertiser')
     advertiser_id = db.Column(db.Integer, db.ForeignKey('advertiser.id'))
-    _ad_features = db.relationship('AdFeature', order_by=sqlalchemy.asc('index'))
+    _ad_features = db.relationship('AdFeature', order_by=sqlalchemy.asc('position'))
 
     def __init__(self, advertiser):
 
@@ -24,7 +24,7 @@ class Ad(db.Model):
 
         self.ad_features = self.advertiser.get_perturbed_features()
 
-        self._ad_features = [feature.AdFeature(ad_id=self.id, index=i, value=self.ad_features[i]) for i in range(len(self.ad_features))]
+        self._ad_features = [feature.AdFeature(ad_id=self.id, position=i, value=self.ad_features[i]) for i in range(len(self.ad_features))]
 
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):

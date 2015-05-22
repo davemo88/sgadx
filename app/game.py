@@ -2,7 +2,7 @@
 
 """
 
-from app import db, game_result
+from app import db, game_result, player
 
 
 def auction_game(sim, consumer, advertisers):
@@ -22,23 +22,22 @@ def auction_game(sim, consumer, advertisers):
 
             if not advertiser.consumer_history[consumer.id]['converted']:
 
-                bids[advertiser.id] = advertiser.get_action(consumer, content_request)
+                bids[advertiser] = advertiser.get_action(consumer, content_request)
 
             else:
 ##  don't bid if the advertiser has already converted the users
-                bids[advertiser.id] = 0
+                bids[advertiser] = 0
 
 ## what about ties?
-        winning_advertiser_id = max(bids.iterkeys(), key = (lambda key: bids[key]))
-        winning_bid = bids.pop(winning_advertiser_id)
+        winning_advertiser = max(bids.iterkeys(), key = (lambda key: bids[key]))
+        winning_bid = bids.pop(winning_advertiser)
         second_price = bids[max(bids.iterkeys(), key = (lambda key: bids[key]))]
-
 
         return game_result.AuctionGameResult(sim = sim,
                                              sender_id = consumer.id,
-                                             receiver_id = winning_advertiser_id,
+                                             receiver_id = winning_advertiser.id,
                                              consumer = consumer,
-                                             advertiser = advertiser,                                 
+                                             advertiser = winning_advertiser,                                 
                                              winning_bid = winning_bid,
                                              second_price = second_price)
 
@@ -58,8 +57,8 @@ def ad_game(sim, advertiser, consumer):
                                         sender_id = advertiser.id,
                                         receiver_id = consumer.id,
                                         ad = ad,
+                                        advertiser = advertiser,                                        
                                         consumer = consumer,
-                                        advertiser = advertiser,
                                         consumer_action = action,
                                         advertiser_utility = advertiser_utility,
                                         consumer_utility = consumer_utility)

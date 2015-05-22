@@ -17,6 +17,7 @@ class Sim(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(63))
     num_features = db.Column(db.Integer)
+    players = db.relationship('SimPlayer')
 
     __mapper_args__ = {
     'polymorphic_identity' : 'Sim',
@@ -29,25 +30,23 @@ class Sim(db.Model):
         """
         pass
 
-# class SimPlayer(db.Model):
-#     """
+class SimPlayer(db.Model):
+    """
 
-#     """
-#     __table_name__ = 'sim_player'
+    """
+    __table_name__ = 'sim_player'
 
-
-#     sim = db.relationship('Sim')
-#     sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
-#     player = db.relationship('Player')
-#     player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    id = db.Column(db.Integer, primary_key=True)
+    sim = db.relationship('Sim')
+    sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
+    player = db.relationship('Player')
+    player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
 
 class AdExchange(Sim):
     """
 
     """
     __table_name__ = 'adx'
- 
-    # sim_players = db.relationship('SimPlayer')
 
     __mapper_args__ = {
     'polymorphic_identity' : 'AdExchange'
@@ -90,14 +89,14 @@ class AdExchange(Sim):
                 .format(i,
                         auction_result.receiver_id,
                         consumer.id,
-                        self.consumers[consumer.id].advertiser_state_machines[auction_result.receiver_id].current)
+                        consumer.advertiser_state_machines[auction_result.receiver_id].current)
 
 ## don't show an ad if nobody bids above 0
             if auction_result.winning_bid != 0:
 
                 ad_result = game.ad_game(self,
-                                         self.advertisers[auction_result.receiver_id],
-                                         self.consumers[consumer.id])
+                                         auction_result.advertiser,
+                                         auction_result.consumer)
 
                 print 'advertiser {} shows ad {}. consumer {} takes action "{}"'\
                     .format(auction_result.receiver_id,

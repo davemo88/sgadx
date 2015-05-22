@@ -11,7 +11,7 @@ class Feature(db.Model):
     __table_name__ = 'feature'
 
     id = db.Column(db.Integer, primary_key = True)
-    index = db.Column(db.Integer)
+    position = db.Column(db.Integer)
     value = db.Column(db.DECIMAL(10,9))
     type = db.Column(db.String(63))
 

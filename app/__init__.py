@@ -12,6 +12,6 @@ db = SQLAlchemy(app)
 import player
 import feature
 import distribution
-import game
+import game, game_result
 import sim
 import ad
