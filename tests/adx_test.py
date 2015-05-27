@@ -9,14 +9,12 @@ CLICK_THRESHOLD = .9
 CONVERSION_THRESHOLD = .99
 NUM_ITERATIONS = 100
 
-d_query = distribution.Distribution.query.filter(distribution.Distribution.dist_name == 'uniform')
+db.drop_all()
+db.create_all()
 
-if d_query.count():
-    d = d_query[0]
-else:
-    d = distribution.Distribution('uniform')
-    db.session.add(d)
-    db.session.commit()
+d = distribution.Distribution('uniform')
+db.session.add(d)
+db.session.commit()
 
 consumers = [player.Consumer(d, NUM_FEATURES, CLICK_THRESHOLD, CONVERSION_THRESHOLD) for i in range(NUM_CONSUMERS)]
 advertisers = [player.Advertiser(d, NUM_FEATURES, NUM_ADS) for i in range(NUM_ADVERTISERS)]
