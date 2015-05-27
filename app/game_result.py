@@ -16,6 +16,8 @@ class GameResult(db.Model):
     sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
     sender_id = db.Column(db.Integer, db.ForeignKey('player.id'))
     receiver_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    sender_utility = db.Column(db.DECIMAL(10,6), default = 0)
+    receiver_utility = db.Column(db.DECIMAL(10,6), default = 0)
 
 class AuctionGameResult(GameResult):
     """
@@ -46,5 +48,3 @@ class AdGameResult(GameResult):
     ad = db.relationship('Ad')
     ad_id = db.Column(db.Integer, db.ForeignKey('ad.id'))
     consumer_action = db.Column(db.String(63))
-    advertiser_utility = db.Column(db.DECIMAL(10,6))
-    consumer_utility = db.Column(db.DECIMAL(10,6))

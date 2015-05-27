@@ -98,11 +98,13 @@ class AdExchange(Sim):
                                              auction_result.advertiser,
                                              auction_result.consumer)
 
-                print 'advertiser {} shows ad {}. consumer {} takes action "{}"'\
+                print 'advertiser {} shows ad {}. consumer {} takes action "{}". advertiser utility {}, consumer utility {}'\
                     .format(auction_result.receiver_id,
                             ad_result.ad.id,
                             consumer.id,
-                            ad_result.consumer_action)
+                            ad_result.consumer_action,
+                            ad_result.sender_utility,
+                            ad_result.receiver_utility)
 
                 db.session.add(ad_result)
 
