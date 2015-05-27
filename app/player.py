@@ -85,21 +85,8 @@ class Player(db.Model):
         return max(comparison, 0)
 
 
-    def get_sender_utility(self, opponent, action):
-
-        pass
-
-    def get_receiver_utility(self, opponent, action):
-
-        pass
-
-
 class Consumer(Player):
     """
-
-    TODO: should add click / convert probability. when a user clicks / converts
-    the advertiser can infer that the user's type is probably similar to the ad
-    or advertiser's type 
 
     TODO: DMP frustration parameter. how much information does this user give to each DMP (this is per DMP)
 
@@ -164,6 +151,7 @@ class Consumer(Player):
 
             return 'impression'
 
+
     def get_state_machine(self):
 
         return fysom.Fysom({
@@ -214,15 +202,15 @@ class Advertiser(Player):
         best_fit = 0
         best_fit_index = None
 
-        for ad in self.ads:
+        for i in range(len(self.ads)):
 
-            fit = dot(self.consumer_history[consumer.id]['last_content_request'], ad.ad_features)
+            fit = dot(self.consumer_history[consumer.id]['last_content_request'], self.ads[i].ad_features)
 
             if fit > best_fit:
 
                 best_fit = fit
 
-                best_fit_index = self.ads.index(ad)
+                best_fit_index = i
 
         return self.ads[best_fit_index]
 

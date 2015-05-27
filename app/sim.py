@@ -79,9 +79,9 @@ class AdExchange(Sim):
 ## pick a random consumer
             consumer = choice(self.consumers)
 
-            auction_result = game.auction_game(self,
-                                               consumer,
-                                               self.advertisers)
+            auction_result = game.AuctionGame.play(self,
+                                                   consumer,
+                                                   self.advertisers)
 
             db.session.add(auction_result)
 
@@ -94,13 +94,13 @@ class AdExchange(Sim):
 ## don't show an ad if nobody bids above 0
             if auction_result.winning_bid != 0:
 
-                ad_result = game.ad_game(self,
-                                         auction_result.advertiser,
-                                         auction_result.consumer)
+                ad_result = game.AdGame.play(self,
+                                             auction_result.advertiser,
+                                             auction_result.consumer)
 
                 print 'advertiser {} shows ad {}. consumer {} takes action "{}"'\
                     .format(auction_result.receiver_id,
-                            ad_result.ad_id,
+                            ad_result.ad.id,
                             consumer.id,
                             ad_result.consumer_action)
 

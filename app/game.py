@@ -5,7 +5,28 @@
 from app import db, game_result, player
 
 
-def auction_game(sim, consumer, advertisers):
+class SignalingGame(object):
+
+    @classmethod
+    def play(cls, **kwargs):
+
+        pass
+
+    @classmethod
+    def get_sender_utility(cls,  **kwargs):
+
+        pass
+
+    @classmethod
+    def get_receiver_utility(cls, **kwargs):
+
+        pass
+
+
+class AuctionGame(SignalingGame):
+
+    @classmethod
+    def play(cls, sim, consumer, advertisers):
 
         content_request = consumer.get_message()
 
@@ -42,12 +63,15 @@ def auction_game(sim, consumer, advertisers):
                                              second_price = second_price)
 
 
-def ad_game(sim, advertiser, consumer):
+class AdGame(SignalingGame):
+
+    @classmethod
+    def play(cls, sim, advertiser, consumer):
 
         ad = advertiser.get_message(consumer = consumer)
         action = consumer.get_action(advertiser.id, ad.ad_features)
-        advertiser_utility = advertiser.get_sender_utility(consumer, action)
-        consumer_utility = consumer.get_receiver_utility(advertiser, action)
+        advertiser_utility = cls.get_sender_utility()
+        consumer_utility = cls.get_receiver_utility()
 
         if action == 'conversion':
 
