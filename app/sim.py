@@ -16,7 +16,6 @@ class Sim(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(63))
-    num_features = db.Column(db.Integer)
     players = db.relationship('SimPlayer')
 
     __mapper_args__ = {
