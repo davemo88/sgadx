@@ -20,8 +20,8 @@ class Distribution(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     
-    dist_name = db.Column(db.String)
-    dist_params = db.Column(db.String, default = '{}')
+    dist_name = db.Column(db.String(length=63))
+    dist_params = db.Column(db.String(length=63), default = '{}')
 
     __table_args__ = (sqlalchemy.Index('natural', 'dist_name', 'dist_params', unique = True), )
 
