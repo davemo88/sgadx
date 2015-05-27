@@ -56,6 +56,8 @@ class AdExchange(Sim):
 
         super(AdExchange, self).__init__(**kwargs)
 
+        self.players = [SimPlayer(sim=self, player=player) for player in consumers + advertisers + recommenders + verifiers]
+
         self.consumers = consumers
         self.advertisers = advertisers
         self.recommenders = recommenders
