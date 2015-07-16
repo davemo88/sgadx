@@ -113,5 +113,7 @@ class AdGame(SignalingGame):
 
         else:
 
-            return -1
+            ad_fit = dot(advertiser.consumer_history[consumer.id]['last_content_request'], ad.ad_features)
+
+            return min(ad_fit-1, ad_fit)
 
