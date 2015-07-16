@@ -1,0 +1,163 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{geometry}
+
+\geometry{a4paper}
+
+\usepackage{setspace}
+
+\doublespacing
+
+\title{Signaling Games and Ad Exchanges}
+
+\author{David Kasofsky}
+
+\date{September 1, 2015}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+
+\subsection{Motivation}
+
+\newpage
+
+\section{Ad Exchanges}
+
+\subsection{Publishers and Advertisers}
+
+In online advertising, publishers are those with ad space to sell. Usually this is because they control websites which create and publish content, much of which is freely accessible, and wish to monetize the site traffic the content generates. Without ad exchanges, publishers could only sell their ad space through deals negotiated directly with individual advertisers. 
+
+A publisher may represent a single site or multiple sites with different types of content. For our purposes, we will also consider Search Engines such as Google and Bing to be publishers though they are treated somewhat differently in practice. The challenge for publishers is to sell their ad space at the highest price.
+
+Advertisers purchase ad space in order to interact with consumers via advertisements. They are usually businesses or advertising agencies acting on behalf of businesses. Advertisers allocate a portion of their total marketing budget to be spent online. The challenge for advertisers is to find cost effective ad space on which to spend their online budget. 
+
+Common criteria to evaluate the potential of a publisher's ad space include the reputation of the publisher, the consumer demographics that commonly visit the publisher's sites, and the alignment of the site's content with the advertiser's products. Once ad space has been purchased its performance may be evaluated using a process known as Attribution, which will be discussed later in great detail.
+
+\subsection{Role of the Ad Exchange}
+
+An Ad Exchange is both an aggregator of publisher inventory and a marketplace for that inventory. This is good for publishers because listing their inventory on the exchange makes it easily available to numerous advertisers. Publishers provide additional metadata about their listings, such as the type of content the ads will appear with or the demographics who are likely to visit the publishers' sites. This is turn makes it easier for advertisers to find appealing ad space.
+
+In order to list their inventory with an exchange, a publisher signs up with and receives code from the exchange (e.g. some JavaScript) that will allow the exchange to dynamically insert ads on the publisher's sites. For example if the publisher's site layout includes a banner ad along the side of the page, the publisher will put the exchange's code in the spot the banner ad would go.
+
+Advertisers buy the listed ad space in auctions. Whenever a user visits a publisher's page with the exchange code on it, the exchange is signaled that there is an opportunity to show an ad. Showing an ad to a user is called an "impression" and so we say an impression is available. The advertisers on the exchange then evaluate the impression and places bids according to their evaluation. The winning advertiser's ad is shown on the page. This whole process occurs very quickly so that the ad is loaded along with the rest of the content.
+
+Because publishers provide some metadata about their ad space, advertisers can include it in their evaluation. This highlights another important feature of ad exchanges: the ability to set bidding strategies according to impression metadata. As an impression auction must be resolved quickly, any logic to determine bid amounts is set ahead of time and is known as a bidding strategy. The following are examples of potential bidding strategies for an advertiser:
+
+\begin{itemize}
+\item Bid \$0.50 for impressions on sites with many male visitors
+\item Bid \$1 for impressions on sites with many male visitors between the ages of 20 and 40
+\item Bid \$1 for impressions on Sports sites
+\item Bid \$2 for impressions on Baseball sites but not between 1AM and 6AM
+\end{itemize}
+
+These illustrate how publisher metadata can influence advertisers' bidding strategies as well as publisher-independent factors such as time of day. Thus advertisers may have significantly differing evaluations of individual impressions. Such variation is the primary motivation for the use of auctions.
+
+The use of auctions highlights two major difference between buying on the exchange and buying directly form publishers. First, ads are usually bought from publishers using a constant rate, such as a cost per click (CPC) or a cost per thousand impressions (CPM). Second, some number of impressions are usually guaranteed. Thus an advertiser may pay a \$3 CPM for 1 million impressions per month, or exactly \$3,000 per month. This is a common type of directly negotiated deal. Since ad exchanges use auctions to sell impressions as they become available, there is no guaranteed number of available impressions and the price may vary from impression to impression. Therefore online advertising campaigns that spend heavily on ad exchanges usually require significantly more oversight and management than those of mostly direct deals.
+
+\subsection{Third Party Data}
+
+Third party data is data about consumers that has been collected and aggregated by third parties, i.e. neither publishers nor advertisers. In digital advertising the businesses that do so are known as Data Management Platforms (DMPs). A brief description is available at [5]. Examples of such companies are Lotame and  BlueKai. Generally these companies gather data about consumers by partnering with various large e-commerce sites and monitoring activity on the site. DMPs then make their consumer data available for purchase by advertisers who use it to tailor marketing strategies, e.g. by targeting consumers with specific features.
+
+Whereas impression metadata only describes the site the ad will appear on, DMP data describes the consumer visiting the site. Consider the following bidding strategies:
+
+* Bid \$1 on consumers on Sports sites
+* Bid \$1 on consumers with interest in Sports
+* Bid \$2 on consumers with interest in Sports on Sports sites
+
+The first is a bidding strategies based on impression metadata only and the second based only on DMP data. The third combines both impression metadata and DMP data and shows more information about an impression can make it more valuable. 
+
+A major use of third party data is to supplement impression metadata in exchange auctions. Ad exchanges integrate with DMPs so that when an impression become available, the DMP's data can also be made available to the advertisers in their evaluations. Advertisers pay a premium in order to use data from a DMP.. This means that
+
+Much third party data is collected and organized using cookies. First, a consumer is given a uniquely identifiable cookie the first time they visit a site which is monitored by a DMP. When that consumer visits certain pages or perform certain activities on the site or others monitored by the DMP, the DMP stores information related to the cookie id. For example, if a consumer visits a sporting goods site then the DMP may associate that consumer with the "sports" demographic.
+
+Similar tracking is also used by ad servers. The first time a consumer receives an ad from a particular ad server, they are also given a uniquely identifiable cookie. This can be used to track which ads a consumer has been served. This will be seen to be critical in our discussion of Attribution.
+
+Additionally, advertisers can use the ad server's tracking to associate data to cookie ids. Such information is known as first party data. A common tactic known as retargeting effectively flags consumers which have visited the advertiser's website and then pursues these consumers aggressively as they continue to browse the web. Many users have had creepy experiences where they encounter ads for products or brands they had recently viewed- this is retargeting.
+
+It is important to note that cookie-based tracking has many issues as cookies cannot uniquely identify a single consumer across multiple devices or browsers. Other tracking methods are emerging to address this. For example, the Google Chrome browser encourages users to sign in to the browser with their Google account. If a consumer does this, then Google achieves very reliable cross-device tracking of that consumer. A full discussion of such methods is out of the scope of this paper but further reading can be found in FIND SOME PAPERS FOR THIS
+
+\subsection{Attribution}
+
+Before executing various advertising strategies, advertisers must decide on the events and activities they wish to cause by showing ads. When such an event occurs it is called a conversion and the associated consumer is said to have converted. The best example of conversions are purchases. Advertisers may record additional information such as the revenue generated by the conversion.
+
+It is common for advertisers to define multiple types of conversions. Merely visiting the advertiser's homepage may be considered a type of conversion. This could be thought of as a filtering conversion type that identifies consumers that have already demonstrated an interest in the advertiser by visiting their site. Another common scheme is to have multiple conversion types which act as checkpoints within a longer process, e.g. for businesses that require customers to submit applications for approval.
+
+Since causing specific types of conversions is an advertiser's goal, the advertiser must be able to associate conversions with ads in order to evaluate advertising strategies. In its simplest form, this is accomplished using the same tracking which associates ads to consumers. By assigning each consumer a unique identifier, usually a cookie id, the advertiser records which ads have been shown to that consumer as well as which, if any, conversions that consumer has performed.
+
+However, it is not enough to simply associate ad interactions and conversions to consumers. Advertisers not only wish to know which ads a consumer has interacted with but also the effect each ad had. Consumers frequently interact with numerous ads and it is not clear which if any of the ads significantly impacted the consumer's decision to convert. If advertisers could accurately divide the credit for causing a conversion among the preceding ad interactions they could also do so with the associated revenue and thereby calculate the ROI for each ad.
+
+The process of allocating credit for conversions to the preceding ad interactions is called attribution. A particular mechanism for doing so is called an attribution model. The industry standard attribution model is Last Click. It attributes all credit for a conversion to the last-clicked ad or the last-viewed ad in lieu of a click. Plainly this does not capture the full detail of ad interaction but it has some motivating factors. It is very simple to understand as well as to implement. Variations include few parameters such as the maximum time between ad interaction and conversion for which the ad remains eligible. For instance, a click may become ineligible for credit after ten days but a view may become ineligible after five.
+
+More sophisticated models are available to advertisers, usually from third parties. Example of such companies are Visual IQ and Adometry. These models are said to be data-driven or algorithmic as compared to Last Click which is rule-based. Such models incorporate a statistical analysis to determine the chance of conversion given interactions with certain ads or combinations of ads and allocate credit for conversions accordingly. However many advertisers do not employ more sophisticated methods because of the additional cost, implementation difficulty, and lack of transparency when using a third party.
+
+\subsection{Summary}
+
+Publishers, Advertisers, DMPs, Attribution, and Ad Exchanges are the five pillars of digital marketing. Publishers represent supply while Advertisers represent demand. DMPs provide information about consumers while Attribution provides evaluations of advertising strategies. Ad exchanges are fluid, high-tech marketplaces which facilitate inclusion of third party data and allow timely responses to ad performance. Above all, ad exchanges make it easier for publishers and advertisers to meet their goals and to try new things. 
+
+\newpage
+
+\section{Signaling Games}
+
+\subsection{Basic Model}
+
+\subsection{Equilibria}
+
+\subsection{Costling Signaling}
+
+\subsection{Iterated Signaling Games}
+
+\subsection{Recommenders and Verifiers}
+
+\newpage
+
+\section{Signaling Game Ad Exchange}
+
+\subsection{Consumers}
+
+\subsection{Advertisers}
+
+\subsection{Auction Game}
+
+\subsection{Ad Game}
+
+\subsection{Third Party Data as Recommendation}
+
+\subsection{Attribution as Verification}
+
+\newpage
+
+\section{Ad Exchange Simulation}
+
+\subsection{Agent-based Model}
+
+\subsection{Simulation Details}
+
+\subsection{Implementation}
+
+\newpage
+
+\section{Simulation Results}
+
+\subsection{Summary}
+
+\subsection{Naive Attribution}
+
+\subsection{Improved Attribution}
+
+\section References
+
+\end{document}
+
