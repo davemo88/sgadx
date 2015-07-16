@@ -5,11 +5,11 @@
 \usepackage[T1]{fontenc}
 
 \usepackage{geometry}
-
 \geometry{a4paper}
 
-\usepackage{setspace}
+\usepackage[english]{babel}
 
+\usepackage{setspace}
 \doublespacing
 
 \title{Signaling Games and Ad Exchanges}
@@ -79,7 +79,7 @@ Whereas impression metadata only describes the site the ad will appear on, DMP d
 
 The first is a bidding strategies based on impression metadata only and the second based only on DMP data. The third combines both impression metadata and DMP data and shows more information about an impression can make it more valuable. 
 
-A major use of third party data is to supplement impression metadata in exchange auctions. Ad exchanges integrate with DMPs so that when an impression become available, the DMP's data can also be made available to the advertisers in their evaluations. Advertisers pay a premium in order to use data from a DMP.. This means that
+A major use of third party data is to supplement impression metadata in exchange auctions. Ad exchanges integrate with DMPs so that when an impression become available, the DMP's data can also be made available to the advertisers in their evaluations. Advertisers pay a premium in order to use data from a DMP. This means that
 
 Much third party data is collected and organized using cookies. First, a consumer is given a uniquely identifiable cookie the first time they visit a site which is monitored by a DMP. When that consumer visits certain pages or perform certain activities on the site or others monitored by the DMP, the DMP stores information related to the cookie id. For example, if a consumer visits a sporting goods site then the DMP may associate that consumer with the "sports" demographic.
 
@@ -112,6 +112,33 @@ Publishers, Advertisers, DMPs, Attribution, and Ad Exchanges are the five pillar
 \section{Signaling Games}
 
 \subsection{Basic Model}
+
+The crux of the signaling game is information asymmetry. One player has some information which is hidden from the other and wishes to convince the other to do something. Thus the informed player, called the Sender, must choose how to make his case while the second player, called the Receiver, must decide how to act based on the message from the Sender. As in typical game theory, both players wish to maximize their utility in this exchange. One can succinctly think of a signaling game definition requiring a sender, a receiver, some hidden information, the sender's possible messages, and the receiver's possible actions.
+
+Such games are found to resemble interactions in nature, perhaps most famously described by Grafen [3] in his formalization of ideas from Zahavi [2]. Here we see an example of signaling games used to describe mate selection. Consider a species in which the females choose which males to mate with and naturally want to select the best males. It is common for the male to signal his fitness by demonstrating a handicap, e.g. the cumbersome antlers of male deer. Since it is easier for healthier bucks to carry heavy antlers, antlers size generally indicates the buck's true fitness. In this the case the sender is the buck, the receiver is the doe, the hidden information is the fitness of the buck, the message is the size of antlers, and the action is to mate or not. 
+
+Spence [4] gives an example of how such games can model the hiring process. Here the sender is an applicant, the receiver is an employer, the hidden information is the competency of the applicant, the message is the credentials of the applicant, and the action is the wage offered to the applicant. Applicants want to be hired with the highest wage and employers want to pay applicants appropriately. Similarly to the antlers of deer, higher credentials are easier to earn for more competent applicants and so the employer may base his wages on the applicant's credentials.
+
+A simple example of my design is the call-fold game. The sender has either a winning hand or a losing hand and can send one of two messages: bet, or check. The type of hand is hidden from the receiver. The receiver must then either call or fold. Here are the payoff matrices:
+
+\textbf{Sender has Winning Hand}\\
+\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 1, 0 & 2, -1 \\ \hline  \textbf{Check} & 1, 0 & 1, 0 \end{tabular}
+\\ \\
+\textbf{Sender has Losing Hand}\\
+\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 0, 1 & -1, 2 \\ \hline  \textbf{Check} & 0, 1 & 0, 1 \end{tabular}
+\\ \\
+This signaling game is much like what happens in the final round of betting in a limit poker game. Here is a version that is more like a pot limit poker game with pot size \emph{p}:\\
+
+\textbf{Sender has Winning Hand}\\
+\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet Amount \emph{b}} & \emph{p}, 0 & \emph{p}+\emph{b}, -\emph{b} \end{tabular}
+\\ \\
+
+\textbf{Sender has Losing Hand}\\
+\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet Amount \emph{b}} & \emph{p}, 0 &  -\emph{b}, \emph{p}+\emph{b} \end{tabular}
+\\ \\
+The value of \emph{b} can range from 0 to \emph{p}.
+
+With a few examples to build our intuition, let us now give a formal definition for basic signaling games. We say basic here because we will extend this model in later games.
 
 \subsection{Equilibria}
 
