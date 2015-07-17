@@ -98,7 +98,7 @@ class AdGame(SignalingGame):
 
         else:
 
-            return 1 # advetiser.product_price
+            return 1 # advertiser.product_price
 
     @classmethod
     def get_receiver_utility(cls, consumer, advertiser, ad, action, **kwargs):
