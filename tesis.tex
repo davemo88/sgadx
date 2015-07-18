@@ -12,6 +12,8 @@
 \usepackage{setspace}
 \doublespacing
 
+\usepackage{amsfonts}
+
 \title{Signaling Games and Ad Exchanges}
 
 \author{David Kasofsky}
@@ -69,13 +71,15 @@ The use of auctions highlights two major difference between buying on the exchan
 
 \subsection{Third Party Data}
 
-Third party data is data about consumers that has been collected and aggregated by third parties, i.e. neither publishers nor advertisers. In digital advertising the businesses that do so are known as Data Management Platforms (DMPs). A brief description is available at [5]. Examples of such companies are Lotame and  BlueKai. Generally these companies gather data about consumers by partnering with various large e-commerce sites and monitoring activity on the site. DMPs then make their consumer data available for purchase by advertisers who use it to tailor marketing strategies, e.g. by targeting consumers with specific features.
+Third party data is data about consumers that has been collected and aggregated by third parties, i.e. neither publishers nor advertisers. In digital advertising the businesses that do so are known as Data Management Platforms (DMPs). A brief description is available at \cite{iab1}. Examples of such companies are Lotame and  BlueKai. Generally these companies gather data about consumers by partnering with various large e-commerce sites and monitoring activity on the site. DMPs then make their consumer data available for purchase by advertisers who use it to tailor marketing strategies, e.g. by targeting consumers with specific features.
 
 Whereas impression metadata only describes the site the ad will appear on, DMP data describes the consumer visiting the site. Consider the following bidding strategies:
 
-* Bid \$1 on consumers on Sports sites
-* Bid \$1 on consumers with interest in Sports
-* Bid \$2 on consumers with interest in Sports on Sports sites
+\begin{itemize}
+\item Bid \$1 on consumers on Sports sites
+\item Bid \$1 on consumers with interest in Sports
+\item Bid \$2 on consumers with interest in Sports on Sports sites
+\end{itemize}
 
 The first is a bidding strategies based on impression metadata only and the second based only on DMP data. The third combines both impression metadata and DMP data and shows more information about an impression can make it more valuable. 
 
@@ -115,11 +119,11 @@ Publishers, Advertisers, DMPs, Attribution, and Ad Exchanges are the five pillar
 
 The crux of the signaling game is information asymmetry. One player has some information which is hidden from the other and wishes to convince the other to do something. Thus the informed player, called the Sender, must choose how to make his case while the second player, called the Receiver, must decide how to act based on the message from the Sender. As in typical game theory, both players wish to maximize their utility in this exchange. One can succinctly think of a signaling game definition requiring a sender, a receiver, some hidden information, the sender's possible messages, and the receiver's possible actions.
 
-Such games are found to resemble interactions in nature, perhaps most famously described by Grafen [3] in his formalization of ideas from Zahavi [2]. Here we see an example of signaling games used to describe mate selection. Consider a species in which the females choose which males to mate with and naturally want to select the best males. It is common for the male to signal his fitness by demonstrating a handicap, e.g. the cumbersome antlers of male deer. Since it is easier for healthier bucks to carry heavy antlers, antlers size generally indicates the buck's true fitness. In this the case the sender is the buck, the receiver is the doe, the hidden information is the fitness of the buck, the message is the size of antlers, and the action is to mate or not. 
+Such games are found to resemble interactions in nature, perhaps most famously described by Grafen \cite{grafen1} in his formalization of ideas from Zahavi \cite{zahavi1}. Here we see an example of signaling games used to describe mate selection. Consider a species in which the females choose which males to mate with and naturally want to select the best males. It is common for the male to signal his fitness by demonstrating a handicap, e.g. the cumbersome antlers of male deer. Since it is easier for healthier bucks to carry heavy antlers, antlers size generally indicates the buck's true fitness. In this the case the sender is the buck, the receiver is the doe, the hidden information is the fitness of the buck, the message is the size of antlers, and the action is to mate or not. 
 
-Spence [4] gives an example of how such games can model the hiring process. Here the sender is an applicant, the receiver is an employer, the hidden information is the competency of the applicant, the message is the credentials of the applicant, and the action is the wage offered to the applicant. Applicants want to be hired with the highest wage and employers want to pay applicants appropriately. Similarly to the antlers of deer, higher credentials are easier to earn for more competent applicants and so the employer may base his wages on the applicant's credentials.
+Spence \cite{spence1} gives an example of how such games can model the hiring process. Here the sender is an applicant, the receiver is an employer, the hidden information is the competency of the applicant, the message is the credentials of the applicant, and the action is the wage offered to the applicant. Applicants want to be hired with the highest wage and employers want to pay applicants appropriately. Similarly to the antlers of deer, higher credentials are easier to earn for more competent applicants and so the employer may base his wages on the applicant's credentials.
 
-A simple example of my design is the call-fold game. The sender has either a winning hand or a losing hand and can send one of two messages: bet, or check. The type of hand is hidden from the receiver. The receiver must then either call or fold. Here are the payoff matrices:
+A final simple example is the call-fold game. The sender has either a winning hand or a losing hand and can send one of two messages: bet, or check. The type of hand is hidden from the receiver. The receiver must then either call or fold. Here are the payoff matrices:
 
 \textbf{Sender has Winning Hand}\\
 \begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 1, 0 & 2, -1 \\ \hline  \textbf{Check} & 1, 0 & 1, 0 \end{tabular}
@@ -138,7 +142,20 @@ This signaling game is much like what happens in the final round of betting in a
 \\ \\
 The value of \emph{b} can range from 0 to \emph{p}.
 
-With a few examples to build our intuition, let us now give a formal definition for basic signaling games. We say basic here because we will extend this model in later games.
+With a few examples to build our intuition, let us now give a formal definition for basic signaling games. We say basic here because we will extend this model in later games. Our definition is inspired by Sobel \cite{sobel1}.
+
+A Basic Signaling Game is a Bayesian game. A Bayesian game is generally defined as a tuple $ G = \langle N, \Omega, \langle T_{i}, \tau_{i}, A_{i}, C_{i}, u_{i}, p_{i} \rangle _{i \in N} \rangle $ where:
+
+\begin{itemize}
+\item $N$ is the set of players
+\item $\Omega$ is the set of initial conditions.
+\item $T_{i}$ is the type of player $i$.
+\item $\tau_{i}:\Omega \to T_{i}$ is a function that assigns types to players
+\item $A_{i}$ is the set of actions for player $i$.
+\item $C_{i} \subseteq A_{i} \times T_{i}$ defines the actions available to player $i$ when player $i$ is of type $T_{i}$. 
+\item $u_i:\Omega \times A \to \mathbb{R}$ is the payoff function for player $i$.
+\item $p_{i}$ is the probability distribution over $\Omega$ for player $i$.
+\end{itemize}
 
 \subsection{Equilibria}
 
@@ -184,7 +201,10 @@ With a few examples to build our intuition, let us now give a formal definition 
 
 \subsection{Improved Attribution}
 
-\section References
+\section{References}
+
+\bibliography{tesis}
+\bibliographystyle{plain}
 
 \end{document}
 

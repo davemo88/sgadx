@@ -1,6 +1,8 @@
 *.pyc
 *.db
 missfont.log
+tesis.bbl
+tesis.blg
 tesis.log
 tesis.aux
 tesis.toc
