@@ -40,6 +40,7 @@ class SimPlayer(db.Model):
     sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
     player = db.relationship('Player')
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    
 
 class AdExchange(Sim):
     """
