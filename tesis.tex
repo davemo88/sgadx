@@ -144,22 +144,69 @@ The value of \emph{b} can range from 0 to \emph{p}.
 
 With a few examples to build our intuition, let us now give a formal definition for basic signaling games. We say basic here because we will extend this model in later games. Our definition is inspired by Sobel \cite{sobel1}.
 
-A Basic Signaling Game is a Bayesian game. A Bayesian game is generally defined as a tuple $ G = \langle N, \Omega, \langle T_{i}, \tau_{i}, A_{i}, C_{i}, u_{i}, p_{i} \rangle _{i \in N} \rangle $ where:
+A basic signaling game is a Bayesian game. A Bayesian game is generally defined as a tuple $ G = \langle N, \Omega, \langle T_{i}, \tau_{i}, A_{i}, C_{i}, u_{i}, p_{i} \rangle _{i \in N} \rangle $ where:
 
 \begin{itemize}
 \item $N$ is the set of players
 \item $\Omega$ is the set of initial conditions.
-\item $T_{i}$ is the type of player $i$.
+\item $T_{i}$ is set of types for player $i$.
 \item $\tau_{i}:\Omega \to T_{i}$ is a function that assigns types to players
-\item $A_{i}$ is the set of actions for player $i$.
-\item $C_{i} \subseteq A_{i} \times T_{i}$ defines the actions available to player $i$ when player $i$ is of type $T_{i}$. 
-\item $u_i:\Omega \times A \to \mathbb{R}$ is the payoff function for player $i$.
-\item $p_{i}$ is the probability distribution over $\Omega$ for player $i$.
+\item $P_{i}$ is the set of plays (game actions) for player $i$.
+\item $C_{i} \subseteq P_{i} \times T_{i}$ defines the actions available to player $i$ when player $i$ is of type $T_{i}$. 
+\item $u_i:\Omega \times (\times_{i \in N} P_{i}) \to \mathbb{R}$ is the payoff function for player $i$.
+\item $\pi_{i}$ is the probability distribution over $\Omega$ for player $i$.
 \end{itemize}
+
+\noindent A strategy for player $i$ with type $t_{i} \in T_{i}$ is a then a mapping $\mu_i: T_i \times P_i \to [0,1]$ such that $\sum_{x \in P_i} \mu_i(t_i, x) = 1$, i.e. a probability assignment for send each play considering the player's type.\\
+
+TODO: should these strategies include something about $\Omega$?
+
+\noindent For the case of the basic signaling game, we constrain the above defintion as follows:
+
+\begin{itemize}
+\item $N = \{S, R\}$. S is the sender and R is the receiver.
+\item $T_{R} = \{\emptyset\}$. R has no relevant type.
+\item $P_{S} = M$, the set of possible sender signals.
+\item $P_{R} = A$, the set of possible receiver actions. 
+\item $u_{S}: T_{S} \times M \times A \to \mathbb{R}$
+\item $u_{R}: T_{S} \times M \times A \to \mathbb{R}$
+\item As S knows his own type, say $t \in T_{S}, \pi_{S}$ assigns positive probability only to each $\omega \in \Omega$ such that $\tau(\omega) = t$.
+\end{itemize}
+
+\noindent A strategy for player $S$ with type $t$ is:
+
+$\mu_S: T_S \times M \to [0,1]$ such that $\sum_{m \in M} \mu_S(t, m) = 1$.
+
+\noindent A strategy for player $R$ is:
+
+$\mu_R: M \times A \to [0,1]$ such that $\forall m 
+\in M: \sum_{a \in A} \mu_R(m, a) = 1$.
+
+\noindent This is because R selects his action considering the message $m$ sent by S.
+
+TODO: how to formally account for available information using this definition, e.g. that R knows the message when R chooses his action?
+TODO \cite{nurmi1} points out that the definition of a Bayesian game only covers games with simultaneously acting players. see \cite{fudenberg1} for perhaps a better formal definition.
 
 \subsection{Equilibria}
 
-\subsection{Costling Signaling}
+Sobel \cite{sobel1} gives the conditions for players' strategies, $\mu_S$ and $\mu_R$, to be a Nash equilibrium. TODO: repeat here?
+
+Such equilibria may fall into 3 general categories:
+\begin{enumerate}
+\item Separating Equilibria, in which each type of sender sends a different signal. That is: $\forall t \in T, \exists m \in M : \mu_S(t,m) = 1$ and $t \ne t'$ implies $m \ne m'.$
+\item Pooling Equilibria, in which all types send the same message. That is: $\exists  m \in M, \forall t \in T : \mu_S(t,m) = 1$.
+\item Mixed Equilibria, which fall into neither of the previous two categories.
+\end{enumerate}
+
+Because signaling games are games of information asymmetry, we can interpret strategies and equilibria in terms of deception. For instance, a separating equilibrium suits games in which the sender and receiver have a common interest and so the sender does not necessarily wish to be deceptive. Rather the sender wants to confer the maximum amount of information about the hidden type via the signal.
+
+In a separating equilibrium, the receiver is able to deduce the sender's type from signal. Since the sender's utility function $u_{S}$ and possible types $T_S$ are common knowledge, the receiver can deduce which signal would be sent by each type. This makes the receiver's choice of action straightforward.
+
+In a pooling equilibrium, the sender confers no information about the hidden type as all senders send the same signal. In this case the receiver's strategy is independent of the signal and depends only on $\pi_{ R}$. This is maximally deceptive but so obviously as to cause the receiver to disregard the signal entirely.s
+
+\subsection{Costly Signaling}
+
+
 
 \subsection{Iterated Signaling Games}
 
