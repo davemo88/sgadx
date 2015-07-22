@@ -38,21 +38,25 @@
 
 \section{Ad Exchanges}
 
-\subsection{Publishers and Advertisers}
+\subsection{Publishers, Consumers, and Advertisers}
 
 In online advertising, publishers are those with ad space to sell. Usually this is because they control websites which create and publish content, much of which is freely accessible, and wish to monetize the site traffic the content generates. Without ad exchanges, publishers could only sell their ad space through deals negotiated directly with individual advertisers. 
 
-A publisher may represent a single site or multiple sites with different types of content. For our purposes, we will also consider Search Engines such as Google and Bing to be publishers though they are treated somewhat differently in practice. The challenge for publishers is to sell their ad space at the highest price.
+A publisher may represent a single site or multiple sites with different types of content. For our purposes, we will also consider Search Engines such as Google and Bing to be publishers though they are treated somewhat differently in practice. The challenge for publishers is to sell their ad space at the highest price. In general, there are thousands if not millions of publishers registered with an ad exchange(FIND REFERENCE TO SUPPORT THIS)
+
+Consumers visit publishers sites. As we know, hundreds of millions 
 
 Advertisers purchase ad space in order to interact with consumers via advertisements. They are usually businesses or advertising agencies acting on behalf of businesses. Advertisers allocate a portion of their total marketing budget to be spent online. The challenge for advertisers is to find cost effective ad space on which to spend their online budget. 
 
 Common criteria to evaluate the potential of a publisher's ad space include the reputation of the publisher, the consumer demographics that commonly visit the publisher's sites, and the alignment of the site's content with the advertiser's products. Once ad space has been purchased its performance may be evaluated using a process known as Attribution, which will be discussed later in great detail.
 
+
+
 \subsection{Role of the Ad Exchange}
 
 An Ad Exchange is both an aggregator of publisher inventory and a marketplace for that inventory. This is good for publishers because listing their inventory on the exchange makes it easily available to numerous advertisers. Publishers provide additional metadata about their listings, such as the type of content the ads will appear with or the demographics who are likely to visit the publishers' sites. This is turn makes it easier for advertisers to find appealing ad space.
 
-In order to list their inventory with an exchange, a publisher signs up with and receives code from the exchange (e.g. some JavaScript) that will allow the exchange to dynamically insert ads on the publisher's sites. For example if the publisher's site layout includes a banner ad along the side of the page, the publisher will put the exchange's code in the spot the banner ad would go.
+In order to list their inventory with an exchange, a publisher signs up with and receives code from the exchange (e.g. some JavaScript) which allows ads to be dynamically inserted on the publisher's site(s). For example if the publisher's site layout includes a banner ad along the side of the page, the publisher will put the exchange's code in the spot a static banner ad would go.
 
 Advertisers buy the listed ad space in auctions. Whenever a user visits a publisher's page with the exchange code on it, the exchange is signaled that there is an opportunity to show an ad. Showing an ad to a user is called an "impression" and so we say an impression is available. The advertisers on the exchange then evaluate the impression and places bids according to their evaluation. The winning advertiser's ad is shown on the page. This whole process occurs very quickly so that the ad is loaded along with the rest of the content.
 
@@ -91,7 +95,7 @@ Similar tracking is also used by ad servers. The first time a consumer receives 
 
 Additionally, advertisers can use the ad server's tracking to associate data to cookie ids. Such information is known as first party data. A common tactic known as retargeting effectively flags consumers which have visited the advertiser's website and then pursues these consumers aggressively as they continue to browse the web. Many users have had creepy experiences where they encounter ads for products or brands they had recently viewed- this is retargeting.
 
-It is important to note that cookie-based tracking has many issues as cookies cannot uniquely identify a single consumer across multiple devices or browsers. Other tracking methods are emerging to address this. For example, the Google Chrome browser encourages users to sign in to the browser with their Google account. If a consumer does this, then Google achieves very reliable cross-device tracking of that consumer. A full discussion of such methods is out of the scope of this paper but further reading can be found in FIND SOME PAPERS FOR THIS
+It is important to note that cookie-based tracking has many issues as cookies cannot uniquely identify a single consumer across multiple devices or browsers. Other tracking methods are emerging to address this. For example, the Google Chrome browser encourages users to sign in to the browser with their Google account. If a consumer does this, then Google achieves very reliable cross-device tracking of that consumer. A full discussion of such methods is out of the scope of this paper but further reading can be found in TODO need references here
 
 \subsection{Attribution}
 
@@ -215,6 +219,8 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 \newpage
 
 \section{Signaling Game Ad Exchange}
+
+We suggest a game that plausibly represents the workings of an ad exchange. The players in our game are the consumers and advertisers . 
 
 \subsection{Consumers}
 
