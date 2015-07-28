@@ -156,7 +156,7 @@ This brings us to the concept of Bayesian games. Signaling games are Bayesian ga
 
 Now we can address the receiver's best response in the Call-Fold game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time. Now it is straightforward to pick an optimal strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will be betting three quarters of his hands and one third of those bets will be bluffs. Naturally the payoffs from the previous matrix were relevant in this reasoning but were chosen for our ease at this point.
 
-With these concepts in hand, we can concisely describe the basic signaling game. 
+With these concepts in hand, we can concisely describe the basic signaling game. There are two players, $S$ and $R$. $S$ has some type $t \in T$ which is known to $S$ but unknown to $R$. $S$ chooses a message $m$ from a set $M$ which is sent to $R$. Considering $m$ in light of $\pi_R$, $R$ chooses an action $a$ from a set $A$. Each player then receives a score according to functions $u_R$ and $u_S$ : $T \times M \times A \to \mathbb{R}$. 
 
 TODO: Scrap this. It's not very helpful. Leaving it for now as a reference and I liked some of the things I wrote
 TODO: how to formally account for available information using this definition, e.g. that R knows the message when R chooses his action?
