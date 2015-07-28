@@ -14,6 +14,8 @@
 
 \usepackage{amsfonts}
 
+\usepackage{amsmath}
+
 \title{Signaling Games and Ad Exchanges}
 
 \author{David Kasofsky}
@@ -133,7 +135,7 @@ Such games are found to resemble interactions in nature, perhaps most famously d
 
 Spence \cite{spence1} gives an example of how such games can model the hiring process. Here the sender is an applicant, the receiver is an employer, the hidden information is the competency of the applicant, the message is the credentials of the applicant, and the action is the wage offered to the applicant. Applicants want to be hired with the highest wage and employers want to pay applicants appropriately. Similarly to the antlers of deer, higher credentials are easier to earn for more competent applicants and so the employer may base his wages on the applicant's credentials.
 
-A final simple example is the call-fold game. The sender has either a winning hand or a losing hand and can send one of two messages: bet, or check. The type of hand is hidden from the receiver. The receiver must then either call or fold. Here are the payoff matrices:
+A final example is the call-fold game, a simplification of limit poker. The sender has either a winning hand or a losing hand and can send one of two messages: Bet or Check. The sender's hand is hidden from the receiver can either call or fold. Here are the payoff matrices:
 
 \textbf{Sender has Winning Hand}\\
 \begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 1, 0 & 2, -1 \\ \hline  \textbf{Check} & 1, 0 & 1, 0 \end{tabular}
@@ -141,37 +143,41 @@ A final simple example is the call-fold game. The sender has either a winning ha
 \textbf{Sender has Losing Hand}\\
 \begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 0, 1 & -1, 2 \\ \hline  \textbf{Check} & 0, 1 & 0, 1 \end{tabular}
 \\ \\
-This signaling game is much like what happens in the final round of betting in a limit poker game. Here is a version that is more like a pot limit poker game with pot size \emph{p}:\\
 
-\textbf{Sender has Winning Hand}\\
-\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet Amount \emph{b}} & \emph{p}, 0 & \emph{p}+\emph{b}, -\emph{b} \end{tabular}
-\\ \\
+A bet signals a winning hand and a check signals a losing one. The game is interesting because the sender may bluff by betting when he has a losing hand. 
 
-\textbf{Sender has Losing Hand}\\
-\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet Amount \emph{b}} & \emph{p}, 0 &  -\emph{b}, \emph{p}+\emph{b} \end{tabular}
-\\ \\
-The value of \emph{b} can range from 0 to \emph{p}.
+With a few examples to build our intuition, we will shortly give a mathematical description of basic signaling games. We say basic here because we will extend this model in later games. First of all, a signaling game is a mathematical game like those studied in game theory. Game theory is generally interested in optimal strategies for each player in multiplayer games in consideration of the strategies of the other players. A game theoretical analysis almost always starts with assumptions about the goals, abilities, and rationality of the players, perhaps most importantly that the players will all play in such a way to maximize their score in the game. One can imagine player $i$'s score to be the output of some function $u_i$ and so $i$ wishes to maximize the value of $u_i$ at the outcome of the game. This is a nice way to address arbitrary preferences players in complex or realistic games may have as such preferences are ultimately rolled into and expressed by the value of $u_i$. 
 
-With a few examples to build our intuition, let us now give a formal definition for basic signaling games. We say basic here because we will extend this model in later games. Our definition is inspired by Sobel \cite{sobel1}.
+These assumptions limit players' playable strategies, e.g. a player will not choose strategy A if it gives a lower score than strategy B, which brings us to the cornerstone of game theory: Nash equilibrium. A Nash equilibrium is a set of strategies for each player such that each player's score is maximized given the strategies of the others. Thus a Nash Equilibrium is akin to a solution of a game since it gives each player a strategy which cannot be improved given the strategies of the other players.
 
-A basic signaling game is a Bayesian game. A Bayesian game is generally defined as a tuple $ G = \langle N, \Omega, \langle T_{i}, \tau_{i}, A_{i}, C_{i}, u_{i}, p_{i} \rangle _{i \in N} \rangle $ where:
+It is important to note the different between pure and mixed strategies. A pure strategy is a deterministic strategy while a mixed strategy is probabilistic. Recall the Call-Fold game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. This pair of strategies also happens to be a Nash equilibrium. A mixed strategy would be to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows that the sender is betting half of his losing hands. The receiver still does not know how often the sender has a winning hand and so we need another tool in order to define the receiver's best response. 
+
+This brings us to the concept of Bayesian games. Signaling games are Bayesian games and thus so is the Call-Fold game. A Bayesian game is a game in which some information is hidden from the players. Here we should mention that the information can be hidden symmetrically, unlike in the case of the signaling game. One way to represent the hidden information is to a imagine a set $\Omega$, elements of which represent possible configurations of game variables. In the Call-Fold game, for example, $\Omega = \{\text{Winning Hand}, \text{Losing Hand}\}$. When a Bayesian game is initialized, an element of $\Omega$ is chosen. Each player is assigned some probability distribution $\pi_{i}(\cdot)$ over $\Omega$, i.e. a prior belief over the possible variable configurations.
+
+Now we can address the receiver's best response in the Call-Fold game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time. Now it is straightforward to pick an optimal strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will be betting three quarters of his hands and one third of those bets will be bluffs. Naturally the payoffs from the previous matrix were relevant in this reasoning but were chosen for our ease at this point.
+
+With these concepts in hand, we can concisely describe the basic signaling game. 
+
+TODO: Scrap this. It's not very helpful. Leaving it for now as a reference and I liked some of the things I wrote
+TODO: how to formally account for available information using this definition, e.g. that R knows the message when R chooses his action?
+TODO: \cite{nurmi1} points out that the definition of a Bayesian game only covers games with simultaneously acting players. see \cite{fudenberg1} for perhaps a better formal definition.
+
+Formally, a Bayesian game may be defined as a tuple $ G = \langle N, \Omega, \langle T_{i}, \tau_{i}, A_{i}, C_{i}, u_{i}, p_{i} \rangle _{i \in N} \rangle $ where:
 
 \begin{itemize}
 \item $N$ is the set of players
-\item $\Omega$ is the set of initial conditions.
-\item $T_{i}$ is set of types for player $i$.
-\item $\tau_{i}:\Omega \to T_{i}$ is a function that assigns types to players
+\item $\Omega$ is the set of possible variable configurations. An element of this set is a tuple so as to implicitly define the variables in terms of their position.
+\item $T_{i}$ is set of possible types for player $i$. A player type is merely a value associated with a particular player.
+\item $\tau_{i}:\Omega \to T_{i}$ is a function that assigns types to players.
 \item $P_{i}$ is the set of plays (game actions) for player $i$.
 \item $C_{i} \subseteq P_{i} \times T_{i}$ defines the actions available to player $i$ when player $i$ is of type $T_{i}$. 
-\item $u_i:\Omega \times (\times_{i \in N} P_{i}) \to \mathbb{R}$ is the payoff function for player $i$.
+\item $u_i:\Omega \times (\times_{i \in N} P_{i}) \to \mathbb{R}$ is the utility function for player $i$. This function outputs a player's score. Note that the score is a function of the variable configuration as well as the strategies of each player.
 \item $\pi_{i}$ is the probability distribution over $\Omega$ for player $i$.
 \end{itemize}
 
-\noindent A strategy for player $i$ with type $t_{i} \in T_{i}$ is a then a mapping $\mu_i: T_i \times P_i \to [0,1]$ such that $\sum_{x \in P_i} \mu_i(t_i, x) = 1$, i.e. a probability assignment for send each play considering the player's type.\\
+\noindent Because of the uncertainty inherent in Bayesian games, it is natural to think of strategies as mixed strategies. A strategy for player $i$ is a mapping $\mu_i: \pi_i \times T_i \times P_i \to [0,1]$ such that $\sum_{x \in P_i} \mu_i(t_i, x) = 1$, i.e. a probability distribution over possible plays considering the player's type and prior beliefs.
 
-TODO: should these strategies include something about $\Omega$?
-
-\noindent For the case of the basic signaling game, we constrain the above defintion as follows:
+\noindent A signaling game is then a special case of the general Bayesian Game.
 
 \begin{itemize}
 \item $N = \{S, R\}$. S is the sender and R is the receiver.
@@ -193,9 +199,6 @@ $\mu_R: M \times A \to [0,1]$ such that $\forall m
 \in M: \sum_{a \in A} \mu_R(m, a) = 1$.
 
 \noindent This is because R selects his action considering the message $m$ sent by S.
-
-TODO: how to formally account for available information using this definition, e.g. that R knows the message when R chooses his action?
-TODO \cite{nurmi1} points out that the definition of a Bayesian game only covers games with simultaneously acting players. see \cite{fudenberg1} for perhaps a better formal definition.
 
 \subsection{Equilibria}
 
