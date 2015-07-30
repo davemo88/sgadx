@@ -150,15 +150,17 @@ With a few examples to build our intuition, we will shortly give a mathematical 
 
 These assumptions limit players' playable strategies, e.g. a player will not choose strategy A if it gives a lower score than strategy B, which brings us to the cornerstone of game theory: Nash equilibrium. A Nash equilibrium is a set of strategies for each player such that each player's score is maximized given the strategies of the others. Thus a Nash Equilibrium is akin to a solution of a game since it gives each player a strategy which cannot be improved given the strategies of the other players.
 
-It is important to note the different between pure and mixed strategies. A pure strategy is a deterministic strategy while a mixed strategy is probabilistic. Recall the Call-Fold game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. This pair of strategies also happens to be a Nash equilibrium. A mixed strategy would be to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows that the sender is betting half of his losing hands. The receiver still does not know how often the sender has a winning hand and so we need another tool in order to define the receiver's best response. 
+It is important to note the different between pure and mixed strategies. A pure strategy is a deterministic strategy while a mixed strategy is probabilistic. Recall the Call-Fold game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. Note that this pair of strategies is not a Nash equilibrium because the sender's best response to the receiver's strategy is to bet losing hands as well, since the receiver will fold to all bets. A mixed strategy would be to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows that the sender is betting half of his losing hands. The receiver still does not know how often the sender has a winning hand and so we need another tool in order to find the receiver's best response.
 
 This brings us to the concept of Bayesian games. Signaling games are Bayesian games and thus so is the Call-Fold game. A Bayesian game is a game in which some information is hidden from the players. Here we should mention that the information can be hidden symmetrically, unlike in the case of the signaling game. One way to represent the hidden information is to a imagine a set $\Omega$, elements of which represent possible configurations of game variables. In the Call-Fold game, for example, $\Omega = \{\text{Winning Hand}, \text{Losing Hand}\}$. When a Bayesian game is initialized, an element of $\Omega$ is chosen. Each player is assigned some probability distribution $\pi_{i}(\cdot)$ over $\Omega$, i.e. a prior belief over the possible variable configurations.
 
 Now we can address the receiver's best response in the Call-Fold game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time. Now it is straightforward to pick an optimal strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will be betting three quarters of his hands and one third of those bets will be bluffs. Naturally the payoffs from the previous matrix were relevant in this reasoning but were chosen for our ease at this point.
 
-With these concepts in hand, we can concisely describe the basic signaling game. There are two players, $S$ and $R$. $S$ has some type $t \in T$ which is known to $S$ but unknown to $R$. $S$ chooses a message $m$ from a set $M$ which is sent to $R$. Considering $m$ in light of $\pi_R$, $R$ chooses an action $a$ from a set $A$. Each player then receives a score according to functions $u_R$ and $u_S$ : $T \times M \times A \to \mathbb{R}$. 
+With these concepts in hand, we can concisely describe the basic signaling game. There are two players, $S$ and $R$. $S$ has some type $t \in T$ which is known to $S$ but unknown to $R$. The set $T$ is analogous to the set $\Omega$ from before. One can imagine $\pi_{S}$ places assigns probability 1 to $t$ and $\pi_{R}$ does not, e.g. $\pi_{R}$ could assign uniform probability to each $t \in T$. $S$ chooses a message $m$ from a set $M$ which is sent to $R$. Considering $m$ in light of $\pi_R$, $R$ chooses an action $a$ from a set $A$. Each player then receives a score according to functions $u_R$ and $u_S$ : $T \times M \times A \to \mathbb{R}$.
 
-TODO: Scrap this. It's not very helpful. Leaving it for now as a reference and I liked some of the things I wrote
+A strategy for S is then a function $\mu_{S}: T \times M \to [0,1]$ such that $\forall t: \sum_{m \in M} \mu_{S}(t, m) = 1$, i.e. assigns a probability to each message for all types. A strategy for R is a similarly $\mu_{R} : M \times A \to [0,1]$ such that $\forall m: \sum_{a \in A} \mu_{R}(m,a) = 1$.
+
+TODO: Scrap the below definition. It's not very helpful. Leaving it for now as a reference and I like some of the things I wrote
 TODO: how to formally account for available information using this definition, e.g. that R knows the message when R chooses his action?
 TODO: \cite{nurmi1} points out that the definition of a Bayesian game only covers games with simultaneously acting players. see \cite{fudenberg1} for perhaps a better formal definition.
 
@@ -202,16 +204,21 @@ $\mu_R: M \times A \to [0,1]$ such that $\forall m
 
 \subsection{Equilibria}
 
-Sobel \cite{sobel1} gives the conditions for players' strategies, $\mu_S$ and $\mu_R$, to be a Nash equilibrium. TODO: repeat here?
+Three types of Nash equilibria exist in signaling games:
 
-Such equilibria may fall into 3 general categories:
 \begin{enumerate}
-\item Separating Equilibria, in which each type of sender sends a different signal. That is: $\forall t \in T, \exists m \in M : \mu_S(t,m) = 1$ and $t \ne t'$ implies $m \ne m'.$
+\item Separating Equilibria, in which each type of sender send different signals. That is:
+
+$\forall t, t' \in T, \exists M_{t} \subset M$ with $\mu_S(t,m) > 0 \Rightarrow m \in M_{t}$ and $t \ne t' \Rightarrow M_{t} \cap M_{t'} = \emptyset$.
+
 \item Pooling Equilibria, in which all types send the same message. That is: $\exists  m \in M, \forall t \in T : \mu_S(t,m) = 1$.
-\item Mixed Equilibria, which fall into neither of the previous two categories.
+
+\item Mixed Equilibria, which fall into neither of the previous two categories. Senders of differing types may send the same messages but may not as well. 
 \end{enumerate}
 
-Because signaling games are games of information asymmetry, we can interpret strategies and equilibria in terms of deception. For instance, a separating equilibrium suits games in which the sender and receiver have a common interest and so the sender does not necessarily wish to be deceptive. Rather the sender wants to confer the maximum amount of information about the hidden type via the signal.
+Because signaling games are games of information asymmetry, we can interpret strategies and equilibria in terms of deception. The informed player, S, can deceive the uninformed player R. Consider the Call-Fold game once more: to sometimes bet with losing hands is a deceptive strategy that exploits the receiver's ignorance. 
+
+ For instance, a separating equilibrium suits games in which the sender and receiver have a common interest and so the sender does not necessarily wish to be deceptive. Rather the sender wants to confer the maximum amount of information about the hidden type via the signal.
 
 In a separating equilibrium, the receiver is able to deduce the sender's type from signal. Since the sender's utility function $u_{S}$ and possible types $T_S$ are common knowledge, the receiver can deduce which signal would be sent by each type. This makes the receiver's choice of action straightforward.
 
