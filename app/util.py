@@ -48,30 +48,30 @@ class Util(object):
 
         return sha256.hexdigest()
 
+## TODO: replace all password stuff with passlib
+    # @classmethod
+    # def get_password_hash(cls, password, salt):
+    #     """
 
-    @classmethod
-    def get_password_hash(cls, password, salt):
-        """
+    #     """
 
-        """
+    #     return cls.get_checksum(salt + password)
 
-        return cls.get_checksum(salt + password)
+    # @classmethod
+    # def verify_password(cls, password, salt, password_hash):
+    #     """
 
-    @classmethod
-    def verify_password(cls, password, salt, password_hash):
-        """
+    #     """
 
-        """
+    #     return password_hash == cls.get_password_hash(password, salt)
 
-        return password_hash == cls.get_password_hash(password, salt)
+    # @classmethod
+    # def get_password_salt(cls):
+    #     """
 
-    @classmethod
-    def get_password_salt(cls):
-        """
+    #     """
 
-        """
-
-        return ''.join(random.SystemRandom().choice(string.uppercase + string.digits) for _ in xrange(PASSWORD_SALT_LENGTH))
+    #     return ''.join(random.SystemRandom().choice(string.uppercase + string.digits) for _ in xrange(PASSWORD_SALT_LENGTH))
 
 
     @classmethod

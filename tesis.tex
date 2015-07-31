@@ -226,19 +226,37 @@ In a pooling equilibrium, the sender confers no information about the hidden typ
 
 \subsection{Costly Signaling}
 
-Costly signaling is an important feature of many signaling games. Suppose $G$ is a signaling game with $M$ a real interval and consider $u_{S}(t,s,a)$ 
+Costly signaling is an important feature of many signaling games. Suppose $G$ is a signaling game with $M$ a real interval and consider $u_{S}(t,s,a)$.
 
 \subsection{Iterated Signaling Games}
 
 \subsection{Recommenders and Verifiers}
 
+\subsection{Signaling Games in Advertising}
+
 \newpage
 
 \section{Signaling Game Ad Exchange}
 
-We suggest a game that plausibly represents the workings of an ad exchange. The players in our game are the consumers and advertisers . 
+Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine a consumer is browsing the web, visiting various sites that interest them. Some of these sites are listed on ad exchanges. When the customer arrives on these pages, advertisers on the exchange bid on the available impression and the winning advertising shows an ad. Our goal is to plausibly describe this interaction using signaling games.
+
+We focus on the four most important processes:
+
+\begin{itemize}
+	\item impression auctions
+	\item incorporation of DMP data
+	\item consumer ad interactions
+	\item attribution 
+\end{itemize}
+
+As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption from irrelevant advertisements but appreciate helpful ads. Advertisers want consumers to buy their products. Advertisers can use DMPs to better target consumers and Attribution to evaluate their advertising strategies. 
+
+To capture all of this, we can think of our Signal Game Ad Exchange broken into two subgames: the Auction Game and the Ad Game. In the Auction Game, the sender is a consumer and multiple advertisers are the receivers. In the Ad Game, a single advertiser is the sender 
 
 \subsection{Consumers}
+
+Consumers in our game represent web-browsing consumers in real life. Each consumer has a type which describes the consumer's affinities for various types of products. These product affinities are represented by a N-dimensional binary vector. N is a hyperparameter of the game. Each component of the consumer type vector represents an affinity (or lack thereof) for a type of product. For example, a consumer with type vector $\rbrack 1, 0 \lbrack$ has an affinity for the first product and does not for the second.
+
 
 \subsection{Advertisers}
 
@@ -247,6 +265,12 @@ We suggest a game that plausibly represents the workings of an ad exchange. The 
 \subsection{Ad Game}
 
 \subsection{Third Party Data as Recommendation}
+
+
+
+
+
+
 
 \subsection{Attribution as Verification}
 
