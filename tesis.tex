@@ -242,25 +242,38 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 
 \section{Signaling Game Ad Exchange}
 
-Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers are browsing the web, visiting various sites that suit their interests. Some of these sites are listed on ad exchanges. When a consumer arrives on these pages, advertisers on the exchange bid on the available impression and the winning advertising shows an ad. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus on the four most important processes:
+Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers are browsing the web, visiting various sites that suit their interests. Some of these sites will be listed on ad exchanges. When a consumer arrives on such a site, advertisers on the exchange bid on the available impression and the winning advertising shows an ad. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus first on the two most important pieces: impression auctions and consumer-ad interactions.
 
-\begin{itemize}
-	\item impression auctions
-	\item incorporation of DMP data
-	\item consumer ad interactions
-	\item attribution
-\end{itemize}
-
-As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption from irrelevant advertisements but appreciate helpful ads. Advertisers want consumers to buy their products. In a more complicated version of the game, advertisers can use DMPs to better target consumers and Attribution to evaluate their advertising strategies. We will discuss this 
-
-To capture all of this, we can think of our Signal Game Ad Exchange broken into two subgames: the Auction Game and the Ad Game. In the Auction Game, the sender is a consumer and multiple advertisers are the receivers. In the Ad Game, a single advertiser is the sender 
+As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements, but appreciate helpful diversions like appropriate advertisements. Advertisers want consumers to buy their products. To capture all of this, we think of our Signal Game Ad Exchange broken into two sequential subgames: the Auction Game followed by the Ad Game. In the Auction Game, the sender is a consumer and the receivers are multiple advertisers). The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on the play the ad game. In the Ad Game, the winning advertiser is the sender and the consumer is the receiver. To be clear, the consumer here is the same consumer from the Auction Game which was just played. The consumer then decides how to interact with advertiser's ad. A detailed description and analysis of these games occurs later in this section.
 
 \subsection{Consumers}
 
-Consumers in our game represent web-browsing consumers in real life. Each consumer has a type which describes the consumer's affinities for various types of products. These product affinities are represented by a N-dimensional binary vector. N is a hyperparameter of the game. Each component of the consumer type vector represents an affinity (or lack thereof) for a type of product. For example, a consumer with type vector $\rbrack 1, 0 \lbrack$ has an affinity for the first product and does not for the second.
+First, let us give a formal definition of a Consumer player. We will then address each attribute in detail.
 
+A Consumer $C_i$ is a tuple $\langle t_i, f_i, \delta_i, \rho_i \rangle$ where
+
+\begin{itemize}
+	\item $t_i \in \{0,1\}^N$ is the consumer's type
+	\item $f_i \in F = \{ignorance, awareness, consideration, intention\}^N$ is the consumer's initial state in the funnel for each existing product type. 
+	\item $\delta_i$ is the consumer's browsing diversity
+	\item $\rho_i$ is the consumer's advertising receptivity
+\end{itemize}
+
+Consumers in our game represent web-browsing consumers in real life. Each consumer player has a type $t_i$ which describes affinities for various types of products. These product affinities are represented by a $N$-dimensional binary vector, $N$ being a hyperparameter of the game. Each component of the consumer type vector represents an affinity (or lack thereof) for a type of product. For example, a consumer with type vector $\rbrack 1, 0 \lbrack$ has an affinity for the first product but not for the second. The distribution used to generate a consumer's type vector is also a hyperparameter of the game. The consumer type space $T_{Consumer}$ is therefore $\{0,1\}^N$.
+
+Consumers' messages represent impression metadata, as a consumer is the sender in the Auction Game. In essence, consumers choose the sort of impression metadata which is relayed to advertisers on the exchange by visiting certain types of sites. While the ad exchange technically delivers the impression metadata to advertisers, it is the consumer who determines its content. A consumer message, i.e. impression metadata, is also presented as a $N$-dimensional binary vector. These vectors are generated by flipping the bits of the consumer's type vector with a small probability. The probability with which a bit is flipped is a consumer-specific parameter $\delta$. The intuition is that consumers with affinities for certain types of products are more likely to visit sites related to those products. The message space $M_{Consumer}$ is therefore $\{0,1\}^N$, the same as the consumer type space. A new message is generated randomly each time a consumer sends a message. 
+
+Consumer actions correspond to advertising interactions. Recall the Consumer plays the the role of receiver in the Ad Game. The set of possible consumer actions $A_{Consumer}$ is $\{view, click\}$. An $impression$ interaction means that the ad was displayed on the page but the consumer did not click on it where a $click$ interaction signifies that the consumer did click on the ad and was therefore linked to the advertiser's website. We also associate these actions with the probability of a consumer state transition. As described in the first section, advertisers believe in the marketing funnel and that consumers can be more or less receptive to advertisements depending on their position in funnel. So each consumer not only has a hidden type but also a hidden state $f_i$ which corresponds to their position in the funnel for each product type. We use a four-stage funnel $F$ with states $\{ignorance, awareness, consideration, intention\}$. Each state has an associated probability of conversion / conversion probability weight. A consumer's initial state is determined randomly but with later stages, i.e. stages with higher chances of conversion, weighted significantly less than earlier stages.
+
+TODO: fix up this state stuff.
+
+After each iteration of Auction Game and Ad Game, a consumer may convert, i.e. buy an advertiser's product.
+
+TODO: conversion should occur randomly and separately from ad interactions
 
 \subsection{Advertisers}
+
+Advertisers in our game represent advertisers on the exchange in real life. Each advertiser has a type which describes the sort of product it sells. This is also represented by an $N$-dimensional binary vector. For example, the advertiser type vector $\lbrack 1, 0 \rbrack$ 
 
 \subsection{Auction Game}
 
