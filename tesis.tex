@@ -52,7 +52,9 @@ Advertisers purchase ad space in order to interact with consumers via advertisem
 
 Common criteria to evaluate the potential of a publisher's ad space include the reputation of the publisher, the consumer demographics that commonly visit the publisher's sites, and the alignment of the site's content with the advertiser's products. Once ad space has been purchased its performance may be evaluated using a process known as Attribution, which will be discussed later in great detail.
 
+\subsection{The Funnel}
 
+TODO: write this section ;)
 
 \subsection{Role of the Ad Exchange}
 
@@ -118,6 +120,8 @@ However, it is not enough to simply associate ad interactions and conversions to
 The process of allocating credit for conversions to preceding ad interactions is called attribution. A particular mechanism for doing so is called an attribution model. The industry standard attribution model is Last Click. It attributes all credit for a conversion to the last-clicked ad or the last-viewed ad in lieu of a click. Plainly this does not capture the full detail of ad interaction but it has some motivating factors. It is very simple to understand as well as to implement. Variations include few parameters such as the maximum time between ad interaction and conversion for which the ad remains eligible. For instance, a click may become ineligible for credit after ten days but a view may become ineligible after five.
 
 More sophisticated models are available to advertisers, usually from third parties. Example of such companies are Visual IQ and Adometry. These models are data-driven or algorithmic as compared to Last Click which is rule-based. Such models incorporate a statistical analysis to determine the chance of conversion given interactions with certain ads or combinations of ads and allocate credit for conversions accordingly. However many advertisers do not employ more sophisticated methods because of the additional cost, implementation difficulty, and lack of transparency when using a third party. TODO fix this description. weird and needs evidence to support
+
+TODO: talk about how attribution fits into optimization / budget allocation
 
 \subsection{Summary}
 
@@ -238,18 +242,16 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 
 \section{Signaling Game Ad Exchange}
 
-Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine a consumer is browsing the web, visiting various sites that interest them. Some of these sites are listed on ad exchanges. When the customer arrives on these pages, advertisers on the exchange bid on the available impression and the winning advertising shows an ad. Our goal is to plausibly describe this interaction using signaling games.
-
-We focus on the four most important processes:
+Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers are browsing the web, visiting various sites that suit their interests. Some of these sites are listed on ad exchanges. When a consumer arrives on these pages, advertisers on the exchange bid on the available impression and the winning advertising shows an ad. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus on the four most important processes:
 
 \begin{itemize}
 	\item impression auctions
 	\item incorporation of DMP data
 	\item consumer ad interactions
-	\item attribution 
+	\item attribution
 \end{itemize}
 
-As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption from irrelevant advertisements but appreciate helpful ads. Advertisers want consumers to buy their products. Advertisers can use DMPs to better target consumers and Attribution to evaluate their advertising strategies. 
+As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption from irrelevant advertisements but appreciate helpful ads. Advertisers want consumers to buy their products. In a more complicated version of the game, advertisers can use DMPs to better target consumers and Attribution to evaluate their advertising strategies. We will discuss this 
 
 To capture all of this, we can think of our Signal Game Ad Exchange broken into two subgames: the Auction Game and the Ad Game. In the Auction Game, the sender is a consumer and multiple advertisers are the receivers. In the Ad Game, a single advertiser is the sender 
 
@@ -265,12 +267,6 @@ Consumers in our game represent web-browsing consumers in real life. Each consum
 \subsection{Ad Game}
 
 \subsection{Third Party Data as Recommendation}
-
-
-
-
-
-
 
 \subsection{Attribution as Verification}
 
