@@ -255,9 +255,19 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 
 TODO: describe version of game using real valued vectors instead of binary vectors
 
-Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers browsing the web, visiting various web pages that suit their interests. Some of these pages will be listed on ad exchanges. When a consumer arrives on such a page, advertisers on the exchange bid on the available impression and the winning advertising's ad appears on the page. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus first on the two most important pieces: impression auctions and consumer-ad interactions.
+Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers browsing the web, visiting various web pages that suit their interests. Some of these pages will be listed on ad exchanges. When a consumer visits such a page, advertisers on the exchange bid on the available impression and the winning advertising's ad appears on the page. The consumer may then interact with the advertiser's ad, perhaps leading to a conversion. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus first on the two most important pieces: impression auctions and consumer-ad interactions.
 
-As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements, but appreciate helpful diversions like appropriate advertisements. Advertisers want to encourage consumers to buy their products by showing ads. To capture all of this, we think of our Signal Game Ad Exchange broken into two sequential subgames: the Auction Game followed by the Ad Game. In the Auction Game, the sender is a consumer and the receivers are multiple advertisers). The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on the play the ad game. In the Ad Game, the winning advertiser is the sender and the consumer is the receiver. The consumer here is the same consumer from the Auction Game which was just played. The consumer then decides how to interact with advertiser's ad. A detailed description and analysis of these games occurs later in this section.
+As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements. However consumers do want to purchase products that suit them. Advertisers want to encourage consumers to buy their products by showing ads. To capture all of this, we think of our Signal Game Ad Exchange broken into two sequential subgames: the Auction Game followed by the Ad Game. In the Auction Game, the sender is a consumer and the receivers are multiple advertisers). The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on the play the Ad Game. In the Ad Game, the winning advertiser is the sender and the consumer is the receiver. The consumer then decides how to interact with advertiser's ad. Let us examine the first game in detail.
+
+\subsection{Auction Game}
+
+The auction game represents an impression auction occurring on an ad exchange. Here the sender is a consumer and the receivers are the multiple advertisers who will bid on the impression. 
+
+\subsection{Ad Game}
+
+\subsection{Third Party Data as Recommendation}
+
+\subsection{Attribution as Verification}
 
 \subsection{Consumers}
 
@@ -276,7 +286,7 @@ Consumers' messages represent impression metadata, as a consumer is the sender i
 
 Consumer actions correspond to advertising interactions. Recall the Consumer plays the role of receiver in the Ad Game. The set of possible consumer actions $A_{Consumer}$ is $\{view, click\}$. An $impression$ interaction means that the ad was displayed on the page but the consumer did not click on it where a $click$ interaction signifies that the consumer did click on the ad and was therefore linked to the advertiser's website. We also associate these actions with the probability of a consumer state transition. As described in the first section, advertisers believe in the marketing funnel and that consumers can be more or less receptive to advertisements depending on their position in funnel. So each consumer not only has a hidden type but also a hidden state $f_i$ which corresponds to their position in the funnel for each product type. We use a four-stage funnel $F$ with states $\{ignorance, awareness, consideration, converted\}$. 
 
-The intuition is that consumers with affinities for certain types of products are more likely to visit sites related to those products. 
+The intuition is that consumers with affinities for certain types of products are more likely to visit sites related to those products.
 
 TODO: fix up this state stuff.
 TODO: mere-exposure effect https://en.wikipedia.org/wiki/Mere-exposure\_effect
@@ -300,14 +310,6 @@ Advertisers in our game represent advertisers on the exchange in real life. The 
 The set of ads $D_j$ available to each advertiser is a set of binary vectors.
 
 The set of ads $D_i$ available to each advertiser is a set of unit vectors in $\mathbb{R}^N$. 
-
-\subsection{Auction Game}
-
-\subsection{Ad Game}
-
-\subsection{Third Party Data as Recommendation}
-
-\subsection{Attribution as Verification}
 
 \newpage
 
