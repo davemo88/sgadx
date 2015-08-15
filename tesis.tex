@@ -143,6 +143,8 @@ Publishers, Advertisers, DMPs, Attribution, and Ad Exchanges are the five pillar
 
 \section{Signaling Games}
 
+TODO: discuss crawford \& sobel
+
 \subsection{Basic Model}
 
 The crux of the signaling game is information asymmetry. One player has some information which is hidden from the other and wishes to convince the other to do something. Thus the informed player, called the Sender, must choose how to make his case while the second player, called the Receiver, must decide how to act based on the message from the Sender. As in typical game theory, both players wish to maximize their utility in this exchange. One can succinctly think of a signaling game definition requiring a sender, a receiver, some hidden information, the sender's possible messages, and the receiver's possible actions.
@@ -162,60 +164,19 @@ A final example is the call-fold game, a simplification of limit poker. The send
 
 A bet signals a winning hand and a check signals a losing one. The game is interesting because the sender may bluff by betting when he has a losing hand. 
 
-With a few examples to build our intuition, we will shortly give a mathematical description of basic signaling games. We say basic here because we will extend this model in later games. First of all, a signaling game is a mathematical game like those studied in game theory. Game theory is generally interested in optimal strategies for each player in multiplayer games in consideration of the strategies of the other players. A game theoretical analysis almost always starts with assumptions about the goals, abilities, and rationality of the players, perhaps most importantly that the players will all play in such a way to maximize their score in the game. One can imagine player $i$'s score to be the output of some function $u_i$ and so $i$ wishes to maximize the value of $u_i$ at the outcome of the game. This is a nice way to address arbitrary preferences players in complex or realistic games may have as such preferences are ultimately rolled into and expressed by the value of $u_i$. 
+With a few examples to build our intuition, we will shortly give a mathematical description of basic signaling games. We say basic here because we will extend this model in later games. First of all, a signaling game is a mathematical game like those studied in game theory. Game theory is generally interested in optimal strategies for each player in multiplayer games in consideration of the strategies of the other players. A game theoretical analysis almost always starts with assumptions about the goals, abilities, and rationality of the players, perhaps most importantly that the players will all play in such a way to maximize their score in the game. One can imagine player $i$'s score to be the output of some function $u_i$ and so $i$ will play so as to maximize $u_i$. This is a nice way to address arbitrary player preferences in complex or realistic games as such preferences are ultimately rolled into and expressed by the value of $u_i$. 
 
 These assumptions limit players' playable strategies, e.g. a player will not choose strategy A if it gives a lower score than strategy B, which brings us to the cornerstone of game theory: Nash equilibrium. A Nash equilibrium is a set of strategies for each player such that each player's score is maximized given the strategies of the others. Thus a Nash Equilibrium is akin to a solution of a game since it gives each player a strategy which cannot be improved given the strategies of the other players.
 
-It is important to note the different between pure and mixed strategies. A pure strategy is a deterministic strategy while a mixed strategy is probabilistic. Recall the Call-Fold game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. Note that this pair of strategies is not a Nash equilibrium because the sender's best response to the receiver's strategy is to bet losing hands as well, since the receiver will fold to all bets. A mixed strategy would be to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows that the sender is betting half of his losing hands. The receiver still does not know how often the sender has a winning hand and so we need another tool in order to find the receiver's best response.
+It is important to note the difference between pure and mixed strategies. A pure strategy is deterministic while a mixed strategy is probabilistic. Recall the Call-Fold game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. Note that this pair of strategies is not a Nash equilibrium because the sender's best response to the receiver's strategy is to bet losing hands as well, since the receiver will fold to all bets. A mixed strategy would be to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows that the sender is betting half of his losing hands. The receiver still does not know how often the sender has a winning hand and so we need another tool in order to find the receiver's best response.
 
-This brings us to the concept of Bayesian games. Signaling games are Bayesian games and thus so is the Call-Fold game. A Bayesian game is a game in which some information is hidden from the players. Here we should mention that the information can be hidden symmetrically, unlike in the case of the signaling game. One way to represent the hidden information is to a imagine a set $\Omega$, elements of which represent possible configurations of game variables. In the Call-Fold game, for example, $\Omega = \{\text{Winning Hand}, \text{Losing Hand}\}$. When a Bayesian game is initialized, an element of $\Omega$ is chosen. Each player is assigned some probability distribution $\pi_{i}(\cdot)$ over $\Omega$, i.e. a prior belief over the possible variable configurations.
+This brings us to the concept of Bayesian games. Signaling games are Bayesian games and thus so is the Call-Fold game. A Bayesian game is a game in which some information is hidden from the players. Here we should mention that the information can be hidden symmetrically, unlike in the case of the signaling game. One way to represent the hidden information is to a imagine a set $\Omega$, elements of which represent possible configurations of game variables. In the Call-Fold game, for example, $\Omega = \{\text{Winning Hand}, \text{Losing Hand}\}$. When a Bayesian game is initialized, an element of $\Omega$ is chosen and each player is assigned some probability distribution $\pi_{i}(\cdot)$ over $\Omega$, i.e. a prior belief over the possible variable configurations.
 
-Now we can address the receiver's best response in the Call-Fold game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time. Now it is straightforward to pick the best response strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will be betting three quarters of his hands and one third of those bets will be bluffs. Naturally the payoffs from the previous matrix were relevant in this reasoning but were chosen for our ease at this point.
+Now we can address the receiver's best response in the Call-Fold game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time, i.e. $\pi_R(\text{Losing Hand}) = 0.5$. Now it is straightforward to pick the best response strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will bet three quarters of all his hands and one third of those bets will be bluffs. Naturally the values from the above payoff matrix were relevant in this reasoning but were chosen for our ease at this point.
 
-With these concepts in hand, we can concisely describe the basic signaling game. There are two players, $S$ and $R$. $S$ has some type $t \in T$ which is known to $S$ but unknown to $R$. The set $T$ is analogous to the set $\Omega$ from before. One can imagine $\pi_{S}$ places assigns probability 1 to $t$ and $\pi_{R}$ does not, e.g. $\pi_{R}$ could assign uniform probability to each $t \in T$. $S$ chooses a message $m$ from a set $M$ which is sent to $R$. Considering $m$ in light of $\pi_R$, $R$ chooses an action $a$ from a set $A$. Each player then receives a score according to functions $u_R$ and $u_S$ : $T \times M \times A \to \mathbb{R}$.
+With these concepts in hand, we can concisely describe the basic signaling game. There are two players, $S$ and $R$. $S$ has some type $t \in T$ which is known to $S$ but unknown to $R$. $T$ is analogous to the set $\Omega$ from before. Each player also has a prior $ \pi_i(dcot)$ over $T$. One can imagine $\pi_{S}$ places assigns probability 1 to $t$ and $\pi_{R}$ does not, e.g. $\pi_{R}$ could assign uniform probability to each $t \in T$. $S$ chooses a message $m$ from a set $M$ which is sent to $R$. Considering $m$ in light of $\pi_R$, $R$ chooses an action $a$ from a set $A$. Each player then receives a score according to functions $u_R$ and $u_S$ : $T \times M \times A \to \mathbb{R}$.
 
 A strategy for S is then a function $\mu_{S}: T \times M \to [0,1]$ such that $\forall t: \sum_{m \in M} \mu_{S}(t, m) = 1$, i.e. assigns a probability to each message for all types. A strategy for R is a similarly $\mu_{R} : M \times A \to [0,1]$ such that $\forall m: \sum_{a \in A} \mu_{R}(m,a) = 1$.
-
-TODO: Scrap the below definition. It's not very helpful. Leaving it for now as a reference and I like some of the things I wrote
-TODO: how to formally account for available information using this definition, e.g. that R knows the message when R chooses his action?
-TODO: \cite{nurmi1} points out that the definition of a Bayesian game only covers games with simultaneously acting players. see \cite{fudenberg1} for perhaps a better formal definition.
-
-Formally, a Bayesian game may be defined as a tuple $ G = \langle N, \Omega, \langle T_{i}, \tau_{i}, A_{i}, C_{i}, u_{i}, p_{i} \rangle _{i \in N} \rangle $ where:
-
-\begin{itemize}
-\item $N$ is the set of players
-\item $\Omega$ is the set of possible variable configurations. An element of this set is a tuple so as to implicitly define the variables in terms of their position.
-\item $T_{i}$ is set of possible types for player $i$. A player type is merely a value associated with a particular player.
-\item $\tau_{i}:\Omega \to T_{i}$ is a function that assigns types to players.
-\item $P_{i}$ is the set of plays (game actions) for player $i$.
-\item $C_{i} \subseteq P_{i} \times T_{i}$ defines the actions available to player $i$ when player $i$ is of type $T_{i}$. 
-\item $u_i:\Omega \times (\times_{i \in N} P_{i}) \to \mathbb{R}$ is the utility function for player $i$. This function outputs a player's score. Note that the score is a function of the variable configuration as well as the strategies of each player.
-\item $\pi_{i}$ is the probability distribution over $\Omega$ for player $i$.
-\end{itemize}
-
-\noindent Because of the uncertainty inherent in Bayesian games, it is natural to think of strategies as mixed strategies. A strategy for player $i$ is a mapping $\mu_i: \pi_i \times T_i \times P_i \to [0,1]$ such that $\sum_{x \in P_i} \mu_i(t_i, x) = 1$, i.e. a probability distribution over possible plays considering the player's type and prior beliefs.
-
-\noindent A signaling game is then a special case of the general Bayesian Game.
-
-\begin{itemize}
-\item $N = \{S, R\}$. S is the sender and R is the receiver.
-\item $T_{R} = \{\emptyset\}$. R has no relevant type.
-\item $P_{S} = M$, the set of possible sender signals.
-\item $P_{R} = A$, the set of possible receiver actions. 
-\item $u_{S}: T_{S} \times M \times A \to \mathbb{R}$
-\item $u_{R}: T_{S} \times M \times A \to \mathbb{R}$
-\item As S knows his own type, say $t \in T_{S}, \pi_{S}$ assigns positive probability only to each $\omega \in \Omega$ such that $\tau(\omega) = t$.
-\end{itemize}
-
-\noindent A strategy for player $S$ with type $t$ is:
-
-$\mu_S: T_S \times M \to [0,1]$ such that $\sum_{m \in M} \mu_S(t, m) = 1$.
-
-\noindent A strategy for player $R$ is:
-
-$\mu_R: M \times A \to [0,1]$ such that $\forall m \in M: \sum_{a \in A} \mu_R(m, a) = 1$.
-
-\noindent This is because R selects his action considering the message $m$ sent by S.
 
 \subsection{Equilibria}
 
@@ -253,17 +214,73 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 
 \section{Signaling Game Ad Exchange}
 
-TODO: describe version of game using real valued vectors instead of binary vectors
+Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers browsing the web, visiting various web pages that suit their interests. Some of these pages will be listed on ad exchanges. When a consumer visits such a page, advertisers on the exchange bid on the available impression and the winning advertising's ad appears on the page. The consumer may then interact with the advertiser's ad, perhaps leading to a conversion. One consumer may visit many web pages so an advertiser frequently interacts with the same consumer multiple times. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus first on the two most important pieces: impression auctions and consumer-ad interactions.
 
-Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers browsing the web, visiting various web pages that suit their interests. Some of these pages will be listed on ad exchanges. When a consumer visits such a page, advertisers on the exchange bid on the available impression and the winning advertising's ad appears on the page. The consumer may then interact with the advertiser's ad, perhaps leading to a conversion. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus first on the two most important pieces: impression auctions and consumer-ad interactions.
+As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements. Consumers also want to purchase products which suit them. Advertisers want consumers to buy their products and encourage them to do so by showing ads. To capture all of this, we think of our Signal Game Ad Exchange broken into three phases: the Auction Phase, the Ad Phase, and the Stochastic Phase. In the Auction Phase, we play a signaling game called the Auction Game. The sender is a consumer and the receivers are $n$ advertisers. The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on to the Ad Phase. We play a signaling game called the Ad Game, in which the winning advertiser is the sender and the consumer is the receiver. The advertiser's sends an ad to be shown to the consumer and the consumer decides how to interact with the ad. After both games have been played, the Stochastic Phase occurs. In this phase the consumer randomly decides whether to convert, i.e. to buy an advertised product. This completes an iteration of the Signaling Game Ad Exchange. Utility functions are calculated in each phase of the game and a player's ultimate utility is the sum of the utilities calculated in each phase. TODO: insert figures
 
-As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements. However consumers do want to purchase products that suit them. Advertisers want to encourage consumers to buy their products by showing ads. To capture all of this, we think of our Signal Game Ad Exchange broken into two sequential subgames: the Auction Game followed by the Ad Game. In the Auction Game, the sender is a consumer and the receivers are multiple advertisers). The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on the play the Ad Game. In the Ad Game, the winning advertiser is the sender and the consumer is the receiver. The consumer then decides how to interact with advertiser's ad. Let us examine the first game in detail.
+As both consumers and advertisers may play the role of sender, players from each category have associated types. The type space $T$ is the set of unit vectors in $\mathbb{R}^N$. The type of player $i$ is then some $t_i \in T$. Player type vectors should be interpreted as a list of product affinities. We imagine that there are different products or features of products; thus a consumer type vector describes the products the consumer would like to buy and an advertiser type vector describes the products the advertiser promotes.  As in the classic signaling game, each player $i$ knows only his own type $t_i$. The players' beliefs about unknown information in the game is represented by a Bayesian prior $\pi_i$ over $\Omega$, where $\Omega$ is the set of possible game variable configurations. As we will see, there are several types of information which are obscured in this game.
 
-\subsection{Auction Game}
+So far we have introduced two hyperparameters of the game. $N$ is the number of products, which determines the dimension of the player types and, as we will see, their messages. $n$ is the number of advertisers which participate in the impression auctions. We will continue to refer to these hyperparameters throughout the following discussion of the Auction Phase and the Ad Phase. 
 
-The auction game represents an impression auction occurring on an ad exchange. Here the sender is a consumer and the receivers are the multiple advertisers who will bid on the impression. 
+\subsection{Auction Phase}
 
-\subsection{Ad Game}
+In the first phase, the Auction Phase, we simply play a signaling game modeling an impression auction on an ad exchange. We call this the Auction Game. Here the sender is a consumer and the receivers are the $n$ advertisers who will bid on the impression. Consumers' messages represent impression metadata. Consumers choose the sort of impression metadata which is relayed to advertisers on the exchange by visiting certain types of sites. While the ad exchange technically delivers the impression metadata to advertisers, it is the consumer who determines its content. The consumer message space $M$ is again the set of unit vectors in $mathbb{R}^N$. The components of a consumer message vector $m \in M$ similarly correspond to product affinities, in this case for the web page the consumer is visiting. One can imagine that different types of web pages, various e-commerce pages in particular, could be more or less associated with certain types of products. 
+
+The advertisers on the exchange receive the impression metadata and must decide how much to bid for the available impression. The bid amount $\beta$ is the advertiser's action. The action space $A$ is the set of non-negative real numbers, $\mathbb{R}^{\ge 0}$. Each of the advertiser's bids are entered in a Vickrey auction \cite{vickrey_auctions} and the winner goes on to play the Ad Game. A Vickrey auction is a sealed price auction in which the winner pays the amount of the second-highest bid. A sealed-price auction is one in which bids are given without knowing the bids of over participants. This type of auction has been shown to encourage truthful bids, i.e. bids the reflect the bidder's actual evaluation of the item at auction. A generalized version, though with significantly different properties, is commonly used in the auction of search keywords \cite{edelman_gsp}. We choose this type of auction because of its influence on the development of auctions in digital advertising, e.g. the aforementioned search keyword auctions.
+
+With the sender's messages and receivers' actions in hand, we may turn to the players' utility functions. The consumer's utility function $u_{auction_S}$ is the dot product of consumer's type and the impression metadata, i.e. $t_S \cdot m$. The intuition here is that the consumer's primary goal is to visit websites which suit their interests. Since consumer type and impression metadata are both unit vectors, the dot product is equal to the cosine of the angle between the vectors. Thus we interpret larger cosine, i.e. smaller angle between vectors, as a better match between taste (consumer's type) and content (impression metadata). A better match between consumer type, i.e. taste, and impression metadata, i.e. content, is better for the consumer. Now, at this point one may wonder how the advertisers' actions affect the consumer since they do not affect the utility function. The answer is they will affect the consumer's utility in the second game, the Ad Game.
+
+The advertisers' utility function $u_{auction_R}$ is merely the auction result: the winning advertiser receives negative utility equal to the second highest bid and the others receive zero utility. The negative utility corresponds to the amount the winning advertiser must pay in order to show an ad. Once again, the consumer's message and type are absent from the utility function at this stage but will affect the advertiser's payoff in the ad game.
+
+Let $U^N$ be the set of unit vectors in $\mathbb{R}^N$. We may summarize the game definition thus far as follows:
+
+\begin{itemize}
+	\item The sender $S$ is a consumer with type $t_S \in T_S = U^N$.
+	\item The receiver $R$ is a set of advertisers, $R = \{r_1, r_2, ... r_{n-1}, r_n \}$, each with type $t_{R_i} \in T_R = U^N$.
+	\item The message space $M$ = $U^N$ is the set of possible impression metadata sent by $S$.
+	\item The action space $A = \mathbb{R}^{\ge 0}$ is the set of possible bids by members of $R$.
+	\item The sender's utility function $u_{auction_S}(t_S, m) = t_S \cdot m$ where $m \in M$.
+	\item The receivers' utility function $u_{auction_R}(a_1, a_2, ... a_{n-1}, a_n)$ is the Vickrey auction result.
+\end{itemize}
+
+\subsection{Ad Phase}
+
+In the second phase, the Ad Phase, we play a signaling game modeling a consumer-ad interaction. We call this the Ad Game. The roles are reversed from the the Auction Game: the sender is an advertiser and the receiver is a consumer. The advertiser's message represents an ad, e.g. a banner ad. Ads are represented by $N$-dimensional unit vectors, the components of which once again correspond to product affinities. However: an advertiser may not simply send whatever message they chose. Instead, messages for advertiser $j$ are constrained to a set $M_j$ of size $\alpha$, $\alpha$ another hyperparameter of the game. The intuition is that an advertiser does not have myriad ads at his disposal. Instead advertisers must work with a small number, e.g. $\sim 10$, available ads and aim to deliver the most suitable ad he can. Additionally, advertisers do not know $\emph{a priori}$ which ads are best suited to particular situations. As ad messages are represented by vectors of product affinities, these vectors are akin to the types of the ads. So, much like advertisers do not know the types of consumers, advertisers do not know the types of their ads. Advertiser's beliefs about the types of their ads are reflected by the prior $\pi_i(\cdot)$.
+
+The consumer receives the ad and must decide how to interact with it. The amount of interaction is represented by a number in $[0,1]$, with a higher value representing more interaction with the ad. Today's ads are quite sophisticated and interactive. As such, an ad may relay all kinds of consumer interaction data back to the advertiser. For example, a video ad will track how much of the video the consumer watches as well as whether they pause, restart, mute, full-screen, etc. Other ads may have interactive features like buttons, carousels of products, and mini-games and track how these features are used by a consumer. Thus there is a spectrum of possible ad interactions and the depth of interaction in particular instances is visible to the advertiser.
+
+The advertiser simply receives 0 utility for this game, i.e. $u_{ad_S}(\cdot) = 0$. Because ad interaction does not generate revenue, the advertiser does not receive any explicit value from it. Instead the advertiser is hoping it pays off later in the form of a revenue-generating conversion which may occur in the Stochastic Phase. The consumer utility function $u_{ad_R} = -a$, where $a$ is the amount of ad interaction. This is because ad interaction is a detraction from the consumer's regular browsing. However: consumers do wish to purchase suitable products and may only learn about them through advertising. Thus there is an incentive to interact with advertising as it may lead to a purchase.
+
+Let us offer a short summary of the Ad Game:
+
+\begin{itemize}
+	\item The sender is an advertiser $\alpha_j$ with type $t_j$.
+	\item The receiver is a consumer $\gamma_i$ with type $t_i$.
+	\item The message space $M_j \subset U^N$ is the set of ads available to $\alpha_j$.
+	\item The action space $A = [0,1]$ represents the possible amounts of consumer-ad interaction.
+	\item The sender's utility function $u_{ad_S}(\cdot) = 0$.
+	\item The receivers utility function $u_{ad_R}(a) = -a$, where $a \in A$.
+\end{itemize}
+
+\subsection{Stochastic Phase}
+
+At the conclusion of the Ad Phase, two random events occur. The first is consumer state transition. Consumers not only have a type but a dynamic state. A consumer's state, motivated by the marketing funnel, represents their interest in a certain product and hence their chance to convert. A consumer has a state with respect to each available product. For example: given that there are $N$ possible products,  The possible consumer states are:
+
+\begin{enumerate}
+	\item Ignorance: the consumer is ignorant of the product and will convert with probability $p_Ignorance = 0$.
+	\item Awareness: the consumer is aware of the product and will convert with probability $p_Awareness << 0.01$.
+	\item Interest: the consumer is interested in the product and will convert with probability $p_Interest \sim 0.01$.
+%	\item Rejection: the consumer has rejected the product and will convert with probability $p_Rejection = 0$s
+TODO: rejection / adblock state to go in future directions
+\end{enumerate}
+
+A consumer's initial state with respect to a product is determined by the choice of $\omega \in \Omega$. The states are ordered Ignorance, Awareness, Interest and consumers may only transition to the next state or remain in their current state. A consumer transitions to the next state with probability $max(0, a (t_i \cdot m_j))$, where $a$ is the amount of advertising interaction in the Ad Game, $t_i$ is the consumer's type, and $m_j$ is the ad sent by advertiser $j$ in the Ad Game. Recall $a \in [0,1]$ and $t_i \cdot m_j \in [-1,1]$ so that $max(0, a (t_i \cdot m_j)) \in [0,1]$. This means that consumers will have a higher chance to progress in the funnel the more they interact with an ad or the better an ad suits them. Ads that are unsuitable, i.e. have negative dot product, have no chance at affecting a consumer's state. See figure for state diagram.
+
+TODO: insert figure
+
+TODO: state with respect to product or advertiser? downside of with respect to advertiser is that advertiser's don't directly compete, e.g. one advertiser's ads may cause a consumer to transition to lower states in the funnel before receiving ads from a similar advertiser. downside of per product is that with unit vectors, it's not clear that a product per component interpretation is accurate. maybe that's better though.
+
+Finally the consumer converts for each product with probability corresponding to their state with respect to that product. If the consumer converts then the consumer enters a final pseudo-state ("converted") in which the consumer may not convert again for the same product.
 
 \subsection{Third Party Data as Recommendation}
 
@@ -304,12 +321,6 @@ An advertiser $V_j$ is tuple $\langle t_j, \alpha_j \rangle$ where:
 	\item $t_j \in [-1,1]^N$ is the advertiser's type
 	\item $D_j$ is the set of ads available to the advertiser
 \end{enumerate}
-
-Advertisers in our game represent advertisers on the exchange in real life. The type of an advertiser describes which products it sells and is represented by an $N$-dimensional binary vector. For example, the advertiser type vector $\lbrack 1, 0 \rbrack$ means that advertiser sells product 1 but not product 2.
-
-The set of ads $D_j$ available to each advertiser is a set of binary vectors.
-
-The set of ads $D_i$ available to each advertiser is a set of unit vectors in $\mathbb{R}^N$. 
 
 \newpage
 
