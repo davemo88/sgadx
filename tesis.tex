@@ -18,6 +18,9 @@
 
 \usepackage{bm}
 
+\usepackage{tikz}
+\usetikzlibrary{trees}
+
 \title{Signaling Game Ad Exchange}
 
 \author{David Kasofsky}
@@ -153,14 +156,128 @@ Such games are found to resemble interactions in nature, perhaps most famously d
 
 Spence \cite{spence1} gives an example of how such games can model the hiring process. Here the sender is an applicant, the receiver is an employer, the hidden information is the competency of the applicant, the message is the credentials of the applicant, and the action is the wage offered to the applicant. Applicants want to be hired with the highest wage and employers want to pay applicants appropriately. Similarly to the antlers of deer, higher credentials are easier to earn for more competent applicants and so the employer may base his wages on the applicant's credentials.
 
-A final example is the call-fold game, a simplification of limit poker. The sender has either a winning hand or a losing hand and can send one of two messages: Bet or Check. The sender's hand is hidden from the receiver can either call or fold. Here are the payoff matrices:
+A final example is the Call-Fold game, a simplification of limit poker. The sender has either a winning hand or a losing hand and can send one of two messages: Bet or Check. The sender's hand is hidden from the receiver can either call or fold. Here is the extensive form game:
 
-\textbf{Sender has Winning Hand}\\
-\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 1, 0 & 2, -1 \\ \hline  \textbf{Check} & 1, 0 & 1, 0 \end{tabular}
-\\ \\
-\textbf{Sender has Losing Hand}\\
-\begin{tabular}{c | c | c} & \textbf{Fold} & \textbf{Call} \\ \hline \textbf{Bet} & 0, 1 & -1, 2 \\ \hline  \textbf{Check} & 0, 1 & 0, 1 \end{tabular}
-\\ \\
+\begin{figure}
+\begin{center}
+	\tikzstyle{level 1}=[level distance=1.5cm, sibling distance=6.75cm]
+	\tikzstyle{level 2}=[level distance=1.5cm, sibling distance=3cm]
+	\tikzstyle{level 3}=[level distance=1.5cm, sibling distance=1.5cm]
+	\tikzstyle{level 4}=[level distance=1.5cm, sibling distance=2cm]
+	\begin{tikzpicture}
+		\node{Chance}
+			child{
+				node(win){Winning Hand}
+				child{
+					node(wbet){Bet}
+					child{
+						node(wbcall){Call}
+						child{
+							node{$(2,-1)$}
+							edge from parent
+						}
+						edge from parent
+						node[left]{}
+					}
+					child{
+						node(wbfold){Fold}
+						child{
+							node{$(1,0)$}
+							edge from parent
+						}
+						edge from parent
+						node[right]{}
+					}
+					edge from parent
+					node[left]{}
+				}
+				child{
+					node(wcheck){Check}
+					child{
+						node(wccall){Call}
+						child{
+							node{$(1,0)$}
+							edge from parent
+						}
+						edge from parent
+						node[left]{}
+					}
+					child{
+						node(wcfold){Fold}
+						child{
+							node{$(1,0)$}
+							edge from parent
+						}
+						edge from parent
+						node[right]{}
+					}
+					edge from parent
+					node[right]{}
+				}
+				edge from parent
+				node[left]{}
+			}
+			child{
+				node(lose){Losing Hand}
+				child{
+					node(lbet){Bet}
+					child{
+						node(lbcall){Call}
+						child{
+							node{$(-1,2)$}
+							edge from parent
+						}
+						edge from parent
+						node[left]{}
+					}
+					child{
+						node(lbfold){Fold}
+						child{
+							node{$(1,0)$}
+							edge from parent
+						}
+						edge from parent
+						node[right]{}
+					}
+					edge from parent
+					node[left]{}
+				}
+				child{
+					node(lcheck){Check}
+					child{
+						node(lccall){Call}
+						child{
+							node{$(0,1)$}
+							edge from parent
+						}
+						edge from parent
+						node[left]{}
+					}
+					child{
+						node(lcfold){Fold}
+						child{
+							node{$(1,0)$}
+							edge from parent
+						}
+						edge from parent
+						node[right]{}
+					}
+					edge from parent
+					node[right]{}
+				}
+				edge from parent
+				node[right]{}
+			};
+	\draw [dashed](wbcall)--(wbfold);
+	\draw [dashed](wbfold)--(wccall);
+	\draw [dashed](wccall)--(wcfold);
+	\draw [dashed](wcfold)--(lbcall);
+	\draw [dashed](lbcall)--(lbfold);
+	\draw [dashed](lbfold)--(lccall);
+	\draw [dashed](lccall)--(lcfold);
+	\end{tikzpicture}
+\end{center}
+\end{figure}
 
 A bet signals a winning hand and a check signals a losing one. The game is interesting because the sender may bluff by betting when he has a losing hand. 
 
@@ -216,7 +333,7 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 
 Thus far we have discussed the general landscape of digital advertising, some basics of game theory and signaling games, and how signaling games appear in advertising. Now we move to a complex game of our own design: the Signaling Game Ad Exchange. Imagine consumers browsing the web, visiting various web pages that suit their interests. Some of these pages will be listed on ad exchanges. When a consumer visits such a page, advertisers on the exchange bid on the available impression and the winning advertising's ad appears on the page. The consumer may then interact with the advertiser's ad, perhaps leading to a conversion. One consumer may visit many web pages so an advertiser frequently interacts with the same consumer multiple times. Over time, advertisers can use attribution to identify which ads are the most effective and which DMPs provide the best third party data. Our goal is to plausibly describe this process using signaling games. We focus first on the two most important pieces: impression auctions and consumer-ad interactions.
 
-As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements. Consumers also want to purchase products which suit them. Advertisers want consumers to buy their products and encourage them to do so by showing ads. To capture all of this, we think of our Signal Game Ad Exchange broken into three phases: the Auction Phase, the Ad Phase, and the Stochastic Phase. In the Auction Phase, we play a signaling game called the Auction Game. The sender is a consumer and the receivers are $n$ advertisers. The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on to the Ad Phase. We play a signaling game called the Ad Game, in which the winning advertiser is the sender and the consumer is the receiver. The advertiser's sends an ad to be shown to the consumer and the consumer decides how to interact with the ad. After both games have been played, the Stochastic Phase occurs. In this phase the consumer randomly decides whether to convert, i.e. to buy an advertised product. This completes an iteration of the Signaling Game Ad Exchange. Utility functions are calculated in each phase of the game and a player's ultimate utility is the sum of the utilities calculated in each phase. TODO: insert figures
+As such we will have two categories of players in our game: Consumers and Advertisers. Consumers wish to browse the net without interruption, e.g. from irrelevant advertisements. Consumers also want to purchase products which suit them. Advertisers want consumers to buy their products and encourage them to do so by showing ads. To capture all of this, we think of our Signal Game Ad Exchange broken into three phases: the Auction Phase, the Ad Phase, and the Conversion Phase. In the Auction Phase, we play a signaling game called the Auction Game. The sender is a consumer and the receivers are $n$ advertisers. The consumer sends impression metadata, which is bid on by the receiving advertisers in an auction. The winning advertiser and the consumer go on to the Ad Phase. We play a signaling game called the Ad Game, in which the winning advertiser is the sender and the consumer is the receiver. The advertiser's sends an ad to be shown to the consumer and the consumer decides how to interact with the ad. After both games have been played, the Conversion Phase occurs. In this phase the consumer randomly decides whether to convert, i.e. to buy an advertised product. This completes an iteration of the Signaling Game Ad Exchange. Utility functions are calculated in each phase of the game and a player's ultimate utility is the sum of the utilities calculated in each phase. TODO: insert figures
 
 As both consumers and advertisers may play the role of sender, players from each category have associated types. The type space $T$ is the set of unit vectors in $\mathbb{R}^N$. The type of player $i$ is then some $t_i \in T$. Player type vectors should be interpreted as a list of product affinities. We imagine that there are different products or features of products; thus a consumer type vector describes the products the consumer would like to buy and an advertiser type vector describes the products the advertiser promotes.  As in the classic signaling game, each player $i$ knows only his own type $t_i$. The players' beliefs about unknown information in the game is represented by a Bayesian prior $\pi_i$ over $\Omega$, where $\Omega$ is the set of possible game variable configurations. As we will see, there are several types of information which are obscured in this game.
 
@@ -249,7 +366,7 @@ In the second phase, the Ad Phase, we play a signaling game modeling a consumer-
 
 The consumer receives the ad and must decide how to interact with it. The amount of interaction is represented by a number in $[0,1]$, with a higher value representing more interaction with the ad. Today's ads are quite sophisticated and interactive. As such, an ad may relay all kinds of consumer interaction data back to the advertiser. For example, a video ad will track how much of the video the consumer watches as well as whether they pause, restart, mute, full-screen, etc. Other ads may have interactive features like buttons, carousels of products, and mini-games and track how these features are used by a consumer. Thus there is a spectrum of possible ad interactions and the depth of interaction in particular instances is visible to the advertiser.
 
-The advertiser simply receives 0 utility for this game, i.e. $u_{ad_S}(\cdot) = 0$. Because ad interaction does not generate revenue, the advertiser does not receive any explicit value from it. Instead the advertiser is hoping it pays off later in the form of a revenue-generating conversion which may occur in the Stochastic Phase. The consumer utility function $u_{ad_R} = -a$, where $a$ is the amount of ad interaction. This is because ad interaction is a detraction from the consumer's regular browsing. However: consumers do wish to purchase suitable products and may only learn about them through advertising. Thus there is an incentive to interact with advertising as it may lead to a purchase.
+The advertiser simply receives 0 utility for this game, i.e. $u_{ad_S}(\cdot) = 0$. Because ad interaction does not generate revenue, the advertiser does not receive any explicit value from it. Instead the advertiser is hoping it pays off later in the form of a revenue-generating conversion which may occur in the Conversion Phase. The consumer utility function $u_{ad_R} = -a$, where $a$ is the amount of ad interaction. This is because ad interaction is a detraction from the consumer's regular browsing. However: consumers do wish to purchase suitable products and may only learn about them through advertising. Thus there is an incentive to interact with advertising as it may lead to a purchase.
 
 Let us offer a short summary of the Ad Game:
 
@@ -262,25 +379,27 @@ Let us offer a short summary of the Ad Game:
 	\item The receivers utility function $u_{ad_R}(a) = -a$, where $a \in A$.
 \end{itemize}
 
-\subsection{Stochastic Phase}
+\subsection{Conversion Phase}
 
-At the conclusion of the Ad Phase, two random events occur. The first is consumer state transition. Consumers not only have a type but a dynamic state. A consumer's state, motivated by the marketing funnel, represents their interest in a certain product and hence their chance to convert. A consumer has a state with respect to each available product. For example: given that there are $N$ possible products,  The possible consumer states are:
+At the conclusion of the Ad Phase, two random events occur. The first is consumer state transition. Consumers not only have a type but a dynamic state. A consumer's state, motivated by the marketing funnel, represents their interest in a certain product and hence their chance to convert. A consumer has a state with respect to each advertiser. The possible consumer states are:
 
 \begin{enumerate}
-	\item Ignorance: the consumer is ignorant of the product and will convert with probability $p_Ignorance = 0$.
-	\item Awareness: the consumer is aware of the product and will convert with probability $p_Awareness << 0.01$.
-	\item Interest: the consumer is interested in the product and will convert with probability $p_Interest \sim 0.01$.
+	\item Ignorance: the consumer is ignorant of the advertiser and will convert with probability $p_Ignorance = 0$.
+	\item Awareness: the consumer is aware of the advertiser and will convert with probability $p_Awareness << 0.01$.
+	\item Interest: the consumer is interested in the advertiser and will convert with probability $p_Interest \sim 0.01$.
 %	\item Rejection: the consumer has rejected the product and will convert with probability $p_Rejection = 0$s
 TODO: rejection / adblock state to go in future directions
 \end{enumerate}
 
-A consumer's initial state with respect to a product is determined by the choice of $\omega \in \Omega$. The states are ordered Ignorance, Awareness, Interest and consumers may only transition to the next state or remain in their current state. A consumer transitions to the next state with probability $max(0, a (t_i \cdot m_j))$, where $a$ is the amount of advertising interaction in the Ad Game, $t_i$ is the consumer's type, and $m_j$ is the ad sent by advertiser $j$ in the Ad Game. Recall $a \in [0,1]$ and $t_i \cdot m_j \in [-1,1]$ so that $max(0, a (t_i \cdot m_j)) \in [0,1]$. This means that consumers will have a higher chance to progress in the funnel the more they interact with an ad or the better an ad suits them. Ads that are unsuitable, i.e. have negative dot product, have no chance at affecting a consumer's state. See figure for state diagram.
+A consumer's initial state with respect to an advertiser is determined by the choice of $\omega \in \Omega$. The states are ordered Ignorance, Awareness, Interest and consumers may only transition to the next state or remain in their current state. A consumer transitions to the next state with probability $max(0, a (t_i \cdot m_j))$, where $a$ is the amount of advertising interaction in the Ad Game, $t_i$ is the consumer's type, and $m_j$ is the ad sent by advertiser $j$ in the Ad Game. Recall $a \in [0,1]$ and $t_i \cdot m_j \in [-1,1]$ so that $max(0, a (t_i \cdot m_j)) \in [0,1]$. This means that consumers will have a higher chance to progress in the funnel the more they interact with an ad or the better an ad suits them. Ads that are unsuitable, i.e. have negative dot product, have no chance at affecting a consumer's state. See figure for state diagram.
 
 TODO: insert figure
 
 TODO: state with respect to product or advertiser? downside of with respect to advertiser is that advertiser's don't directly compete, e.g. one advertiser's ads may cause a consumer to transition to lower states in the funnel before receiving ads from a similar advertiser. downside of per product is that with unit vectors, it's not clear that a product per component interpretation is accurate. maybe that's better though.
 
-Finally the consumer converts for each product with probability corresponding to their state with respect to that product. If the consumer converts then the consumer enters a final pseudo-state ("converted") in which the consumer may not convert again for the same product.
+Finally the consumer converts for each advertiser with probability according to their state with respect to that advertiser. Converting puts the consumer into a final pseudo-state ("converted") in which the consumer may not convert again for the same advertiser. The consumer and advertiser each receive 0 utility when there is no conversion. When there is a conversion for advertiser $j$ receives utility $v_j$, where $v_j$ is the value of the advertiser's product. The converting consumer $i$ receives utility $(t_i \cdot t_j) v_i$. That is, the consumer receives a fraction of the value of the product proportional to the alignment of $i$ and $j$'s type vectors.
+
+
 
 \subsection{Third Party Data as Recommendation}
 
