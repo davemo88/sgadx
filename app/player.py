@@ -11,7 +11,7 @@ from numpy.linalg import norm
 
 from app import db, feature, ad, distribution
 
-
+## cumulative ad experience below threshold -> adblock (death event)
 class Player(db.Model):
     __table_name__ = 'player'
 

@@ -60,4 +60,3 @@ class Distribution(db.Model):
         v = array([self.sample() for i in range(dim)])
 
         return v / norm(v)
-
