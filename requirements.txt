@@ -1,7 +1,6 @@
 numpy
 sqlalchemy
-sqlalchemy-migrate
 flask
 flask-sqlalchemy
 nose
-fysom
+sklearn
