@@ -15,9 +15,9 @@ class Adx(sim.Sim):
     'polymorphic_identity' : 'Adx'
     }
 
-    def __init__(self, rounds, dimensionconsumers, advertisers, **kwargs):
+    def __init__(self, rounds, consumers, advertisers, **kwargs):
 
-        super(AdExchange, self).__init__(rounds, **kwargs)
+        super(Adx, self).__init__(rounds, **kwargs)
 
         self.consumers = consumers
         self.advertisers = advertisers

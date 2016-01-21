@@ -74,7 +74,7 @@ class Move(db.Model):
 
         # self.val = val
         # self.features = features 
-        self._features = [feature.MoveFeature(move_id=self.id, pos=i, val=features[i]) for i in range(len(features))]
+        self._features = [MoveFeature(move_id=self.id, pos=i, val=features[i]) for i in range(len(features))]
 
     @sqlalchemy.orm.reconstructor
     def init_on_load(self):
@@ -109,7 +109,7 @@ class Feature(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     pos = db.Column(db.Integer)
-    val = db.Column(db.DECIMAL(10,9))
+    val = db.Column(db.Float)
     type = db.Column(db.String(63))
 
     __mapper_args__ = {

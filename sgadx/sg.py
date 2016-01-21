@@ -49,8 +49,8 @@ class SignalingGameRecord(db.Model):
     receiver_id = db.Column(db.Integer, db.ForeignKey('player.id'))
     signal_id = db.Column(db.Integer, db.ForeignKey('move.id'))
     action_id = db.Column(db.Integer, db.ForeignKey('move.id'))
-    sender_utility = db.Column(db.DECIMAL(10,9))
-    receiver_utility = db.DECIMAL(10,9)
+    sender_utility = db.Column(db.Float())
+    receiver_utility = db.Column(db.Float())
     type = db.Column(db.String(63))
 
     __mapper_args__ = {

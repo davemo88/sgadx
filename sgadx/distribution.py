@@ -10,7 +10,7 @@ from numpy import array, random
 from numpy.linalg import norm
 
 from ast import literal_eval
-import decimal
+# import decimal
 
 class Distribution(db.Model):
     """
@@ -49,7 +49,7 @@ class Distribution(db.Model):
 
         """
 
-        return decimal.Decimal(self.dist(**literal_eval(self.kwargs)))
+        return float(self.dist(**literal_eval(self.kwargs)))
 
 
     def draw_unit_vector(self, dim):

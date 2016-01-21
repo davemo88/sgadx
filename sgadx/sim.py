@@ -15,7 +15,7 @@ class Sim(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     rounds = db.Column(db.Integer)
-    dimension = db.Column(db.Integer)
+    # dimension = db.Column(db.Integer)
     type = db.Column(db.String(63))
 
     __mapper_args__ = {

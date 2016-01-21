@@ -8,13 +8,24 @@ import random
 
 from sgadx import db, player, sim
 from sgadx import sg
+from numpy.linalg import norm
 
 def flip(bias=0.5):
     """
 
     """
 
-    return random.random() < bias    
+    return random.random() < bias
+
+
+def unit_vector_average(*unit_vectors):
+    """
+
+    """
+
+    v = sum(unit_vectors)
+
+    return (v)/norm(v)
 
 def get_signal_history(player_id):
     """
