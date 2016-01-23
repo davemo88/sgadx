@@ -17,7 +17,7 @@ class Adx(sim.Sim):
 
     def __init__(self, rounds, consumers, advertisers, **kwargs):
 
-        super(Adx, self).__init__(rounds, **kwargs)
+        super(Adx, self).__init__(rounds=rounds)
 
         self.consumers = consumers
         self.advertisers = advertisers
@@ -30,11 +30,11 @@ class Adx(sim.Sim):
         for i in range(self.rounds):
 
             rr = AdxRoundRecord(sim_id=self.id,round=i)
-
-            db.add(rr)
-
+            # db.session.add(rr)
             for c in self.consumers:
-                AuctionGame.play(c, self.advertisers)
+                auction_gr = AuctionGame.play(c, self.advertisers, rr)
+                ad_gr = AdGame.play(auction_gr.receiver, c, rr)
+                db.session.add_all([rr,auction_gr, ad_gr])
                 # c.convert()
 
 ## birth // death
@@ -59,6 +59,7 @@ class AdxPlayer(player.Player):
     """
     __table_name__ = 'adx_player'
 
+
 class Consumer(AdxPlayer):
     """
 
@@ -67,6 +68,13 @@ class Consumer(AdxPlayer):
     __mapper_args__ = {
         'polymorphic_identity' : 'Consumer'
     }
+
+    def signal(self, **kwargs):
+        """
+            honest by default
+        """
+
+        return player.Signal(features=self.features)
 
 class Advertiser(AdxPlayer):
     """
@@ -77,6 +85,12 @@ class Advertiser(AdxPlayer):
         'polymorphic_identity' : 'Advertiser'
     }
 
+    def action(self, signal, **kwargs):
+        """
+            honest by default
+        """
+
+        return player.Action(val=dot(self.features, signal.features))
 
 class AuctionGame(sg.SignalingGame):
 
@@ -90,13 +104,13 @@ class AuctionGame(sg.SignalingGame):
         
         actions = {}
         
-        for a in self.advertisers:
+        for a in advertisers:
         
-            actions[a] = advertiser.action(signal)
+            actions[a] = a.action(signal)
         
         advertiser = max(actions.keys(), key=lambda x:float(actions[x].val))
         
-        action = actions.pop(advertiser)      
+        action = actions.pop(advertiser)    
 
         second_price = actions[max(actions.keys(), key=lambda x:float(actions[x].val))]
 
@@ -116,12 +130,12 @@ class AuctionGame(sg.SignalingGame):
     @classmethod
     def get_sender_utility(cls, consumer, signal):
 
-        return dot(consumer.features, signal)
+        return dot(consumer.features, signal.features)
 
     @classmethod
     def get_receiver_utility(cls, second_price):
 
-        return -second_price
+        return -float(second_price.val)
 
 class AuctionGameRecord(sg.SignalingGameRecord):
 

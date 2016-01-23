@@ -6,9 +6,12 @@ Function from this class are generic enough that I don't know where else to put 
 
 import random
 
+from numpy.linalg import norm
+from sklearn import preprocessing
+
 from sgadx import db, player, sim
 from sgadx import sg
-from numpy.linalg import norm
+
 
 def flip(bias=0.5):
     """
@@ -16,6 +19,10 @@ def flip(bias=0.5):
     """
 
     return random.random() < bias
+
+def normalize(vector):
+
+    return preprocessing.normalize(vector, axis=1)[0]
 
 
 def unit_vector_average(*unit_vectors):

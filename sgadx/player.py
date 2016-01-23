@@ -59,21 +59,22 @@ class Move(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     player = db.relationship('Player', backref='moves')
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=True)
-    val = db.Column(db.String(63))
+    val = db.Column(db.String(63), default='0')
     type = db.Column(db.String(63))
     _features = db.relationship('MoveFeature', order_by=sqlalchemy.asc('pos'))
+
+## otherwise we get "features is an invalid keyword argument for Signal"
+    features = None
 
     __mapper_args__ = {
     'polymorphic_identity' : 'Move',
     'polymorphic_on' : type
     }
 
-    def __init__(self, val=None, features=[], **kwargs):
+    def __init__(self, player=None, val='0', features=[], **kwargs):
 
-        super(Move, self).__init__(**kwargs)
+        super(Move, self).__init__(player=player, val=val, features=features, **kwargs)
 
-        # self.val = val
-        # self.features = features 
         self._features = [MoveFeature(move_id=self.id, pos=i, val=features[i]) for i in range(len(features))]
 
     @sqlalchemy.orm.reconstructor

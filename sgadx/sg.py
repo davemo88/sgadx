@@ -45,8 +45,11 @@ class SignalingGameRecord(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     round_record_id = db.Column(db.Integer, db.ForeignKey('round_record.id'))
+    round_record = db.relationship('RoundRecord')
     sender_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    receiver = db.relationship('Player', foreign_keys=[sender_id])
     receiver_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    receiver = db.relationship('Player', foreign_keys=[receiver_id])
     signal_id = db.Column(db.Integer, db.ForeignKey('move.id'))
     action_id = db.Column(db.Integer, db.ForeignKey('move.id'))
     sender_utility = db.Column(db.Float())
