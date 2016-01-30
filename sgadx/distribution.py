@@ -10,7 +10,6 @@ from numpy import array, random
 from numpy.linalg import norm
 
 from ast import literal_eval
-# import decimal
 
 class Distribution(db.Model):
     """

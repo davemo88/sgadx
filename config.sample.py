@@ -19,3 +19,4 @@ SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{}:{}@{}/{}'.format(MYSQL_USER,
                                                                MYSQL_PASS,
                                                                MYSQL_SERVER,
                                                                MYSQL_DATABASE)
+SQLALCHEMY_TRACK_MODIFICATIONS = False

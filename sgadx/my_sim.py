@@ -1,6 +1,10 @@
 
+from random import choice
 
-from numpy import dot
+from numpy import dot, zeros
+from numpy.linalg import norm
+
+from sqlalchemy import inspect
 
 from sgadx import db, sim, player
 from sgadx import sg
@@ -22,24 +26,69 @@ class Adx(sim.Sim):
         self.consumers = consumers
         self.advertisers = advertisers
 
+## for computing conversion probalities
+## each round will create a key-value pair like
+## {round : 1, round_record_id: 2, ad_features: array([...]), action: 0.5}
+        self.conversion_rate_data = {_ : [] for _ in self.consumers}
+
     def run(self):
         """
 
         """
 
+        records = {}
+
         for i in range(self.rounds):
 
-            rr = AdxRoundRecord(sim_id=self.id,round=i)
-            # db.session.add(rr)
-            for c in self.consumers:
-                auction_gr = AuctionGame.play(c, self.advertisers, rr)
-                ad_gr = AdGame.play(auction_gr.receiver, c, rr)
-                db.session.add_all([rr,auction_gr, ad_gr])
-                # c.convert()
+            adx_rr = AdxRoundRecord(sim=self,round=i)
+
+            records[adx_rr] = []
+
+            for consumer in self.consumers:
+                auction_gr = AuctionGame.play(consumer, self.advertisers, adx_rr)
+                ad_gr = AdGame.play(auction_gr.receiver, consumer, adx_rr)
+
+                self.conversion_rate_data[consumer].append({
+                    'round': adx_rr.round,
+                    'ad_features': ad_gr.signal.features,
+                    'action': ad_gr.action.val,
+                })
+## should we have another game record for this? would be a little abusive
+## need to find a better way to record this                
+                self.roll_conversions(consumer, self.advertisers, i)
+
+                records[adx_rr].append(auction_gr)
+                records[adx_rr].append(ad_gr)
 
 ## birth // death
             self.prune()
             self.spawn()
+
+        return records
+
+    # def
+
+    def roll_conversions(self, consumer, advertisers, round):
+
+        adx_vector = numpy.zeros((len(consumer.features),))
+        cvr_data = self.conversion_rate_data[consumer]
+        total_action = 0
+
+        for i in range(len(cvr_data)):
+            adx_vector += (float(cvr_data[i]['ad_features']) * float(cvr_data[i]['action'])) /\
+                          (2**(round - cvr_data[i]['round']))
+
+            total_action += float(cvr_data[i]['action'])
+
+        adx_vector = adx_vector / norm(adx_vector)
+        contribution = total_action / (2 * round)
+        c_adx_vec = (1 - contribution) * consumer.features + contribution * adx_vector
+        c_adx_vec = c_adx_vec / norm(c_adx_vec)
+
+        for a in advertisers:
+
+            cvr = dot(c_adx_vec, a.features) / float(100)
+
 
 class AdxRoundRecord(sim.RoundRecord):
     """
@@ -60,6 +109,30 @@ class AdxPlayer(player.Player):
     __table_name__ = 'adx_player'
 
 
+    def __init__(self, features, **kwargs):
+
+        super(AdxPlayer, self).__init__(features, **kwargs)
+
+## give each adxplayer the honest signal by default
+        self.moves = [player.Signal(player=self, features=self.features)]
+
+
+    def signal(self):
+        """
+            random by default
+        """
+
+        return choice(filter(lambda x: x.__class__ == player.Signal, self.moves))
+
+
+    def action(self, signal, **kwargs):
+        """
+            honest by default
+        """
+
+        return player.Action(player=self, val=max(0,dot(self.features, signal.features)))
+
+
 class Consumer(AdxPlayer):
     """
 
@@ -69,12 +142,9 @@ class Consumer(AdxPlayer):
         'polymorphic_identity' : 'Consumer'
     }
 
-    def signal(self, **kwargs):
-        """
-            honest by default
-        """
+    def __init__(self, features, **):
 
-        return player.Signal(features=self.features)
+        super(Consumer, self).__init__(features, **kwargs)      
 
 class Advertiser(AdxPlayer):
     """
@@ -85,13 +155,6 @@ class Advertiser(AdxPlayer):
         'polymorphic_identity' : 'Advertiser'
     }
 
-    def action(self, signal, **kwargs):
-        """
-            honest by default
-        """
-
-        return player.Action(val=dot(self.features, signal.features))
-
 class AuctionGame(sg.SignalingGame):
 
     sender_class = Consumer
@@ -101,26 +164,35 @@ class AuctionGame(sg.SignalingGame):
     def play(cls, consumer, advertisers, round_record):
 
         signal = consumer.signal()
-        
-        actions = {}
-        
-        for a in advertisers:
-        
-            actions[a] = a.action(signal)
-        
-        advertiser = max(actions.keys(), key=lambda x:float(actions[x].val))
-        
-        action = actions.pop(advertiser)    
+        actions = {}        
+        for _ in advertisers:
+            actions[_] = _.action(signal)
 
+        advertiser = max(actions.keys(), key=lambda x:float(actions[x].val))        
+        action = actions.pop(advertiser)
         second_price = actions[max(actions.keys(), key=lambda x:float(actions[x].val))]
 
-        return AuctionGameRecord(round_record = round_record,
-                                 sender_id = consumer.id,
-                                 receiver_id = advertiser.id,
-                                 signal_id = signal.id,
-                                 action_id = action.id,
-                                 sender_utility = cls.get_sender_utility(consumer, signal),
-                                 receiver_utility = cls.get_receiver_utility(second_price))
+##
+## losing bets are being added to the session implicitly (related to players I guess)
+## doesn't cause any problems except clutter
+##
+## the following will remove losing bets from the session
+## see http://pythoncentral.io/understanding-python-sqlalchemy-session/
+##
+        # for _ in actions.values():        
+        #     ins = inspect(_)
+        #     if not ins.transient:
+        #         db.session.expunge(_)
+        #     else:
+        #         print ins.transient, ins.pending
+
+        return AuctionGameRecord(round_record=round_record,
+                                 sender=consumer,
+                                 receiver=advertiser,
+                                 signal=signal,
+                                 action=action,
+                                 sender_utility=cls.get_sender_utility(consumer, signal),
+                                 receiver_utility=cls.get_receiver_utility(second_price))
 
 
     __mapper_args__ = {
@@ -137,7 +209,7 @@ class AuctionGame(sg.SignalingGame):
 
         return -float(second_price.val)
 
-class AuctionGameRecord(sg.SignalingGameRecord):
+class AuctionGameRecord(sg.GameRecord):
 
     __mapper_args__ = {
         'polymorphic_identity': 'AuctionGameRecord'
@@ -153,8 +225,7 @@ class AdGame(sg.SignalingGame):
         'polymorphic_identity': 'AdGame'
     }
 
-
-class AdGameRecord(sg.SignalingGameRecord):
+class AdGameRecord(sg.GameRecord):
 
     __mapper_args__ = {
         'polymorphic_identity': 'AdGameRecord'

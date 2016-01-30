@@ -2,14 +2,14 @@
 
 """
 
-from random import random
+from random import choice
 
 import sqlalchemy
 
 from numpy import array, dot
 from numpy.linalg import norm
 
-from sgadx import db
+from sgadx import db, sg, sim
 
 ## cumulative ad experience below threshold -> adblock (death event)
 class Player(db.Model):
@@ -40,16 +40,39 @@ class Player(db.Model):
 
     def signal(self, **kwargs):
         """
-
+            random assigned signal by default
         """
-        return Signal()
+
+        return Signal(player=self)
 
 
     def action(self, signal, **kwargs):
         """perform an action
 
         """
-        return Action()
+        return Action(player=self)
+
+    def get_signal_history(self, **kwargs):
+        """
+
+        """
+        return Signal.query.join(sg.GameRecord,
+                                 sg.GameRecord.signal_id ==\
+                                 Signal.id).join(sim.RoundRecord,
+                                 sim.RoundRecord.id ==\
+                                 sg.GameRecord.round_record_id).filter(sg.GameRecord.sender_id==\
+                                 self.id).order_by(sim.RoundRecord.round.asc())#.all()
+
+    def get_action_history(self, **kwargs):
+        """
+
+        """
+        return Action.query.join(sg.GameRecord,
+                                 sg.GameRecord.action_id ==\
+                                 Action.id).join(sim.RoundRecord,
+                                 sim.RoundRecord.id ==\
+                                 sg.GameRecord.round_record_id).filter(sg.GameRecord.receiver_id==\
+                                 self.id).order_by(sim.RoundRecord.round.asc())#.all()
 
 class Move(db.Model):
     """

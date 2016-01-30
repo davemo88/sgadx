@@ -55,7 +55,7 @@ class RoundRecord(db.Model):
     __table_name__ = 'round_record'
 
     id = db.Column(db.Integer, primary_key=True)
-    # sim = db.relationship('Sim')
+    sim = db.relationship('Sim')
     sim_id = db.Column(db.Integer, db.ForeignKey('sim.id'))
     round = db.Column(db.Integer)
     type = db.Column(db.String(63))
