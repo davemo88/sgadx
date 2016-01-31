@@ -1,0 +1,64 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: davidkasofsky_thesis_sgadx.aux
+The style file: plain.bst
+Database file #1: tesis.bib
+Too many commas in name 1 of "Edelman, Benjamin, Ostrovsky, Michael, Schwarz, Michael" for entry edelman_gsp
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Edelman, Benjamin, Ostrovsky, Michael, Schwarz, Michael" for entry edelman_gsp
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Edelman, Benjamin, Ostrovsky, Michael, Schwarz, Michael" for entry edelman_gsp
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Edelman, Benjamin, Ostrovsky, Michael, Schwarz, Michael" for entry edelman_gsp
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Edelman, Benjamin, Ostrovsky, Michael, Schwarz, Michael" for entry edelman_gsp
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Edelman, Benjamin, Ostrovsky, Michael, Schwarz, Michael" for entry edelman_gsp
+while executing---line 1090 of file plain.bst
+Warning--empty journal in grafen1
+Warning--empty journal in iab1
+Warning--empty journal in spence1
+Warning--empty journal in vickrey_auctions
+Warning--empty journal in zahavi1
+You've used 6 entries,
+            2118 wiz_defined-function locations,
+            527 strings with 4750 characters,
+and the built_in function-call counts, 1239 in all, are:
+= -- 115
+> -- 42
+< -- 0
++ -- 18
+- -- 12
+* -- 50
+:= -- 238
+add.period$ -- 18
+call.type$ -- 6
+change.case$ -- 24
+chr.to.int$ -- 0
+cite$ -- 11
+duplicate$ -- 60
+empty$ -- 103
+format.name$ -- 12
+if$ -- 242
+int.to.chr$ -- 0
+int.to.str$ -- 6
+missing$ -- 6
+newline$ -- 33
+num.names$ -- 12
+pop$ -- 34
+preamble$ -- 1
+purify$ -- 18
+quote$ -- 0
+skip$ -- 42
+stack$ -- 0
+substring$ -- 30
+swap$ -- 1
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 24
+warning$ -- 5
+while$ -- 12
+width$ -- 7
+write$ -- 57
+(There were 6 error messages)

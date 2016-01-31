@@ -1,29 +1,53 @@
-from app import db, feature, player, distribution, game, sim
+"""
 
+"""
 
-NUM_CONSUMERS = 100
+from itertools import chain
+from random import choice
+
+import numpy as np
+
+from sgadx import db, player, distribution, util, my_sim
+
+NUM_CONSUMERS = 10
 NUM_ADVERTISERS = 5
-NUM_FEATURES = 10
 NUM_ADS = 5
-CLICK_THRESHOLD = .9
-CONVERSION_THRESHOLD = .99
-NUM_ITERATIONS = 100
+DIM = 10
+ROUNDS = 10
 
 db.drop_all()
 db.create_all()
 
-d = distribution.Distribution('uniform')
-db.session.add(d)
-db.session.commit()
+uniform = distribution.Distribution('uniform')
+normal = distribution.Distribution('normal')
 
-consumers = [player.Consumer(d, NUM_FEATURES, CLICK_THRESHOLD, CONVERSION_THRESHOLD) for i in range(NUM_CONSUMERS)]
-advertisers = [player.Advertiser(d, NUM_FEATURES, NUM_ADS) for i in range(NUM_ADVERTISERS)]
+def test_my_sim():
 
-db.session.add_all(consumers)
-db.session.add_all(advertisers)
+## create axis-aligned advertisers
+    afs = util.unit_vector_average(np.array([1,1,0,0,1,0,0,0,0,0]))
 
-db.session.commit()
+## shift the above patern around
+    advertisers = [my_sim.Advertiser(features=np.array([float(afs[(i+2*j) % DIM]) for i in range(DIM)])) for j in range(NUM_ADVERTISERS)]
 
-s = sim.AdExchange(consumers, advertisers);
+    for a in advertisers:
+## give each advertiser a perturbed version of their features as a signal
+        p1 = player.Signal(player=a,features=util.unit_vector_average(a.features + normal.draw_unit_vector(DIM)))
+        db.session.add(p1)
 
-s.run(NUM_ITERATIONS)
+    # db.session.add_all(advertisers)
+
+    consumers = [my_sim.Consumer(features=distribution.Distribution('normal',\
+                                                                    loc=normal.sample()).draw_unit_vector(DIM)) for i in range(NUM_CONSUMERS)]
+
+    # db.session.add_all(consumers)
+
+    # db.session.commit()
+
+    s = my_sim.Adx(ROUNDS, consumers, advertisers);
+
+    records = s.run()
+
+    db.session.add_all(records.keys())
+    db.session.add_all(chain.from_iterable([records[k] for k in records]))
+    db.session.add(s)
+    db.session.commit()

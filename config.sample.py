@@ -1,10 +1,22 @@
-from os import path
+from os import path, environ
 from datetime import timedelta
 
-top_dir = path.abspath(path.dirname(__file__))
+## directory containing this file
+TOP_DIR = path.abspath(path.dirname(__file__))
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + path.join(top_dir, 'app.db')
-SQLALCHEMY_MIGRATE_REPO = path.join(top_dir, 'db_repository')
-
+## Flask
 PERMANENT_SESSION_LIFETIME = timedelta(minutes=24)
 REMEMBER_COOKIE_DURATION = timedelta(days=7)
+SECRET_KEY = 'onekeytorulethemalltrololol'
+
+## MySQL
+MYSQL_SERVER = 'localhost'
+MYSQL_DATABASE = environ.get('MYSQL_DATABASE') or 'sgadx'
+MYSQL_USER = environ.get('MYSQL_USER') or 'root'
+MYSQL_PASS = environ.get('MYSQL_PASS') or 'taco'
+
+SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://{}:{}@{}/{}'.format(MYSQL_USER,
+                                                               MYSQL_PASS,
+                                                               MYSQL_SERVER,
+                                                               MYSQL_DATABASE)
+SQLALCHEMY_TRACK_MODIFICATIONS = False
