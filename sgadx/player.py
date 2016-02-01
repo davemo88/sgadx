@@ -83,6 +83,7 @@ class Move(db.Model):
     player = db.relationship('Player', backref='moves')
     player_id = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=True)
     val = db.Column(db.String(63), default='0')
+    desc = db.Column(db.String(63))
     type = db.Column(db.String(63))
     _features = db.relationship('MoveFeature', order_by=sqlalchemy.asc('pos'))
 

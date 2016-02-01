@@ -9,11 +9,11 @@ import numpy as np
 
 from sgadx import db, player, distribution, util, my_sim
 
-NUM_CONSUMERS = 10
+NUM_CONSUMERS = 2
 NUM_ADVERTISERS = 5
 NUM_ADS = 5
 DIM = 10
-ROUNDS = 10
+ROUNDS = 500
 
 db.drop_all()
 db.create_all()
@@ -31,7 +31,7 @@ def test_my_sim():
 
     for a in advertisers:
 ## give each advertiser a perturbed version of their features as a signal
-        p1 = player.Signal(player=a,features=util.unit_vector_average(a.features + normal.draw_unit_vector(DIM)))
+        p1 = player.Signal(player=a,features=util.unit_vector_average(a.features + normal.draw_unit_vector(DIM)),desc='Perturbed')
         db.session.add(p1)
 
     # db.session.add_all(advertisers)

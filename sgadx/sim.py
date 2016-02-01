@@ -63,4 +63,42 @@ class RoundRecord(db.Model):
     __mapper_args__ = {
         'polymorphic_on': type,
         'polymorphic_identity': 'RoundRecord'
-    }    
+    }
+
+class RoundEvent(db.Model):
+    """
+
+    """
+    __table_name__ = 'round_event'
+
+    id = db.Column(db.Integer, primary_key=True)
+    round_record = db.relationship('RoundRecord')
+    round_record_id = db.Column(db.Integer, db.ForeignKey('round_record.id'))
+    player = db.relationship('Player')
+    player_id = db.Column(db.Integer, db.ForeignKey('player.id'))
+    type = db.Column(db.String(63))
+
+    __mapper_args__ = {
+        'polymorphic_on': type,
+        'polymorphic_identity': 'RoundEvent'
+    }
+
+class Spawn(RoundEvent):
+    """
+
+    """
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'Spawn'
+    }
+
+
+class Prune(RoundEvent):
+    """
+
+    """
+
+    __mapper_args__ = {
+        'polymorphic_identity': 'Prune'
+    }
+
