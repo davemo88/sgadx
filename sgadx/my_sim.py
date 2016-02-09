@@ -50,37 +50,40 @@ class Adx(sim.Sim):
 
             for consumer in self.consumers:
 
-                auction_gr = AuctionGame.play(consumer, self.advertisers, adx_rr)
-
                 print 'Auction Game:'
+
+                auction_gr = AuctionGame.play(consumer, self.advertisers, adx_rr)
+                records[adx_rr].append(auction_gr)
+
                 print 'Consumer {} sends message'.format(auction_gr.sender.id)
                 print auction_gr.signal.features
-                print 'Advertiser {} wins with bid {}, and pays second price {}.'\
-                .format(auction_gr.receiver.id, auction_gr.action.val, auction_gr.receiver_utility)
-                print 'Consumer receives payoff {} and Advertiser receives payoff {}'\
-                .format(auction_gr.sender_utility, auction_gr.receiver_utility)
 
-                ad_gr = AdGame.play(auction_gr.receiver, consumer, adx_rr, auction_gr.signal)
+                if auction_gr.action.val == 0:
+                    print 'No advertiser bids'
+                    print 'Consumer receives payoff {}'.format(auction_gr.sender_utility)    
+                else:
+                    print 'Advertiser {} wins with bid {}, and pays second price {}.'\
+                    .format(auction_gr.receiver.id, auction_gr.action.val, -auction_gr.receiver_utility)
+                    print 'Consumer receives payoff {} and Advertiser receives payoff {}'\
+                    .format(auction_gr.sender_utility, auction_gr.receiver_utility)
 
-                print 'Ad Game:'
-                print 'Advertiser {} sends message'.format(ad_gr.sender.id)
-                print ad_gr.signal.features
-                print 'Consumer interaction is {}'.format(ad_gr.action.val)
-                print 'Advertiser receives payoff 0 and Consumer receives payoff {}'\
-                .format(ad_gr.sender_utility, auction_gr.receiver_utility)
 
-                self.conversion_rate_data[consumer].append({
-                    'round': adx_rr.round,
-                    'ad_features': ad_gr.signal.features,
-                    'action': ad_gr.action.val,
-                })
-## should we have another game record for this? would be a little abusive
-## need to find a better way to record this                
-                conversions = self.roll_conversions(consumer, self.advertisers, adx_rr)
+                    print 'Ad Game:'
+                    ad_gr = AdGame.play(auction_gr.receiver, consumer, adx_rr, auction_gr.signal)
+                    records[adx_rr].append(ad_gr)
 
-                records[adx_rr].append(auction_gr)
-                records[adx_rr].append(ad_gr)
-                records[adx_rr] += conversions
+                    print 'Advertiser {} sends message'.format(ad_gr.sender.id)
+                    print 'Consumer interaction is {}'.format(ad_gr.action.val)
+                    print 'Advertiser receives payoff 0 and Consumer receives payoff {}'\
+                    .format(ad_gr.receiver_utility)
+
+                    self.conversion_rate_data[consumer].append({
+                        'round': adx_rr.round,
+                        'ad_features': ad_gr.signal.features,
+                        'action': ad_gr.action.val,
+                    })
+
+                records[adx_rr] += self.roll_conversions(consumer, self.advertisers, adx_rr)
 
 ## birth // death
             self.prune()
@@ -108,8 +111,8 @@ class Adx(sim.Sim):
                 conversions.append(ConversionGameRecord(round_record=round_record,
                                                         sender=a,
                                                         receiver=consumer,
-                                                        sender_utility=1,
-                                                        receiver_utility=norm(dot(a.features, consumer.features))))
+                                                        sender_utility=100,
+                                                        receiver_utility=100*norm(dot(a.features, consumer.features))))
 
         return conversions
 
@@ -119,15 +122,14 @@ class Adx(sim.Sim):
         """
 
         adx_vector = zeros((len(consumer.features),))
-        cvr_data = self.conversion_rate_data[consumer]
         total_action = 0
 
-        for i in range(len(cvr_data)):
+        for cvr_data in self.conversion_rate_data[consumer]:
             # print adx_vector
-            adx_vector += (cvr_data[i]['ad_features'] * float(cvr_data[i]['action'])) /\
-                          (2**(round_record.round - cvr_data[i]['round']))
+            adx_vector += (cvr_data['ad_features'] * float(cvr_data['action'])) /\
+                          (2**(round_record.round - cvr_data['round']))
 
-            total_action += float(cvr_data[i]['action'])
+            total_action += float(cvr_data['action'])
 
         # print adx_vector, norm(adx_vector)
 
@@ -141,6 +143,7 @@ class Adx(sim.Sim):
         c_adx_vec = c_adx_vec / norm(c_adx_vec)
 
         return c_adx_vec
+
 
 class AdxRoundRecord(sim.RoundRecord):
     """
@@ -169,12 +172,12 @@ class AdxPlayer(player.Player):
         self.moves = [player.Signal(player=self, features=self.features,desc='Honest')]
 
 
-    def signal(self):
+    def signal(self, **kwargs):
         """
             random by default
         """
 
-        return choice(filter(lambda x: x.__class__ == player.Signal, self.moves))
+        return choice(self.signals())
 
 
     def action(self, signal, **kwargs):
@@ -203,6 +206,39 @@ class Advertiser(AdxPlayer):
         'polymorphic_identity' : 'Advertiser'
     }
 
+class Promoter(Advertiser):
+    """
+        Promoter will bid according to how good their ad matches the Consumer message,
+        not how well their product does, and then show the closest matching ad.
+    """
+
+    __mapper_args__ = {
+        'polymorphic_identity' : 'Promoter'
+    }
+
+    def signal(self, **kwargs):
+        """
+
+        """
+
+        signals = self.signals()
+
+        if 'auction_signal' in kwargs:
+
+            return max(*signals, key=lambda x: dot(x.features, kwargs['auction_signal'].features))
+
+        else:
+
+            return choice(signals)
+
+
+    def action(self, signal, **kwargs):
+        """
+
+        """
+
+        return player.Action(player=self, val=max(0,max([dot(s.features, signal.features) for s in self.signals()])))
+
 class AuctionGame(sg.SignalingGame):
 
     sender_class = Consumer
@@ -220,6 +256,13 @@ class AuctionGame(sg.SignalingGame):
         action = actions.pop(advertiser)
         second_price = actions[max(actions.keys(), key=lambda x:float(actions[x].val))]
 
+        # print action.val, second_price.val
+
+        if action.val == 0:
+            advertiser = None
+        elif second_price.val == 0:
+## if only one advertiser bids then pay their bid            
+            second_price.val = action.val
 ##
 ## losing bets are being added to the session implicitly (related to players I guess)
 ## doesn't cause any problems except clutter
@@ -227,12 +270,10 @@ class AuctionGame(sg.SignalingGame):
 ## the following will remove losing bets from the session
 ## see http://pythoncentral.io/understanding-python-sqlalchemy-session/
 ##
-        # for _ in actions.values():        
-        #     ins = inspect(_)
-        #     if not ins.transient:
-        #         db.session.expunge(_)
-        #     else:
-        #         print ins.transient, ins.pending
+        for _ in actions.values():        
+            ins = inspect(_)
+            if not ins.transient:
+                db.session.expunge(_)
 
         return AuctionGameRecord(round_record=round_record,
                                  sender=consumer,
@@ -250,12 +291,12 @@ class AuctionGame(sg.SignalingGame):
     @classmethod
     def get_sender_utility(cls, consumer, signal):
 
-        return float(dot(consumer.features, signal.features) / 1000)
+        return float(dot(consumer.features, signal.features))
 
     @classmethod
     def get_receiver_utility(cls, second_price):
 
-        return -float(second_price.val) / 1000
+        return -float(second_price.val) if second_price != '0' else None
 
 class AuctionGameRecord(sg.GameRecord):
 
@@ -280,7 +321,7 @@ class AdGame(sg.SignalingGame):
         # assert isinstance(contribution, Consumer)
         # assert isinstance(round_record, AdxRoundRecord)
 
-        signal = advertiser.signal()
+        signal = advertiser.signal(auction_signal=auction_signal)
         action = consumer.action(signal)
 
         return AdGameRecord(round_record=round_record,
@@ -289,7 +330,7 @@ class AdGame(sg.SignalingGame):
                             signal=signal,
                             action=action,
                             sender_utility=cls.get_sender_utility(),
-                            receiver_utility=cls.get_receiver_utility(consumer, signal, action, auction_signal))
+                            receiver_utility=cls.get_receiver_utility(signal, action, auction_signal))
 
     @classmethod
     def get_sender_utility(cls):
@@ -297,9 +338,9 @@ class AdGame(sg.SignalingGame):
         return 0
 
     @classmethod
-    def get_receiver_utility(cls, consumer, signal, action, auction_signal):
+    def get_receiver_utility(cls, signal, action, auction_signal):
 
-        return ((1+float(action.val)) * dot(signal.features, auction_signal.features) - 1) / 1000
+        return ((1+float(action.val)) * dot(signal.features, auction_signal.features) - 1)# / 1000
 
 class AdGameRecord(sg.GameRecord):
 

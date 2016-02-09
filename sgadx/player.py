@@ -52,6 +52,14 @@ class Player(db.Model):
         """
         return Action(player=self)
 
+    def signals(self):
+
+        return filter(lambda x: x.__class__ == Signal, self.moves)
+
+    def actions(self):
+
+        return filter(lambda x: x.__class__ == Action, self.moves)            
+
     def get_signal_history(self, **kwargs):
         """
 

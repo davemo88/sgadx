@@ -41,107 +41,6 @@
 
 TODO
 
-\subsection{Motivation}
-
-TODO
-
-\newpage
-
-\section{Ad Exchanges}
-
-\subsection{Publishers, Consumers, and Advertisers}
-
-In online advertising, publishers are those with ad space to sell. Publishers control websites which create and publish content, much of which is freely accessible, and wish to monetize the site traffic the content generates. TODO: this is a non sequitur, no mention of ad exchanges thus far etc. Without ad exchanges, publishers could only sell their ad space through deals negotiated directly with individual advertisers.
-
-A publisher may represent a single site or multiple sites with different types of content. For our purposes, we will also consider search engines such as Google and Bing to be publishers although they are treated somewhat differently in practice. The challenge for publishers is to sell their ad space at the highest price || to maximize revenue via sale of ad space. In general, there are thousands if not millions of publishers registered with an ad exchange(FIND REFERENCE TO SUPPORT THIS)
-
-Consumers visit publishers sites. As we know, hundreds of millions 
-
-Advertisers purchase ad space in order to interact with consumers via advertisements. They are usually businesses or advertising agencies acting on behalf of businesses. Advertisers allocate a portion of their total marketing budget to be spent online. The challenge for advertisers is to find cost effective ad space on which to spend their online budget. 
-
-TODO: reword
-
-Common criteria to evaluate the potential of a publisher's ad space include the reputation of the publisher, consumer demographics that commonly visit the publisher's sites, and the alignment of the site's content with the advertiser's products. Once ad space has been purchased its performance may be evaluated using a process known as Attribution, which will be discussed later in great detail.
-
-\subsection{The Funnel}
-
-TODO: write this section ;)
-
-\subsection{Role of the Ad Exchange}
-
-An Ad Exchange is both an aggregator of publisher inventory and a marketplace for that inventory. This is good for publishers because listing their inventory on ad exchanges makes it easily available to a wide variety of advertisers. Publishers provide metadata about their listings, such as the type of content or the demographics which are likely to visit the publishers' sites. This in turn makes it easier for advertisers to find promising ad space.
-
-TODO: mention varying quality of publisher-supplied metadata
-
-In order to list their inventory with an exchange, a publisher signs up with and receives code from the exchange (e.g. some JavaScript) which allows ads to be dynamically inserted on the publisher's site(s). For example if the publisher's site layout includes a banner ad along the side of the page, the publisher will put the exchange's code in the spot a static banner ad would go.
-
-Advertisers buy the listed ad space in auctions. Whenever a consumer visits a publisher's page which contains an exchange's code, the exchange is signaled that there is an opportunity to show an ad. Showing an ad to a consumer is called an "impression" and so we say an impression is available. The advertisers on the exchange then evaluate the impression and places bids according to their evaluation. The winning advertiser's ad is shown on the page. This whole process occurs in milliseconds so that the ad is loaded along with the rest of the content with no apparent delay to the consumer.
-
-Because publishers provide metadata about their ad space, advertisers can include it in their evaluation. This highlights an important feature of ad exchanges: the ability to set bidding strategies according to impression metadata. As an impression auction must be resolved quickly, any logic to determine bid amounts is set ahead of time and is known as a bidding strategy.
-
-The following are examples of an advertiser's potential bidding strategies:
-
-\begin{itemize}
-\item Bid \$0.50 for impressions on sites with many male visitors
-\item Bid \$1 for impressions on sites with many male visitors between the ages of 20 and 40
-\item Bid \$1 for impressions on Sports sites
-\item Bid \$2 for impressions on Baseball sites but not between 1AM and 6AM
-\end{itemize}
-
-These illustrate how publisher metadata can influence advertisers' bidding strategies as well as publisher-independent factors such as time of day. Thus advertisers may have significantly differing evaluations of individual impressions. Such variation is the primary motivation for the use of auctions.
-
-Let us consider why an advertiser would bid more for certain impressions. Plainly a higher bid implies a greater evaluation by the advertiser, i.e. greater anticipated ROI. There are ultimately two qualities of an impression which affect ROI: Conversion Rate and Conversion Revenue. Conversion Rate, known as CVR in the digital advertising world, is the probability of conversion given an ad interaction. Conversion Revenue is the amount of revenue a conversion generates. This could be an exact value, e.g. the purchase of a specific product, or modeled / approximated. Thus an impression with metadata $i$ could be evaluated with:
-
-$ value_{i} = (1-\prod_{c \in C} 1-CVR_{c,i} ) (\sum_{c\in C} \frac{CVR_{c,i} \cdot revenue_{c}}{\sum_{c' \in C} CVR_{c',i}}) $
- 
-\noindent where $C$ is the advertiser's set of converting events, $revenue_{c}$ is the amount of revenue associated with conversion event $c$, and $CVR_{c,i}$ is the estimated conversion rate and revenue for conversion type $c$ for impression metadata $i$. The first term is the probability that a conversion occurs and the second term is the expected revenue.
-
-The use of auctions highlights two major difference between buying on the exchange and buying directly form publishers. First, ads are usually bought from publishers using a constant rate, such as a cost per click (CPC) or a cost per thousand impressions (CPM). Second, some number of impressions are usually guaranteed. Thus an advertiser may pay a \$3 CPM for 1 million impressions per month, or exactly \$3,000 per month. This is a common type of directly negotiated deal. Since ad exchanges use auctions to sell impressions as they become available, there is no guaranteed number of available impressions and the price may vary from impression to impression. Therefore online advertising campaigns that spend heavily on ad exchanges usually require significantly more oversight and management than those of mostly direct deals.
-
-\subsection{Third Party Data}
-
-Third party data is data about consumers that has been collected and aggregated by third parties, i.e. neither publishers nor advertisers. In digital advertising the businesses that do so are known as Data Management Platforms (DMPs). A brief description is available at \cite{iab1}. Examples of such companies are Lotame and  BlueKai. Generally these companies gather data about consumers by partnering with various large e-commerce sites and monitoring activity on those sites. DMPs then make their consumer data available for purchase by advertisers who use it to tailor marketing strategies, e.g. by targeting consumers with specific features.
-
-Whereas impression metadata only describes the site the ad will appear on, DMP data describes the consumer visiting the site. Consider the following bidding strategies:
-
-\begin{itemize}
-\item Bid \$1 on consumers on Sports sites
-\item Bid \$1 on consumers with interest in Sports
-\item Bid \$2 on consumers with interest in Sports on Sports sites
-\end{itemize}
-
-The first is a bidding strategies based on impression metadata only and the second based only on DMP data. The third combines both impression metadata and DMP data and shows more information about an impression can make it more valuable.
-
-A major use of third party data is to supplement impression metadata in exchange auctions. Ad exchanges integrate with DMPs so that when an impression become available, the DMP's data can also be made available to advertisers. Advertisers pay a premium in order to use data from a DMP. In order to be competitive, bidding strategies which use DMP data must be more effective than those which do not.
-
-Much third party data is collected and organized using cookies. First, a consumer is given a uniquely identifiable cookie the first time they visit a site which is monitored by a DMP. When that consumer visits certain pages or perform certain activities on the site or others monitored by the DMP, the DMP stores information related to the cookie id. For example, if a consumer visits a sporting goods site then the DMP may associate that consumer with the "sports" demographic.
-
-Similar tracking is also used by ad servers. The first time a consumer receives an ad from a particular ad server, they are also given a uniquely identifiable cookie. This can be used to track which ads a consumer has been served. This will be seen to be critical in our discussion of Attribution.
-
-Additionally, advertisers can use the ad server's tracking to associate data to cookie ids. Such information is known as first party data. A common tactic known as retargeting effectively flags consumers which have visited the advertiser's website and then pursues these consumers aggressively as they continue to browse the web. Many consumers have had creepy experiences where they encounter ads for products or brands they had recently viewed- this is retargeting.
-
-It is important to note that cookie-based tracking has many issues as cookies cannot uniquely identify a single consumer across multiple devices or browsers. Other tracking methods are emerging to address this. For example, the Google Chrome browser encourages its users to sign in to the browser with their Google account. If a consumer does this, then Google achieves very reliable cross-device tracking of that consumer. A full discussion of such methods is out of the scope of this paper but further reading can be found in TODO need references here
-
-\subsection{Attribution}
-
-Before executing various advertising strategies, advertisers must decide on the events and activities they wish to cause by showing ads. When such an event occurs it is called a conversion and the associated consumer is said to have converted. The best example of conversions are purchases. Advertisers may record additional information such as the revenue generated by the conversion.
-
-It is common for advertisers to define multiple types of conversions of potentially different values. Merely visiting the advertiser's homepage may be considered a type of conversion. Another common scheme is to have multiple conversion types which act as checkpoints within a longer process, e.g. for businesses that require customers to submit applications for approval.
-
-Since causing specific types of conversions is an advertiser's goal, the advertiser must be able to associate conversions with ads in order to evaluate advertising strategies. In its simplest form, this is accomplished using the same tracking which associates ads to consumers. By assigning each consumer a unique identifier, usually a cookie id, the advertiser records which ads have been shown to that consumer as well as which, if any, conversions that consumer has performed.
-
-However, it is not enough to simply associate ad interactions and conversions to consumers. Advertisers not only wish to know which ads a consumer has interacted with but also the effect each ad had. Consumers frequently interact with numerous ads and it is not clear which if any of the ads significantly impacted the consumer's decision to convert. If advertisers could accurately divide the credit for causing a conversion among the preceding ad interactions they could also do so with the associated revenue and thereby calculate the ROI for each ad.
-
-The process of allocating credit for conversions to preceding ad interactions is called attribution. A particular mechanism for doing so is called an attribution model. The industry standard attribution model is Last Click. It attributes all credit for a conversion to the last-clicked ad or the last-viewed ad in lieu of a click. Plainly this does not capture the full detail of ad interaction but it has some motivating factors. It is very simple to understand as well as to implement. Variations include few parameters such as the maximum time between ad interaction and conversion for which the ad remains eligible. For instance, a click may become ineligible for credit after ten days but a view may become ineligible after five.
-
-More sophisticated models are available to advertisers, usually from third parties. Example of such companies are Visual IQ and Adometry. These models are data-driven or algorithmic as compared to Last Click which is rule-based. Such models incorporate a statistical analysis to determine the chance of conversion given interactions with certain ads or combinations of ads and allocate credit for conversions accordingly. However many advertisers do not employ more sophisticated methods because of the additional cost, implementation difficulty, and lack of transparency when using a third party. TODO fix this description. weird and needs evidence to support
-
-TODO: talk about how attribution fits into optimization / budget allocation
-
-\subsection{Summary}
-
-Publishers, Advertisers, DMPs, Attribution, and Ad Exchanges are the five pillars of digital marketing. Publishers represent supply while Advertisers represent demand. DMPs provide information about consumers while Attribution provides evaluations of advertising strategies. Ad exchanges are fluid, high-tech marketplaces which facilitate inclusion of third party data and allow timely responses to ad performance. Above all, ad exchanges make it easier for publishers and advertisers to meet their goals and to try new things. 
-
 \newpage
 
 \section{Signaling Games}
@@ -156,144 +55,24 @@ Such games are found to resemble interactions in nature, perhaps most famously d
 
 Spence \cite{spence1} gives an example of how such games can model the hiring process. Here the sender is an applicant, the receiver is an employer, the hidden information is the competency of the applicant, the message is the credentials of the applicant, and the action is the wage offered to the applicant. Applicants want to be hired with the highest wage and employers want to pay applicants appropriately. Similarly to the antlers of deer, higher credentials are easier to earn for more competent applicants and so the employer may base his wages on the applicant's credentials.
 
-A final example is Simple Poker. The sender has either a winning hand or a losing hand and can send one of two messages: Bet or Check. The sender's hand is hidden from the receiver can either Call or Fold. Here is the extensive form game:
-
-\begin{figure}
-\begin{center}
-	\tikzstyle{level 1}=[level distance=1.5cm, sibling distance=6.75cm]
-	\tikzstyle{level 2}=[level distance=1.5cm, sibling distance=3cm]
-	\tikzstyle{level 3}=[level distance=1.5cm, sibling distance=1.5cm]
-	\tikzstyle{level 4}=[level distance=1.5cm, sibling distance=2cm]
-	\begin{tikzpicture}
-		\node{Chance}
-			child{
-				node(win){Winning Hand}
-				child{
-					node(wbet){Bet}
-					child{
-						node(wbcall){Call}
-						child{
-							node{$(2,-1)$}
-							edge from parent
-						}
-						edge from parent
-						node[left]{}
-					}
-					child{
-						node(wbfold){Fold}
-						child{
-							node{$(1,0)$}
-							edge from parent
-						}
-						edge from parent
-						node[right]{}
-					}
-					edge from parent
-					node[left]{}
-				}
-				child{
-					node(wcheck){Check}
-					child{
-						node(wccall){Call}
-						child{
-							node{$(1,0)$}
-							edge from parent
-						}
-						edge from parent
-						node[left]{}
-					}
-					child{
-						node(wcfold){Fold}
-						child{
-							node{$(1,0)$}
-							edge from parent
-						}
-						edge from parent
-						node[right]{}
-					}
-					edge from parent
-					node[right]{}
-				}
-				edge from parent
-				node[left]{}
-			}
-			child{
-				node(lose){Losing Hand}
-				child{
-					node(lbet){Bet}
-					child{
-						node(lbcall){Call}
-						child{
-							node{$(-1,2)$}
-							edge from parent
-						}
-						edge from parent
-						node[left]{}
-					}
-					child{
-						node(lbfold){Fold}
-						child{
-							node{$(1,0)$}
-							edge from parent
-						}
-						edge from parent
-						node[right]{}
-					}
-					edge from parent
-					node[left]{}
-				}
-				child{
-					node(lcheck){Check}
-					child{
-						node(lccall){Call}
-						child{
-							node{$(0,1)$}
-							edge from parent
-						}
-						edge from parent
-						node[left]{}
-					}
-					child{
-						node(lcfold){Fold}
-						child{
-							node{$(1,0)$}
-							edge from parent
-						}
-						edge from parent
-						node[right]{}
-					}
-					edge from parent
-					node[right]{}
-				}
-				edge from parent
-				node[right]{}
-			};
-	\draw [dashed](wbcall)--(wbfold);
-	\draw [dashed](wbfold)--(wccall);
-	\draw [dashed](wccall)--(wcfold);
-	\draw [dashed](wcfold)--(lbcall);
-	\draw [dashed](lbcall)--(lbfold);
-	\draw [dashed](lbfold)--(lccall);
-	\draw [dashed](lccall)--(lcfold);
-	\end{tikzpicture}
-\end{center}
-\end{figure}
+A final example is simplified Poker. The sender has a winning hand or a losing hand and can send one of two messages: Bet or Check. The receiver can either Call or Fold.
 
 To Bet signals a winning hand while to Check signals a losing one. The game is interesting because the sender may bluff by betting when he has a losing hand. 
 
 With a few examples to build our intuition, we will shortly give a mathematical description of basic signaling games. We say basic here because we will extend this model in later games. First of all, a signaling game is a mathematical game like those studied in game theory. Game theory is generally interested in finding optimal strategies in multiplayer games. A game theoretical analysis almost always starts with assumptions about the goals, abilities, and rationality of the players, perhaps most importantly that the players will all play in such a way to maximize their score in the game. One can imagine player $i$'s score to be the output of some function $u_i$ and so $i$ will play so as to maximize $u_i$. This is a nice way to address arbitrary player preferences in complex or realistic games as such preferences are ultimately expressed by the value of $u_i$. 
 
-These assumptions limit players' playable strategies, e.g. a player will not choose strategy A if it gives a lower score than strategy B. This brings us to the cornerstone of game theory: Nash equilibrium. A Nash equilibrium is a strategy assignment for each player such that each player's score is maximized given the strategies of the others. Thus a Nash Equilibrium is akin to a solution of a game since it gives each player a strategy which cannot be improved given the strategies of the other players.
+These assumptions limit players' playable strategies, e.g. a player will not choose strategy A if it gives a lower score than strategy B. This brings us to the cornerstone of game theory: Nash equilibrium. A Nash equilibrium is a strategy assignment for each player such that each player's score is maximized given the strategies of the others. Thus a Nash Equilibrium is akin to a solution of a game since it gives each player a strategy which cannot be improved given the strategies of the other players. minimum of joint loss?
 
-It is important to note the difference between pure and mixed strategies. A pure strategy is deterministic while a mixed strategy is probabilistic. Recall the Simple Poker game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. Note that this pair of strategies is not a Nash equilibrium because the sender's best response to the receiver's strategy is to bet losing hands as well, since the receiver will fold to all bets. 
+It is important to note the difference between pure and mixed strategies. A pure strategy is deterministic while a mixed strategy is probabilistic. Recall the Simple Poker game from above. A pure strategy for the sender is to bet winning hands and check losing hands. The best response for the receiver is then to fold to all bets and call all checks. This pair of strategies is not a Nash equilibrium because the sender's best response to the receiver's strategy is to bet losing hands as well, since the receiver will fold to all bets. 
 
-A mixed strategy would be to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows that the sender is betting half of his losing hands. The receiver still does not know how often the sender has a winning hand and so we need another tool in order to find the receiver's best response.
+An example of a mixed strategy is to always bet a winning hand and bet a losing hand half of the time. This time, however, we have a hiccup in choosing the receiver's best response strategy. Suppose the receiver knows the sender's strategy, i.e. that the sender is betting half of his losing hands. The receiver still does not know how often the sender is dealt a losing hand and so we need another tool in order to find the receiver's best response.
 
-This brings us to the concept of Bayesian games. Signaling games are Bayesian games and thus so is the Simple Poker game. A Bayesian game is a game in which some information is hidden from the players. Here we should mention that the information can be hidden symmetrically, unlike in the case of the signaling game. One way to represent the hidden information is to a imagine a set $\Omega$, elements of which represent possible configurations of game variables. In the Simple Poker game, for example, $\Omega = \{\text{Winning Hand}, \text{Losing Hand}\}$. When a Bayesian game is initialized, an element of $\Omega$ is chosen and each player is assigned some probability distribution $\pi_{i}(\cdot)$ over $\Omega$, i.e. a prior belief over the possible variable configurations.
+This brings us to the concept of Bayesian games. Signaling games are Bayesian games and thus so is the Simple Poker game. A Bayesian game is a game in which some information is hidden from the players. Imagine a set $\Omega$, elements of which represent possible gamestates. In the Simple Poker game, for example, $\Omega = \{\text{Winning Hand}, \text{Losing Hand}\}$. When a Bayesian game is initialized, an element of $\Omega$ is chosen and each player $i$ is assigned some probability distribution $\pi_{i}(\cdot)$ over $\Omega$, i.e. a prior belief over the possible gamestates. In the case of the signaling game, the sender $S$ is assigned $\pi_S(\cdot)$ which gives all mass to the correct gamestate.
 
-Now we can address the receiver's best response in the Simple Poker game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time, i.e. $\pi_R(\text{Losing Hand}) = 0.5$. Now it is straightforward to pick the best response strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will bet three quarters of all his hands and one third of those bets will be bluffs. Naturally the values from the above payoff matrix were relevant in this reasoning but were chosen for our ease at this point.
+Now we can address the receiver's best response in the Simple Poker game when the sender plays a mixed strategy. Recall that even if we knew how much the sender was bluffing, we could not choose a best response without also considering how often the sender had a winning hand. Let us now suppose that the receiver believes the sender has a winning hand half of the time, i.e. $\pi_R(\text{Losing Hand}) = 0.5$. Now it is straightforward to pick the best response strategy. Instead of folding to all bets as in the pure strategy response, the receiver should now call one third of the bets the sender makes. This is because if the sender is betting all his winning hands and half his losing ones, he will bet three quarters of all his hands and one third of those bets will be with losing hands. Naturally the values from the above payoff matrix were relevant in this reasoning but were chosen for our  at this point.
 
 With these concepts in hand, we can concisely describe the basic signaling game. There are two players, $S$ and $R$. $S$ has some type $t \in T$ which is known to $S$ but unknown to $R$. $T$ is analogous to the set $\Omega$ from before. Each player also has a prior $ \pi_i(dcot)$ over $T$. One can imagine $\pi_{S}$ assigns probability 1 to $t$ and $\pi_{R}$ does not, e.g. $\pi_{R}$ could assign uniform probability to each $t \in T$. $S$ chooses a message $m$ from a set $M$ which is sent to $R$. Considering $m$ in light of $\pi_R$, $R$ chooses an action $a$ from a set $A$. Each player then receives a score according to functions $u_R$ and $u_S$ : $T \times M \times A \to \mathbb{R}$.
+A strategy for S is then a function $\mu_{S}: T \times M \to [0,1]$ such that $\forall t: \sum_{m \in M} \mu_{S}(t, m) = 1$, i.e. assigns a probability to each message for all types. A strategy for R is a similarly $\mu_{R} : M \times A \to [0,1]$ such that $\forall m: \sum_{a \in A} \mu_{R}(m,a) = 1$.
 
 A strategy for S is then a function $\mu_{S}: T \times M \to [0,1]$ such that $\forall t: \sum_{m \in M} \mu_{S}(t, m) = 1$, i.e. assigns a probability to each message for all types. A strategy for R is a similarly $\mu_{R} : M \times A \to [0,1]$ such that $\forall m: \sum_{a \in A} \mu_{R}(m,a) = 1$.
 
@@ -315,7 +94,7 @@ Because signaling games are games of information asymmetry, we can interpret str
 
  For instance, a separating equilibrium suits games in which the sender and receiver have a common interest and so the sender does not necessarily wish to be deceptive. Rather the sender wants to confer the maximum amount of information about the hidden type via the signal.
 
-In a separating equilibrium, the receiver is able to deduce the sender's type from signal. Since the sender's utility function $u_{S}$ and possible types $T_S$ are common knowledge, the receiver can deduce which signal would be sent by each type. This makes the receiver's choice of action straightforward.
+In a separating equilibrium, the receiver is able to deduce the sender's type from signal. Since the sender's utility function $u_{S}$ and possible types $T_S$ are common knowledge, the receiver can deduce which signal would be sent by each type. This makes the receiver's choice of action straightforward and there is no deception by the sender.
 
 In a pooling equilibrium, the sender confers no information about the hidden type as all senders send the same signal. In this case the receiver's strategy is independent of the signal and depends only on $\pi_{ R}$. This is maximally deceptive but so obviously as to render the signal meaningless.
 
@@ -330,6 +109,35 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 \subsection{Signaling Games in Advertising}
 
 \newpage
+
+\section{Signaling Game Ad Exchange}
+
+The Signaling Game Ad Exchange is a signaling-game inspired model of an online ad exchange. We model the process of advertisers bidding on impressions and showing ads to consumers using two consecutive signaling games. 
+
+The players in these games represent advertisers and consumers. Each player has a secret $N$-dimensional type vector which represents the products the advertiser / consumer wants to sell / buy. For example, a higher value in for one component of the vector indicates a greater affinity for the product the component represents.
+
+The first signaling game is called the Auction Game. A consumer $C$ sends a content request $\delta$, e.g. for a web page or search result, and advertisers bid for the opportunity to show an ad amongst the content. The content request is again an $N$-dimensional vector describing how well-suited the content request is for certain products. The advertisers $A_1,...,A_N$ then gives bids $\beta_1,...\beta_N$ in a second price auction\cite{second_price_auctions}. The consumer receives a payoff equal to the dot product of their type $\tau_C$  and the content request $\delta$. The winning advertiser and consumer then go on to play the Ad Game.
+
+\begin{equation}
+	C \overset{\alpha}{\longrightarrow} A_1,...,A_K: \beta_1,...,\beta_K
+\end{equation}
+
+\begin{equation}
+	\mu_{C_{auction}}(\cdot) = \langle\tau_C, \alpha\rangle
+\end{equation}
+
+\begin{equation}
+\begin{displaymath}
+	\mu_{A_i{auction}}(\beta_i) = \left\{
+	\begin{array}{lr}
+		-beta_j if beta_i = max({{b_k | for k = 1,...,K}) 
+
+	\end{array}
+\end{displaymath}
+	\mu_{A_i{auction}}(\beta_i) = -\beta^*
+\end{equation}
+
+
 
 \section{Signaling Game Ad Exchange}
 
