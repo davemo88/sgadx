@@ -1,27 +1,26 @@
 \select@language {english}
-\contentsline {section}{\numberline {1}Introduction}{4}
-\contentsline {section}{\numberline {2}Signaling Games}{5}
-\contentsline {subsection}{\numberline {2.1}Basic Model}{5}
-\contentsline {subsection}{\numberline {2.2}Equilibria}{8}
-\contentsline {subsection}{\numberline {2.3}Costly Signaling}{8}
-\contentsline {subsection}{\numberline {2.4}Iterated Signaling Games}{9}
-\contentsline {subsection}{\numberline {2.5}Recommenders and Verifiers}{9}
-\contentsline {subsection}{\numberline {2.6}Signaling Games in Advertising}{9}
-\contentsline {section}{\numberline {3}Signaling Game Ad Exchange}{10}
-\contentsline {section}{\numberline {4}Signaling Game Ad Exchange}{10}
-\contentsline {subsection}{\numberline {4.1}Auction Phase}{12}
-\contentsline {subsection}{\numberline {4.2}Ad Phase}{14}
-\contentsline {subsection}{\numberline {4.3}Conversion Phase}{15}
-\contentsline {subsection}{\numberline {4.4}Third Party Data as Recommendation}{16}
-\contentsline {subsection}{\numberline {4.5}Attribution as Verification}{16}
-\contentsline {subsection}{\numberline {4.6}Consumers}{16}
-\contentsline {subsection}{\numberline {4.7}Advertisers}{18}
-\contentsline {section}{\numberline {5}Ad Exchange Simulation}{19}
-\contentsline {subsection}{\numberline {5.1}Agent-based Model}{19}
-\contentsline {subsection}{\numberline {5.2}Simulation Details}{19}
-\contentsline {subsection}{\numberline {5.3}Implementation}{19}
-\contentsline {section}{\numberline {6}Simulation Results}{20}
-\contentsline {subsection}{\numberline {6.1}Summary}{20}
-\contentsline {subsection}{\numberline {6.2}Naive Attribution}{20}
-\contentsline {subsection}{\numberline {6.3}Improved Attribution}{20}
-\contentsline {section}{\numberline {7}References}{20}
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {section}{\numberline {2}Signaling Games}{4}
+\contentsline {subsection}{\numberline {2.1}Basic Model}{4}
+\contentsline {subsection}{\numberline {2.2}Equilibria}{7}
+\contentsline {subsection}{\numberline {2.3}Costly Signaling}{7}
+\contentsline {subsection}{\numberline {2.4}Iterated Signaling Games}{8}
+\contentsline {subsection}{\numberline {2.5}Recommenders and Verifiers}{8}
+\contentsline {section}{\numberline {3}Online Advertising via Signaling Games}{9}
+\contentsline {section}{\numberline {4}Signaling Game Ad Exchange}{12}
+\contentsline {subsection}{\numberline {4.1}Auction Phase}{13}
+\contentsline {subsection}{\numberline {4.2}Ad Phase}{15}
+\contentsline {subsection}{\numberline {4.3}Conversion Phase}{16}
+\contentsline {subsection}{\numberline {4.4}Third Party Data as Recommendation}{17}
+\contentsline {subsection}{\numberline {4.5}Attribution as Verification}{17}
+\contentsline {subsection}{\numberline {4.6}Consumers}{17}
+\contentsline {subsection}{\numberline {4.7}Advertisers}{19}
+\contentsline {section}{\numberline {5}Ad Exchange Simulation}{20}
+\contentsline {subsection}{\numberline {5.1}Agent-based Model}{20}
+\contentsline {subsection}{\numberline {5.2}Simulation Details}{20}
+\contentsline {subsection}{\numberline {5.3}Implementation}{20}
+\contentsline {section}{\numberline {6}Simulation Results}{21}
+\contentsline {subsection}{\numberline {6.1}Summary}{21}
+\contentsline {subsection}{\numberline {6.2}Naive Attribution}{21}
+\contentsline {subsection}{\numberline {6.3}Improved Attribution}{21}
+\contentsline {section}{\numberline {7}References}{21}

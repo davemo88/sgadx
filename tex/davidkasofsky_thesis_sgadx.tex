@@ -106,53 +106,66 @@ Costly signaling is an important feature of many signaling games. Suppose $G$ is
 
 \subsection{Recommenders and Verifiers}
 
-\subsection{Signaling Games in Advertising}
-
 \newpage
 
-\section{Signaling Games in Online Advertising}
+\section{Online Advertising via Signaling Games}
 
-\begin{equation}
-	C \longrightarrow \delta \longrightarrow A : \alpha
-\end{equation}
-
-\begin{equation}
-	\mu_C = t \cdot \delta + t \cdot \alpha
-\end{equation}
-
-\begin{equation}
-\mu_C = t \cdot \delta - \lambda \alpha \cdot \delta
-\end{equation}
-
-\begin{equation}
-C \longrightarrow \delta \longrightarrow A : \alpha
-\end{equation}
+Here we introduce a complex signaling game of our design: the Signaling Game Ad Exchange. 
 
 The Signaling Game Ad Exchange is a signaling-game inspired model of an online ad exchange. We model the process of advertisers bidding on impressions and showing ads to consumers using two consecutive signaling games. 
 
 The players in these games represent advertisers and consumers. Each player has a secret $N$-dimensional type vector which represents the products the advertiser / consumer wants to sell / buy. For example, a higher value in for one component of the vector indicates a greater affinity for the product the component represents.
 
-The first signaling game is called the Auction Game. A consumer $C$ sends a content request $\delta$, e.g. for a web page or search result, and advertisers bid for the opportunity to show an ad amongst the content. The content request is again an $N$-dimensional vector describing how well-suited the content request is for certain products. The advertisers $A_1,...,A_N$ then gives bids $\beta_1,...\beta_N$ in a second price auction\cite{second_price_auctions}. The consumer receives a payoff equal to the dot product of their type $\tau_C$  and the content request $\delta$. The winning advertiser and consumer then go on to play the Ad Game.
+In both games the messages (denoted by $\delta$ and $\alpha$) are $N$-dimensional unit vectors and the actions (denoted by $\beta$ and $\rho$) are scalars in $\lbrack 0, 1 \rbrack$. 
+
+The first signaling game is the Auction Game. A consumer $C$ sends a content request $\delta$, e.g. for a web page or search result, and advertisers bid for the opportunity to show an ad amongst the content. The content request is again an $N$-dimensional vector describing how well-suited the content request is for certain products. The advertisers $A_1,...,A_K$ then gives bids $\beta_1,...\beta_K$ in a second price auction\cite{second_price_auctions}. The consumer receives a payoff equal to the dot product of their type $\tau_C$  and the content request $\delta$ while the winning advertiser receives a negative payoff equal to the second highest bid, i.e. the second price. The winning advertiser and consumer then go on to play the Ad Game.
 
 \begin{equation}
-	C \overset{\alpha}{\longrightarrow} A_1,...,A_K: \beta_1,...,\beta_K
+	C \overset{\delta}{\longrightarrow} A_1,...,A_K: \beta_1,...,\beta_K
 \end{equation}
 
 \begin{equation}
-	\mu_{C_{auction}}(\cdot) = \langle\tau_C, \alpha\rangle
+	\mu_{C_{auction}}(\cdot) = \langle\tau_C, \delta\rangle
 \end{equation}
 
 \begin{equation}
-\begin{displaymath}
-	\mu_{A_i{auction}}(\beta_i) = \left\{
-	\begin{array}{lr}
-		-beta_j if beta_i = max({{b_k | for k = 1,...,K}) 
-
-	\end{array}
-\end{displaymath}
-	\mu_{A_i{auction}}(\beta_i) = -\beta^*
+	\mu_{A^*{auction}}(\cdot) = -\beta^*
 \end{equation}
 
+where $A^*$ is the advertiser with the highest bid and $\beta^*$ is the second-highest bid. $\langle \cdot \rangle$ denotes the dot product. We could also give this like the payoff to $A_i$ is the second highest bid when $\beta_i$ is the highest bid and 0 otherwise.
+
+The intuition for these utility functions is as follows. Consumers want to consume content that suits them, and thus should be rewarded for similarity between their content requests $\delta$ and their type $\tau_C$. Advertisers need to pay for the opportunity to show an ad to a consumer. 
+
+The second signaling game is the Ad Game. The winning advertiser from the auction game, $A^*$, send an ad $\alpha$ to the consumer $C$. The consumer then chooses an amount $\rho$. to interact with the ad. The advertiser receives payoff $1_{conv(C)}$ and the consumer receives payoff $ (1 + \rho) \langle \delta, \alpha \rangle -1$.
+
+\begin{equation}
+	A^* \overset{\alpha}{\longrightarrow} C : \rho
+\end{equation}
+
+\begin{equation}
+	\mu_{A^*{ad}}(\cdot) = 0
+\end{equation}
+
+\begin{equation}
+	\mu_{C_{ad}} = \langle \delta, \alpha \rangle + \rho \langle \delta, \alpha \rangle - 1 
+\end{equation}
+
+The intuition for these utility functions is as follows. Advertisers do not receive any immediate benefit from simply showing ads to consumers. Ads are shown for the long con, so to speak. They want to nudge consumers towards their brand and products over time. In order to get value, they need the consumers to convert (i.e.buy their product). On the other hand, ads generally annoying consumers. The $-1$ in the consumer's utility function is punishment for ads since ads detract from whatever browsing the consumer is up to. Furthermore if the ads do not suit the consumer's content request, they further annoy the consumer and hence the $\langle \delta, \alpha \rangle$. Now suppose the ads do suit the consumer's content request. Then the consumer has some incentive to interact with the ads, and hence the $\rho \langle \delta, \alpha \rangle$ term. The idea is that bad ads should detract from the consumer's browsing even if the consumer does not explicitly interact with them. However the consumer should have an incentive to engage appropriate ads.
+
+Finally there is a stochastic conversion phase. This is meant to be an iterative game, e.g. we say $\delta_t$ is the content request sent during iteration $t$. After $t$ iterations, consumer $C$ converts for advertiser $A$ with probability:
+
+\begin{equation}
+	\langle (1 - \frac{1}{2t}\sum_{i=1}^{t} \rho_t) \tau_C + \frac{1}{2t}\sum_{i=1}^{t} \rho_t) \sum_{i=1}^{t} \frac{\rho_t \alpha_t}{2^{t-i}}, \tau_A \rangle \times \frac{1}{100}
+\end{equation}
+
+After the conversion phase, advertiser $A$ receives payoff one if $C$ converts for $A$ and $0$ otherwise. The consumer receives payoff $\langle \tau_C, \tau_A \rangle$ if $C$ converts for $A$ and $0$ otherwise.
+
+The intuition here is as follows:
+
+if the consumer never interacts with an ad, the ads should have no effect on the chance the consumer buys a certain product. If the consumer interacts a lot with ads, then the ads should affect the consumer's chance to convert, but never more than their innate affinities for certain products. Furthermore, ads that are further back in time should more effects than recent ones, and each ad should have an effect proportional to the amount the consumer interacted with it.
+
+Note that since all vectors involved are unit vectors, we can interpret dot products as probabilities counting all negative dot products as a probability of $0$. The $\frac{1}{100}$ should be a hyperparameter if these methods were applied to particular case, since conversions tend to be quite rare compared to ad interactions but the rarity is specific to the advertiser.
+\newpage
 
 
 \section{Signaling Game Ad Exchange}
