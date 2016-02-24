@@ -65,9 +65,11 @@ Signaling games appear in many interesting places: in mate selection by Zahavi\c
 
 \subsection{Simple Poker}
 
-Poker is a great example of a signaling game because it neatly displays the depth of strategic interaction with asymmetric information. It showcases a hallmark of signaling games: deception.
+Poker is a great example of a signaling game because it neatly displays the depth of strategic interaction with asymmetric information. It showcases deception, a hallmark of the signaling game, by challenging players to induce their opponents to make mistakes.
 
-Consider a simplified version of two-player poker. The sender $S$ is dealt either a winning hand or a losing hand and may signal bet or check. The receiver $R$ then may call or fold. The payoff matrix in \ref{simplepokerpayoffs} shows the poker-inspired messages, actions, and payoffs.
+TODO: more colorful inspiration / motivation here
+
+Consider a simplified version of two-player poker. The sender $S$ is dealt either a winning hand or a losing hand and may check or bet. The receiver $R$ then may fold or call. The payoff matrix in \ref{simplepokerpayoffs} shows the poker-inspired messages, actions, and payoffs.
 
 \begin{table}[H]
 	\centering
@@ -76,18 +78,20 @@ Consider a simplified version of two-player poker. The sender $S$ is dealt eithe
 	\begin{tabular}{ll|l|l|}
 		\cline{3-4}
 		&       & \textbf{Fold} & \textbf{Call} \\ \hline
-		\multicolumn{1}{|l|}{\textbf{Winner}} & \textbf{Check} & (1,0)  & (1,0)  \\ \cline{2-4}
+		\multicolumn{1}{|l|}{$\tau=\textbf{Winner}$} & \textbf{Check} & (1,0)  & (1,0)  \\ \cline{2-4}
 		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,0)  & (2,-1)  \\ \hline
-		\multicolumn{1}{|l|}{\textbf{Loser}}  & \textbf{Check} & (1,0)  & (0,1)  \\ \cline{2-4}
+		\multicolumn{1}{|l|}{$\tau=\textbf{Loser}$}  & \textbf{Check} & (1,0)  & (0,1)  \\ \cline{2-4}
 		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,0)  & (-1,2) \\ \hline
 	\end{tabular}
 \end{table}
 
-Suppose $S$ has a winning hand. Then bet dominates check. However if $S$ has a losing hand then check dominates bet. So say $S$ bets all winners and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
+Suppose $S$ has a winning hand. Then bet dominates check for $S$ and fold dominates call for $R$. However if $S$ has a losing hand then check dominates bet for $S$ and call dominates fold for $R$. The aforementioned mistakes $S$ wants to induce are for $R$ to call with $S$ has a winning hand and to fold when $S$ has a losing hand.
+
+So say $S$ bets all winners and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
 
 In considering $R$'s best response to $h_2$, we stumble across several interesting points. The first is that if $S$ bets every hand, i.e. the sender always sends the same signal regardless of the secret type, then $R$ cannot infer any information about the secret type from the signal. If this is the case, then $R$ can only rely on prior beliefs about the secret type. For instance $R$ may believe that $S$ has a winning hand half the time. Then $R$ could randomize uniformly between calling and folding ($g_2$).
 
-Second, poker is usually played as a repeated game. If we adopt that here, then the receiver may use Bayesian inference to update prior beliefs about the sender's type. The Nash equilibrium of the repeated game will depend on the true probability $p$ that $S$ has a winning hand. For example, if $p = \frac{1}{2}$ then $(h_2, g_2)$ is a Nash equilibrium.
+Second, poker is usually played as a repeated game. The Nash equilibria will depend on the true probability $p$ that $S$ has a winning hand. For example, if $p = \frac{1}{2}$ then $(h_2, g_2)$ is a Nash equilibrium.
 
 To conclude our discussion of this simple game, let us give it in somewhat more formal language. First we define the sender $S = (t, \Sigma, \mu_S, H)$, where:
 \begin{itemize}
@@ -102,7 +106,7 @@ To conclude our discussion of this simple game, let us give it in somewhat more 
 
 \noindent Next we have the receiver $R = (\pi, A, \mu_R, G)$, where:
 \begin{itemize}
-	\item $\pi(\cdot|\sigma) \in \Pi$ is a conditional distribution over $T$ given $\sigma \in \Sigma$.
+	\item $\pi(\cdot|\sigma) \in \Pi$ is a conditional distribution over $T$ given $\sigma$, an element of $\Sigma$.
 	\item $A = \lbrace 0, 1 \rbrace$ is the set of actions. 0 corresponds to fold and 1 to call.
 	\item $\mu_R: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is defined as:
 		\begin{equation}
@@ -111,12 +115,11 @@ To conclude our discussion of this simple game, let us give it in somewhat more 
 	\item $G = \lbrace g | g: \Sigma \times \Pi \rightarrow A \rbrace$ is the receiver's strategy set.
 \end{itemize}
 
-\noindent These are the utility functions used to generate \ref{simplepokerpayoffs}. We introduce the strategy sets $H$ and $G$ to naturally constrain the complexity of strategies which can be used.
+\noindent These are the utility functions used to generate Table \ref{simplepokerpayoffs} above. We introduce the strategy sets $H$ and $G$ to naturally constrain the strategies which can be used.
 
-NOTE: I am trying to add this here because I want to be able to talk about finding solutions for games like I talk about straightforward machine learning problems, e.g. training and testing with examples, imagining repeated games as online learning problems, and using gradient based optimization. So I want parameterized strategies and I want differentiable utility functions.
+NOTE: I added strategy sets here because I want to be able to talk about finding solutions for games like I talk about straightforward machine learning problems, e.g. training and testing with examples, imagining repeated games as online learning problems, and using gradient based optimization. So I want parameterized strategies and I want differentiable utility functions.
 
-Finally we give the iterated version of the game.
-
+Finally we give an algorithmic representation of the iterated version of the game:
 \begin{algorithm}
 	\caption{Simple Poker}\label{simplepokeralgo}
 	\begin{algorithmic}[1]
@@ -125,8 +128,7 @@ Finally we give the iterated version of the game.
 		\STATE $\tau \leftarrow sample(T)$
 		\STATE $\sigma \leftarrow h(\tau)$
 		\STATE $\alpha \leftarrow g(\sigma, \pi)$
-		\STATE $\pi_{t+1}(\cdot|\sigma) \leftarrow BayesianUpdate(\pi_t(\cdot|\sigma))$
-		\IF{$\tau = \alpha$} \STATE something \ENDIF
+		\IF{$\tau = \alpha$} \STATE TODO \ENDIF
 	\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
@@ -143,28 +145,24 @@ look at randomized weighted majority algorithm
 
 \section{Online Advertising via Signaling Games}
 
-In this twist on the signaling game, we depict basic online advertising interaction. The sender is an advertiser and the receiver a consumer. The advertiser sends ads to consumer
+NOTE: section 1, working title "Themes of Online Advertising", will introduce all the lingo I use here
 
-Let $U^D$ be the set of unit vectors in dimension $D$.
+In this twist on the signaling game, we depict the bread and butter of online advertising: interaction with ad content chosen using consumer data. The sender $S$ is an advertiser and the receiver $R$ a consumer.
 
-First we have the sender $S = (\tau_S, \pi_S, \Sigma, \mu_S, H)$, where:
+Let us begin this time with a more formal statement. First we have the sender $S = (\tau_S, \pi_S, \Sigma, \mu_S, H)$, where:
 \begin{itemize}
 	\item $\tau_S \in T_S = U^D$. $\tau_S$ is the type of $S$. $T_S$ is the type space of $S$.
 	\item $\pi_S$ is a probability distribution over $T_R$, the type space of $R$.
 	\item Signal space $\Sigma = U^D$.
 	\item Utility function $\mu_S: T_S \times \Sigma \times A \rightarrow \mathbb{R}$ is defined as:
 	\begin{equation}
-		\mu_S(\tau_S, \delta, \alpha) = \langle \tau_S, \delta \rangle + \alpha
+		\mu_S(\tau_S, \sigma, \alpha) = \langle \tau_S, \sigma \rangle + \alpha
 	\end{equation}
 	\item Strategy set $H$ is defined as:
 	\begin{equation}
 		H = \lbrace h | h(\tau_S, \pi_S; \lambda) = \frac{\lambda \tau_S + (1-\lambda)\underset{x\sim\pi_S}{E}\lbrack x \rbrack}{Z}; 0 \le \lambda \le 1 \rbrace
 	\end{equation}
 \end{itemize}
-
-\noindent $S$ is limited by the strategy set $H$ to signals which are a normalized convex combination of $\tau_S$ and $\underset{x\sim\pi_S}{E}\lbrack x \rbrack$, the average type according to the prior $\pi_S$.
-
-QUESTION: what is corresponding rotation instead of the normalized convex combination?
 
 \noindent Next we have the receiver $R = (\tau_R, \pi_R, A, \mu_R, G)$, where:
 \begin{itemize}
@@ -177,17 +175,39 @@ QUESTION: what is corresponding rotation instead of the normalized convex combin
 	\end{equation}
 	\item Strategy set $G$ is defined as:
 	\begin{equation}
-		G = \lbrace g | g(\tau_R, \delta; \theta) = 1_{\langle \tau_R, \delta \rangle > \theta}; 0 \le \theta \le 1 \rbrace
+		G = \lbrace g | g(\tau_R, \sigma; \theta) = 1_{\langle \tau_R, \sigma \rangle > \theta}; 0 \le \theta \le 1 \rbrace
 	\end{equation}
 \end{itemize}
 
-\noindent $R$ is limited by the strategy set $G$ to threshold functions of the inner product $\langle \tau_R, \delta \rangle$.
+\noindent The first twist in this game is that both $S$ and $R$ have types $\tau_S$ and $\tau_R$ respectively. These types are $D$-dimensional unit vectors. Each component of these vectors can be interpreted as an affinity for a product category. We can compare the types of $S$ and $R$ to determine the suitability of the advertiser's products for the consumer. Similarly both $S$ and $R$ have priors $\pi_S$ and $\pi_R$ over the other player's type space.
+
+Furthermore, the ad $\sigma$ is also a $D$-dimensional unit vector. Once again we can interpret the components as product category affinities and imagine that the ad promotes certain types of products. The action $\alpha$ is binary, corresponding to whether or not the consumer clicks on the ad.
+
+The sender's utility function $\mu_S$ punishes advertisers for deception, i.e. the advertiser incurs a cost as the ad differs from the advertiser's type. The advertiser is rewarded for clicks. The advertiser is indifferent to who he sells his product to.
+
+The receiver's utility function $\mu_R$ is zero unless the receiver clicks. If so $R$ is rewarded in proportion to the similarity of $\tau_S$ and $\tau_R$. This is interesting because if the sender clicks on an ad for an unsuitable advertiser, they will incur a cost. Since $\tau_S$ is unknown to $R$, $R$ must decide to click based on the signal $\sigma$ and the prior $\pi_R$, just like the standard case.
+
+These utility functions are common knowledge. Thus the consumer knows that $\sigma$ may only stray from $\tau_S$ so far before the advertiser incurs a penalty.
+
+$S$ is limited by the strategy set $H$ to signals which are a normalized convex combination of $\tau_S$ and $\underset{x\sim\pi_S}{E}\lbrack x \rbrack$, the average type according to the prior $\pi_S$. The parameter $\lambda$ more or less corresponds to $S$'s level of deception.
+
+QUESTION: what is corresponding rotation instead of the normalized convex combination?
+
+$R$ is limited by the strategy set $G$ to threshold functions of the inner product $\langle \tau_S, \sigma \rangle$. The parameter $\theta$ determines how conservatively $R$ clicks.
 
 In the iterated game, each player wants to tune their parameter ($\lambda$ for senders and $\theta$ for receivers) to be optimal against the population of opposing players. The simulation will be a sort of parallel stochastic gradient descent in which players are randomly paired to play against each other, execute their current strategy, then receive their payoff. Payoff functions are public knowledge so players are able to make inferences about the distribution of types in the population and thereby pick a direction and learning rate for gradient descent.
 
-Loss in the iterated game is average regret after $\eta$ rounds. We expose the types of the players when we give payoffs but not their identity, i.e. players cannot recognize each other after meeting.
+Loss in the iterated game is average regret after $\eta$ rounds. We expose the types of the players when we give payoffs but not their identity, i.e. players cannot recognize each other after meeting. By exposing the types we make this into a supervised online learning problem for each player.
 
 %TODO: extend $\lambda$ and $\theta$ to higher dimension somehow so we end up with many parameters and so have gradient descent method that uses prior for direction and learning rate
+
+
+\subsection{possible generalizations and future directions}
+
+\begin{itemize}
+	\item richer engagement with the ad e.g. higher dimensional
+	\item ads needed to be suited to both context (current webpage or content request) and consumer type
+\end{itemize}
 
 \section{References}
 
