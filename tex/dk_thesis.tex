@@ -1,3 +1,4 @@
+
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
@@ -10,9 +11,6 @@
 \usepackage{float}
 \restylefloat{table}
 
-\usepackage{algorithm}
-\usepackage{algorithmic}
-%\usepackage[noend]{algpseudocode}
 
 \usepackage[english]{babel}
 
@@ -26,6 +24,9 @@
 
 \usepackage{tikz}
 \usetikzlibrary{trees}
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 \title{Signaling Game Ad Exchange}
 
@@ -158,6 +159,9 @@ Let us begin this time with a more formal statement. First we have the sender $S
 	\begin{equation}
 		\mu_S(\tau_S, \sigma, \alpha) = \langle \tau_S, \sigma \rangle + \alpha
 	\end{equation}
+	\begin{equation}
+		\mu_S = \langle \tau_S, \sigma \rangle + \alpha \langle \sigma, \tau_R \rangle
+	\end{equation}
 	\item Strategy set $H$ is defined as:
 	\begin{equation}
 		H = \lbrace h | h(\tau_S, \pi_S; \lambda) = \frac{\lambda \tau_S + (1-\lambda)\underset{x\sim\pi_S}{E}\lbrack x \rbrack}{Z}; 0 \le \lambda \le 1 \rbrace
@@ -172,6 +176,9 @@ Let us begin this time with a more formal statement. First we have the sender $S
 	\item Utility function $\mu_R: T_S \times T_R \times A \rightarrow \mathbb{R}$ is defined as:
 	\begin{equation}
 		\mu_R(\tau_S, \tau_R, \alpha) = \alpha \langle \tau_S, \tau_R \rangle
+	\end{equation}
+	\begin{equation}
+		\mu_R = \langle \tau_R, \sigma \rangle + \alpha \langle \sigma, \tau_S \rangle
 	\end{equation}
 	\item Strategy set $G$ is defined as:
 	\begin{equation}
