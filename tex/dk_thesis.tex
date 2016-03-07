@@ -52,7 +52,16 @@ TODO
 
 \section{Themes of Online Advertising}
 
-\subsection{online advertising as a mascot for technological challenge}
+The goal of this thesis is demonstrate a game-theoretic application of machine learning in the domain of advertising. In particular, we model advertising interaction via signaling games and use online learning to search for Nash equilibria. Advertising is an appealing domain as it is a driving force in the success and expansion of the internet while simultaneously containing many challenging computer science problems.
+
+\subsection{Advertising as a Mascot for Technological Challenge}
+Advertising today motivates many challenging problems in computer science. The internet has opened the door to a new world of consumer interaction and data collection impossible to access via mediums such as television and print. As the internet becomes the primary ad medium\cite{iab1}, the most important questions surrounding strategy, measurement, and implementation quickly become questions which computer science is best equipped to answer.
+
+The most obvious problem posed by advertising today is the data size problem. Because so much activity on the internet can generate data potentially useful for developing advertising strategies, e.g. website analytics data or user demographic data, there is an incentive to store all such data for later sale to advertisers. This naturally leads to demand for distributed systems and other forms of highly scalable architecture as well as algorithms which are suited to that setting, motivating technologies such as MapReduce\cite{mapreduce1}.
+
+The next problem is what do with all this data. Advertising has become a playground for machine learning\cite{displayadsml1} as there is copious high-dimensional data being generated every second. Here all the classic machine learning problems like classification (labeling web pages), regression (bidding in auctions), ranking (selecting the best ad), and potentially even computer vision (tracking user engagement with ads) rear their heads.
+
+
 \subsection{online advertising as a land of secret types}
 \subsection{consumer data / third party data}
 \subsection{spam and fraud}
@@ -124,15 +133,23 @@ Finally we give an algorithmic representation of the iterated version of the gam
 \begin{algorithm}
 	\caption{Simple Poker}\label{simplepokeralgo}
 	\begin{algorithmic}[1]
+	\STATE $initialize(\pi_0, u_0, v_0)$
 	\STATE $\pi_0 \leftarrow \pi$
+	\STATE $u_0 \leftarrow 0$
+	\STATE $v_0 \leftarrow 0$
 	\FOR{$t = 1$ to $\eta$}
-		\STATE $\tau \leftarrow sample(T)$
-		\STATE $\sigma \leftarrow h(\tau)$
-		\STATE $\alpha \leftarrow g(\sigma, \pi)$
-		\IF{$\tau = \alpha$} \STATE TODO \ENDIF
+		\STATE $\tau_t \leftarrow sample(T)$
+		\STATE $\sigma_t \leftarrow h(\tau)$
+		\STATE $\alpha_t \leftarrow g(\sigma, \pi_t)$
+		\STATE $u_t \leftarrow \mu_S(\tau, \sigma, \alpha)$
+		\STATE $v_t \leftarrow \mu_R(\tau, \sigma, \alpha)$
 	\ENDFOR
 	\end{algorithmic}
 \end{algorithm}
+
+\subsection{Regret}
+
+An obvious way of expressing the quality of a strategy is to compare it with the best possible strategy. In this case, we could imagine a strategy that takes the 
 
 \newpage
 
@@ -186,13 +203,15 @@ Let us begin this time with a more formal statement. First we have the sender $S
 	\end{equation}
 \end{itemize}
 
-\noindent The first twist in this game is that both $S$ and $R$ have types $\tau_S$ and $\tau_R$ respectively. These types are $D$-dimensional unit vectors. Each component of these vectors can be interpreted as an affinity for a product category. We can compare the types of $S$ and $R$ to determine the suitability of the advertiser's products for the consumer. Similarly both $S$ and $R$ have priors $\pi_S$ and $\pi_R$ over the other player's type space.
+\noindent The first twist in this game is that both $S$ and $R$ have types $\tau_S$ and $\tau_R$ respectively. These types are $D$-dimensional unit vectors. Each component of these vectors can be interpreted as an affinity for a product category. We can compare the types of $S$ and $R$ to determine the suitability of the advertiser's products for the consumer. 
+
+Similarly both $S$ and $R$ have priors $\pi_S$ and $\pi_R$ over the other player's type space. We will express this as a regularization term in the strategy constraining how we will choose the direction and step size for gradient descent
 
 Furthermore, the ad $\sigma$ is also a $D$-dimensional unit vector. Once again we can interpret the components as product category affinities and imagine that the ad promotes certain types of products. The action $\alpha$ is binary, corresponding to whether or not the consumer clicks on the ad.
 
-The sender's utility function $\mu_S$ punishes advertisers for deception, i.e. the advertiser incurs a cost as the ad differs from the advertiser's type. The advertiser is rewarded for clicks. The advertiser is indifferent to who he sells his product to.
+The sender's utility function $\mu_S$ punishes advertisers for deception, i.e. the advertiser incurs a cost as the ad differs from the advertiser's type. The advertiser is rewarded for clicks, regardless of the type of the consumer.
 
-The receiver's utility function $\mu_R$ is zero unless the receiver clicks. If so $R$ is rewarded in proportion to the similarity of $\tau_S$ and $\tau_R$. This is interesting because if the sender clicks on an ad for an unsuitable advertiser, they will incur a cost. Since $\tau_S$ is unknown to $R$, $R$ must decide to click based on the signal $\sigma$ and the prior $\pi_R$, just like the standard case.
+The receiver's utility function $\mu_R$ is zero unless the receiver clicks. If so $R$ receives utility in proportion to the similarity of $\tau_S$ and $\tau_R$. This is interesting because if the sender clicks on an ad for an unsuitable advertiser, i.e. where $\langle \tau_S, \tau_R \rangle < 0$, they will incur a cost. Since $\tau_S$ is unknown to $R$, $R$ must decide to click based on the signal $\sigma$ and the prior $\pi_R$, just like the standard case.
 
 These utility functions are common knowledge. Thus the consumer knows that $\sigma$ may only stray from $\tau_S$ so far before the advertiser incurs a penalty.
 
