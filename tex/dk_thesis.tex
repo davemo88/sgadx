@@ -48,16 +48,23 @@
 
 The goal of this paper is to demonstrate an application of game theory and machine learning in advertising. In particular, we model advertising interaction via signaling games and imagine the players as online learning algorithms. Advertising is an appealing domain as it is a driving force in the success of the internet and motivates many challenging computer science problems.
 
-\subsection{Online Advertising}
-As the internet becomes the primary ad medium\cite{iab1}, advertising strategy, measurement, and implementation increasingly rely on big data, machine learning, and cloud computing.  
+\subsection{Advertising}
+Advertising has powered the growth of the internet. As the internet becomes the primary ad medium\cite{iab1}, advertising strategy, measurement, and implementation increasingly rely on big data, machine learning, and cloud computing. However advertising has also motivated concerns about privacy.
 
-Because so much activity on the internet generates data potentially useful in advertising strategy, e.g. website analytics data or user demographic data, there is an incentive to store an enormous amount of data for later sale to advertisers. In turn, advertisers need data storage and processing frameworks which are suited to that setting, e.g. MapReduce\cite{mapreduce1}. All of this new data has provoked interest in techniques that can make sense of it. Thus computational advertising has emerged \cite{bottou2013counterfactual}. Advertising is ripe for the application of machine learning and data science, e.g. targeted advertising \cite{displayadsml1}, ad evaluation \cite{abhishek2012media}, and real-time bidding algorithms \cite{yuan2014survey}. Tech giants Google and Facebook do pioneering work in computer science and are built on the back of advertising \cite{googlerevenue}.
+Much of the activity on the internet generates data potentially useful in advertising strategy, e.g. website analytics data or user demographic data. There is an incentive to store an enormous amount of data for use by advertisers. In turn, advertisers need data storage and processing frameworks which are suited to that setting, e.g. MapReduce\cite{mapreduce1}. All of this new data has provoked interest in techniques that can make sense of it, e.g. targeted advertising \cite{displayadsml1}, ad evaluation \cite{abhishek2012media}, and real-time bidding algorithms \cite{yuan2014survey}. Tech giants Google and Facebook do pioneering work in computer science and are built on the back of advertising \cite{googlerevenue}.
 
+\subsection{Secret Types}
 
+It is precisely all this data that inspires privacy concerns. Advertisers and ad tech businesses want to collect as much data as they can about consumers to better inform their strategic decisions. There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to share or persist. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer.
 
-\subsection{online advertising as a land of secret types}
+For instance, a consumer may be offered a product at a higher price depending on their personal data. In an extreme example they might be denied a service altogether. Imagine Joe has a minor condition he doesn't know about. He applies for health insurance and is told he must pay a higher rate because of the condition. When he asks how he is known to have the condition, he learns his DNA matched DNA collected anonymously by a subway turnstyle which was analyzed and found to have the condition.
+
 \subsection{consumer data / third party data}
+
 \subsection{spam and fraud}
+
+
+
 \subsection{game theory}
 
 \section{Signaling Games}
