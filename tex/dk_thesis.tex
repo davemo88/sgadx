@@ -45,20 +45,13 @@
 
 \section{Introduction}
 
-TODO
+The goal of this paper is to demonstrate an application of game theory and machine learning in advertising. In particular, we model advertising interaction via signaling games and imagine the players as online learning algorithms. Advertising is an appealing domain as it is a driving force in the success of the internet and motivates many challenging computer science problems.
 
-\newpage
+\subsection{Online Advertising}
+As the internet becomes the primary ad medium\cite{iab1}, advertising strategy, measurement, and implementation increasingly rely on big data, machine learning, and cloud computing.  
 
-\section{Themes of Online Advertising}
+Because so much activity on the internet generates data potentially useful in advertising strategy, e.g. website analytics data or user demographic data, there is an incentive to store an enormous amount of data for later sale to advertisers. In turn, advertisers need data storage and processing frameworks which are suited to that setting, e.g. MapReduce\cite{mapreduce1}. All of this new data has provoked interest in techniques that can make sense of it. Thus computational advertising has emerged \cite{bottou2013counterfactual}. Advertising is ripe for the application of machine learning and data science, e.g. targeted advertising \cite{displayadsml1}, ad evaluation \cite{abhishek2012media}, and real-time bidding algorithms \cite{yuan2014survey}. Tech giants Google and Facebook do pioneering work in computer science and are built on the back of advertising \cite{googlerevenue}.
 
-The goal of this thesis is demonstrate a game-theoretic application of machine learning in the domain of advertising. In particular, we model advertising interaction via signaling games and use online learning to search for Nash equilibria. Advertising is an appealing domain as it is a driving force in the success and expansion of the internet while simultaneously containing many challenging computer science problems.
-
-\subsection{Advertising as a Mascot for Technological Challenge}
-Advertising today motivates many challenging problems in computer science. The internet has opened the door to a new world of consumer interaction and data collection impossible to access via mediums such as television and print. As the internet becomes the primary ad medium\cite{iab1}, the most important questions surrounding strategy, measurement, and implementation quickly become questions which computer science is best equipped to answer.
-
-The most obvious problem posed by advertising today is the data size problem. Because so much activity on the internet can generate data potentially useful for developing advertising strategies, e.g. website analytics data or user demographic data, there is an incentive to store all such data for later sale to advertisers. This naturally leads to demand for distributed systems and other forms of highly scalable architecture as well as algorithms which are suited to that setting, motivating technologies such as MapReduce\cite{mapreduce1}.
-
-The next problem is what do with all this data. Advertising has become a playground for machine learning\cite{displayadsml1} as there is copious high-dimensional data being generated every second. Here all the classic machine learning problems like classification (labeling web pages), regression (bidding in auctions), ranking (selecting the best ad), and potentially even computer vision (tracking user engagement with ads) rear their heads.
 
 
 \subsection{online advertising as a land of secret types}
@@ -217,9 +210,6 @@ $R$ is limited by the strategy set $G$ to threshold functions of the inner produ
 In the iterated game, each player wants to tune their parameter ($\lambda$ for senders and $\theta$ for receivers) to be optimal against the population of opposing players. The simulation will be a sort of parallel stochastic gradient descent in which players are randomly paired to play against each other, execute their current strategy, then receive their payoff. Payoff functions are public knowledge so players are able to make inferences about the distribution of types in the population and thereby pick a direction and learning rate for gradient descent.
 
 Loss in the iterated game is average regret after $\eta$ rounds. We expose the types of the players when we give payoffs but not their identity, i.e. players cannot recognize each other after meeting. By exposing the types we make this into a supervised online learning problem for each player.
-
-%TODO: extend $\lambda$ and $\theta$ to higher dimension somehow so we end up with many parameters and so have gradient descent method that uses prior for direction and learning rate
-
 
 \subsection{possible generalizations and future directions}
 
