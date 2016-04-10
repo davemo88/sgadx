@@ -11,7 +11,6 @@
 \usepackage{float}
 \restylefloat{table}
 
-
 \usepackage[english]{babel}
 
 \usepackage{setspace}
@@ -28,7 +27,9 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 
-\title{Signaling Game Ad Exchange}
+\usepackage{todonotes}
+
+\title{Master's Thesis: Ads via Signaling Games}
 
 \author{David Kasofsky}
 
@@ -46,38 +47,39 @@
 
 \section{Introduction}
 
-The goal of this paper is to demonstrate an application of game theory and machine learning in advertising. In particular, we model advertising interaction via signaling games and imagine the players as online learning algorithms. Advertising is an appealing domain as it is a driving force in the success of the internet and motivates many challenging computer science problems.
+The goal of this paper is to demonstrate an application of game theory and machine learning in advertising. In particular, we model advertising interaction via signaling games and imagine the players as machine learning algorithms. Advertising is an appealing domain as it is a driving force in the success of the internet and motivates many challenging computer science problems.
 
-\subsection{Advertising}
-Advertising has powered the growth of the internet. As the internet becomes the primary ad medium\cite{iab1}, advertising strategy, measurement, and implementation increasingly rely on big data, machine learning, and cloud computing. However advertising has also motivated concerns about privacy.
+\section{Advertising}
+Advertising has powered the growth of the internet. As the internet becomes the primary ad medium\cite{iab1}, advertising strategy, measurement, and implementation increasingly rely on big data, machine learning, and cloud computing. However twenty first century advertising has also motivated concerns about privacy.
 
-Much of the activity on the internet generates data potentially useful in advertising strategy, e.g. website analytics data or user demographic data. There is an incentive to store an enormous amount of data for use by advertisers. In turn, advertisers need data storage and processing frameworks which are suited to that setting, e.g. MapReduce\cite{mapreduce1}. All of this new data has provoked interest in techniques that can make sense of it, e.g. targeted advertising \cite{displayadsml1}, ad evaluation \cite{abhishek2012media}, and real-time bidding algorithms \cite{yuan2014survey}. Tech giants Google and Facebook do pioneering work in computer science and are built on the back of advertising \cite{googlerevenue}.
-
-\subsection{Secret Types}
-
-It is precisely all this data that inspires privacy concerns. Advertisers and ad tech businesses want to collect as much data as they can about consumers to better inform their strategic decisions. There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to share or persist. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer.
-
-For instance, a consumer may be offered a product at a higher price depending on their personal data. In an extreme example they might be denied a service altogether. Imagine Joe has a minor condition he doesn't know about. He applies for health insurance and is told he must pay a higher rate because of the condition. When he asks how he is known to have the condition, he learns his DNA matched DNA collected anonymously by a subway turnstyle which was analyzed and found to have the condition.
-
-\subsection{consumer data / third party data}
-
-\subsection{spam and fraud}
+Much of the activity on the internet generates data potentially useful in advertising strategy, e.g. website analytics data or user demographic data. There is an incentive to store an enormous amount of data for use by advertisers. In turn, advertisers need data storage and processing frameworks which are suited to this setting, e.g. MapReduce\cite{mapreduce1}. All of this new data has generated interest in techniques that can make sense of it, e.g. targeted advertising \cite{displayadsml1}, ad evaluation \cite{abhishek2012media}, and real-time bidding algorithms \cite{yuan2014survey}. Tech giants Google and Facebook are built on the back of advertising \cite{googlerevenue}.\todo{could also mention ranking and search engines}
 
 
 
-\subsection{game theory}
+\subsection{Consumer Data}
+In particular, advertisers want consumer data. 
+
+Advertisers' hunger for consumer data has not only inspired techniques for data storage and processing but also data generation and collection. There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to share or persist. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer. In the worst case, the business is able to unduly exploit the consumer.
+
+For instance, a consumer may be offered a product at a higher price depending on their personal data. In an extreme example they might be denied a service altogether. Imagine Joe has a minor condition he doesn't know about. He applies for health insurance and is told he must pay a higher rate because of the condition. When he asks how he is known to have the condition, he learns his DNA matched DNA collected anonymously by a subway turnstyle which was analyze d and found to have the condition. While this is clearly a bit of hyperbole, virtually every website aspires to be like that turnstyle and scrape the most data they can off the user.x
+
+\subsection{Deception}
+this section sucks
+
+Access to consumers' personal data gives advertisers an information advantage, especially since consumers rarely if ever get a peek at the internal data of an advertiser. For example: consumers don't know how valuable they are to advertisers but advertisers can estimate the value of each consumer. This advantage can be used deceptively by advertisers, e.g. to play to the consumers' tastes. This can be as simple as sending different ads to different types of users.
+
+This deception can be harmful to consumers. If advertisers are maximally deceptive and forego honest representation of their products to instead appeal to consumers, consumers will eventually learn not to trust advertisers. Proverb: You can shear a sheep every so often but only skin him once. The better advertisers can predict consumer types, the better they can select appealing ads. The capability to engage consumers who would normally not consider the advertiser's products naturally prompts the advertiser to wonder how far one might.....
+
+However, as we know \cite{phishing for phools}, consumers are not equipped to consistently make the best rational decisions and so this unduly exploitation may continue.
 
 \section{Signaling Games}
 
-A Signaling Game is a two-player game of information asymmetry. The sender $S$ has a secret type $\tau \in T$ unknown to the receiver $R$, who merely has a prior $\pi$ over $T$. $S$ sends a signal $\sigma$ to $R$ who then performs an action $\alpha$. Players receive payoffs depending on the action $\alpha$, signal $\sigma$, and secret type $\tau$. This statement of the game is inspired by Sobel\cite{sobel1}.
+A Signaling Game is a two-player game of information asymmetry. The sender $S$ has a secret type $\tau \in T$ unknown to the receiver $R$. $S$ sends a signal $\sigma$ to $R$ who then performs an action $\alpha$. Players receive payoffs depending on the action $\alpha$, signal $\sigma$, and secret type $\tau$. This statement of the game is inspired by Sobel\cite{sobel1}.
 
-Signaling games appear in many interesting places: in mate selection by Zahavi\cite{zahavi1} and Grafen\cite{grafen1}, in job markets by Spence[3], in TODO by Crawford\cite{crawford1} and in cybersecurity by Casey\cite{casey1}\cite{casey2}\cite{casey3}. To build our intuition, we will start with an example from Poker.
+Signaling games appear in many interesting places: in mate selection by Zahavi\cite{zahavi1} and Grafen\cite{grafen1}, in job markets by Spence[3], in TODO by Crawford\cite{crawford1} and in cybersecurity by Casey\cite{casey1}\cite{casey2}\cite{casey3}.
+
 
 \subsection{Simple Poker}
-
-Poker is a great example of a signaling game because it neatly displays the depth of strategic interaction with asymmetric information. It showcases deception, a hallmark of the signaling game, by challenging players to induce their opponents to make mistakes.
-
-TODO: more colorful inspiration / motivation here
 
 Consider a simplified version of two-player poker. The sender $S$ is dealt either a winning hand or a losing hand and may check or bet. The receiver $R$ then may fold or call. The payoff matrix in \ref{simplepokerpayoffs} shows the poker-inspired messages, actions, and payoffs.
 
@@ -87,83 +89,53 @@ Consider a simplified version of two-player poker. The sender $S$ is dealt eithe
 	\label{simplepokerpayoffs}
 	\begin{tabular}{ll|l|l|}
 		\cline{3-4}
+
+Suppose $S$ has a winning hand. Then bet dominates check for $S$ and fold dominates call for $R$. However if $S$ has a losing hand then the opposite is true. Say $S$ bets all winners 
 		&       & \textbf{Fold} & \textbf{Call} \\ \hline
-		\multicolumn{1}{|l|}{$\tau=\textbf{Winner}$} & \textbf{Check} & (1,0)  & (1,0)  \\ \cline{2-4}
-		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,0)  & (2,-1)  \\ \hline
-		\multicolumn{1}{|l|}{$\tau=\textbf{Loser}$}  & \textbf{Check} & (1,0)  & (0,1)  \\ \cline{2-4}
-		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,0)  & (-1,2) \\ \hline
+		\multicolumn{1}{|l|}{$\tau=\textbf{Winner}$} & \textbf{Check} & (1,-1)  & (1,-1)  \\ \cline{2-4}
+		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,-1)  & (2,-2)  \\ \hline
+		\multicolumn{1}{|l|}{$\tau=\textbf{Loser}$}  & \textbf{Check} & (1,-1)  & (-1,1)  \\ \cline{2-4}
+		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,-1)  & (-2,2) \\ \hline
 	\end{tabular}
-\end{table}
+\end{table}and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
 
-Suppose $S$ has a winning hand. Then bet dominates check for $S$ and fold dominates call for $R$. However if $S$ has a losing hand then check dominates bet for $S$ and call dominates fold for $R$. The aforementioned mistakes $S$ wants to induce are for $R$ to call with $S$ has a winning hand and to fold when $S$ has a losing hand.
+In considering $R$'s best response to $h_2$, we stumble across several interesting points. The first is that if $S$ bets every hand, i.e. the sender always sends the same signal regardless of the secret type, then $R$ cannot infer any information about the secret type from the signal. If this is the case, then $R$ has to make a guess about the sender's type $\tau$. For instance $R$ may guess that $S$ has a winning hand half the time, i.e. $P(\tau = \textbf{Winner}) = \frac{1}{2}$. Then $R$ could randomize uniformly between calling and folding ($g_2$). When in fact $p = \frac{1}{2}$ then $(h_2, g_2)$ is a Nash equilibrium.
 
-So say $S$ bets all winners and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
+Second, poker is usually played as a repeated game. The Nash equilibria will depend on the true probability $p$ that $S$ has a winning hand. For example,
 
-In considering $R$'s best response to $h_2$, we stumble across several interesting points. The first is that if $S$ bets every hand, i.e. the sender always sends the same signal regardless of the secret type, then $R$ cannot infer any information about the secret type from the signal. If this is the case, then $R$ can only rely on prior beliefs about the secret type. For instance $R$ may believe that $S$ has a winning hand half the time. Then $R$ could randomize uniformly between calling and folding ($g_2$).
-
-Second, poker is usually played as a repeated game. The Nash equilibria will depend on the true probability $p$ that $S$ has a winning hand. For example, if $p = \frac{1}{2}$ then $(h_2, g_2)$ is a Nash equilibrium.
-
-To conclude our discussion of this simple game, let us give it in somewhat more formal language. First we define the sender $S = (t, \Sigma, \mu_S, H)$, where:
+For a more formal statement of the game, we define $\left(T, \Sigma, A, \mu_S, \mu_R, \right)$, where:
 \begin{itemize}
-	\item $\tau \in T = \lbrace 0, 1 \rbrace$ is the type of $S$. 0 corresponds to loser and 1 to winner.
-	\item $\Sigma = \lbrace 0, 1 \rbrace$ is the set of signals. 0 corresponds to check and 1 to bet.
-	\item $\mu_S: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is defined as:
+	\item $T = \lbrace 0, 1 \rbrace$ is the type set. To begin we chose some $\tau \in T$ as the type of $S$. 0 corresponds to loser and 1 to winner.
+	\item $\Sigma = \lbrace 0, 1 \rbrace$ is the signal set. 0 corresponds to check and 1 to bet.
+		\item $A = \lbrace 0, 1 \rbrace$ is the action set. 0 corresponds to fold and 1 to call.
+	\item $\mu_S: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is the sender's utility function:
 		\begin{equation}
 \mu_S(\tau, \sigma, \alpha) = \tau(1+\sigma\alpha) + (1-\tau)(1-\sigma\alpha-\alpha)
 		\end{equation}
-	\item $H = \lbrace h | h: \tau \rightarrow \Sigma \rbrace$ is the sender's strategy set.
-\end{itemize}
-
-\noindent Next we have the receiver $R = (\pi, A, \mu_R, G)$, where:
-\begin{itemize}
-	\item $\pi(\cdot|\sigma) \in \Pi$ is a conditional distribution over $T$ given $\sigma$, an element of $\Sigma$.
-	\item $A = \lbrace 0, 1 \rbrace$ is the set of actions. 0 corresponds to fold and 1 to call.
-	\item $\mu_R: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is defined as:
+	\item $\mu_R: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is the receiver's utility function:
 		\begin{equation}
 \mu_R(\tau, \sigma, \alpha) = \tau(-\sigma\alpha) + (1-\tau)(\sigma\alpha+\alpha)
 		\end{equation}
-	\item $G = \lbrace g | g: \Sigma \times \Pi \rightarrow A \rbrace$ is the receiver's strategy set.
 \end{itemize}
 
-\noindent These are the utility functions used to generate Table \ref{simplepokerpayoffs} above. We introduce the strategy sets $H$ and $G$ to naturally constrain the strategies which can be used.
+\noindent These are the utility functions used to generate Table \ref{simplepokerpayoffs} above.
 
-NOTE: I added strategy sets here because I want to be able to talk about finding solutions for games like I talk about straightforward machine learning problems, e.g. training and testing with examples, imagining repeated games as online learning problems, and using gradient based optimization. So I want parameterized strategies and I want differentiable utility functions.
+\section{Learning and Games}
+    
 
-Finally we give an algorithmic representation of the iterated version of the game:
-\begin{algorithm}
-	\caption{Simple Poker}\label{simplepokeralgo}
-	\begin{algorithmic}[1]
-	\STATE $initialize(\pi_0, u_0, v_0)$
-	\STATE $\pi_0 \leftarrow \pi$
-	\STATE $u_0 \leftarrow 0$
-	\STATE $v_0 \leftarrow 0$
-	\FOR{$t = 1$ to $\eta$}
-		\STATE $\tau_t \leftarrow sample(T)$
-		\STATE $\sigma_t \leftarrow h(\tau)$
-		\STATE $\alpha_t \leftarrow g(\sigma, \pi_t)$
-		\STATE $u_t \leftarrow \mu_S(\tau, \sigma, \alpha)$
-		\STATE $v_t \leftarrow \mu_R(\tau, \sigma, \alpha)$
-	\ENDFOR
-	\end{algorithmic}
-\end{algorithm}
+\subsection{Bayesian Games}
 
 \subsection{Regret}
 
-An obvious way of expressing the quality of a strategy is to compare it with the best possible strategy. In this case, we could imagine a strategy that takes the 
+\subsection{Weighted Majority}
 
-\newpage
+\subsection{Swap Regret}
 
-\section{recommenders \& verifiers}
+\subsection{Correlated Equilibrium}
 
-online prediction with expert advice
+\section{Advertising Interaction via Signaling Games}
 
-look at online learning lecture: \emph{http://www.cims.nyu.edu/~mohri/amls/online\_learning\_basics.pdf}
-
-look at randomized weighted majority algorithm
-
-\section{Online Advertising via Signaling Games}
-
-NOTE: section 1, working title "Themes of Online Advertising", will introduce all the lingo I use here
+NOTE: section 1, working title "Advertising", will introduce all the lingo I use here
 
 In this twist on the signaling game, we depict the bread and butter of online advertising: interaction with ad content chosen using consumer data. The sender $S$ is an advertiser and the receiver $R$ a consumer.
 
