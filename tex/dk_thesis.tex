@@ -20,14 +20,15 @@
 
 \usepackage{bm}
 
-% \usepackage{tikz}
-% \usetikzlibrary{trees}
-
-% \usepackage{algorithm}
-% \usepackage{algorithmic}
+\usepackage{algorithm}
+%\usepackage{algorithmic}
+\usepackage{algpseudocode}
 
 \usepackage{todonotes}
 \usepackage{hyperref}
+
+% \usepackage{tikz}
+% \usetikzlibrary{trees}
 
 \title{Master's Thesis: Ads via Signaling Games}
 
@@ -56,15 +57,30 @@ Much of the activity on the internet generates data potentially useful in advert
 
 There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to share or persist. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer. Consumers can be manipulated into making certain decisions \cite{akerlof2015phishing} and thus there is a balance to be struck between advertiser collection and exploitation of consumer data and consumer privacy.
 
+\todo{too abrupt need to extend}
 Real-time bidding and personalized advertising are great examples of techniques in common use today. Advertisers use consumers' personal data in determining bid amounts in ad auctions as well as specific ad content to be shown. The main idea of this paper is to model personalized advertising as a game played by machine learning algorithms.
 
 \section{Signaling Games}
 
-A Signaling Game is a two-player game of information asymmetry. Signaling games appear in many interesting places: in mate selection by Zahavi\cite{zahavi1} and Grafen\cite{grafen1}, in job markets by Spence\cite{spence1}, in bargaining by Crawford\cite{crawford1982strategic} and in cybersecurity by Casey\cite{casey1}\cite{casey2}\cite{casey3}. Skyrms describes how signaling permeates life from bacteria up to humans \cite{skyrms2010signals}.
+A Signaling Game is a two-player game of information asymmetry. Signaling games appear in many interesting places: in mate selection by Grafen\cite{grafen1}, in job markets by Spence\cite{spence1973job}, in bargaining by Crawford\cite{crawford1982strategic} and in cybersecurity by Casey\cite{casey1}\cite{casey2}\cite{casey3}. Skyrms describes how signaling permeates life from bacteria up to humanity \cite{skyrms2010signals}.
 
 A signaling game is a game of imperfect information or a Bayesian game\cite{harsanyi2004games}. Players begin the game with prior beliefs about whatever information is hidden and these priors naturally influence the players' strategic choices. In a signaling game, some information is hidden asymmetrically and so one player has an information advantage over the other. 
 
 The informed player is called the sender $S$ and the uninformed player the receiver $R$. The sender $S$ has a secret type $\tau \in T$ unknown to the receiver $R$. $S$ sends a signal $\sigma \in \Sigma$ to $R$ who then performs an action $\alpha \in A$. Players receive payoffs depending on the action $\alpha$, signal $\sigma$, and secret type $\tau$. This statement of the game is inspired by Sobel\cite{sobel1}.
+
+\subsection{In the Wild}
+
+Signaling games have been proposed as models in many disciplines. In 1973 Spence wrote about signaling games in the hiring process\cite{spence1973job}. Employers want to pay salaries commensurate with applicant' skill so applicants want to appear as skillful as possible. Applicant skill is the secret type $\tau$, the signal $\sigma$ is the application, and the employer's offer is the action $\alpha$. Spence concluded that deception by the applicant must be costly for the game to be interesting.
+
+Suppose each of $\tau, \sigma, \alpha$ lie in $[0,1]$. Then we could say $\mu_{\text{applicant}}(\tau, \sigma, \alpha)$ is decreasing in $\sigma$. The key would be so that $\mu_{\text{applicant}}$ decreases faster for small $\tau$ than large, i.e. it is more difficult for weaker applicants to produce strong applications. This is known as costly signaling and we employ it in our ad signaling game later on.
+
+About the same time a biologist named Zahavi \cite{zahavi1} formulated the hypothesis that animal handicaps like deer antlers and peacock plumage could be explained because fitter animals are better able to endure such handicaps. Zahavi mentioned this in the context of mate selection, suggesting that animals use handicaps to communicate fitness to potential mates.
+
+Grafen\cite{grafen1} later interpreted Zahavi's so-called handicap principle using game theory in the language of Smith\cite{smith1982evolution}. He reasoned that imposition of the handicap principle does not preclude the existence of evolutionarily stable signaling equilibrium in biological signaling systems. These biological signaling systems are signaling games, e.g. the secret type $\tau$ is the fitness of the animal and the message $\sigma$ its handicap. An evolutionarily stable strategy is a refinement of Nash equilibrium strategy.
+
+Crawford and Sobel\cite{crawford1982strategic} present a clean and mathematical description of signaling games. The authors start with the concept of Bayesian Nash Equilibrium, an extension of Nash equilibrium to games of imperfect information, as well as a notion of learning with Bayes' Rule. It is exciting to see learning appear here as we wish to examine signaling games through the lens of machine learning theory.
+
+Casey\cite{casey1} 
 
 \subsection{Definition of Signaling Game}
 To define a signaling game we specify the following:
@@ -77,7 +93,7 @@ To define a signaling game we specify the following:
     \item sender and receiver utility functions $\mu_S, \mu_R: T \times \Sigma \times A \longrightarrow \mathbb{R}$
 \end{itemize}
 
-\noindent Let $\alpha_\tau^* = \underset{\alpha \in A}{\text{max}} \mu_S(\tau, \cdot, \alpha)$, i.e. the action with maximum payoff to $S$. Similarly let $\tau_\alpha^* = \underset{\tau \in T}{\text{max}} \mu_R(\tau, \cdot, \alpha)$, i.e. the type with the maximum payoff to $R$ given the action $\alpha$. One could think of $\alpha_\tau^*$ as the action $S$ wishes he could get $R$ to perform if $S$ of type $\tau$ and $\tau_\alpha^*$ is the type $R$ hopes $S$ if $R$ performs action $\alpha$.
+\noindent Let $\alpha_\tau^* = \underset{\alpha \in A}{\text{max }} \mu_S(\tau, \cdot, \alpha)$, i.e. the action with maximum payoff to $S$. Similarly let $\tau_\alpha^* = \underset{\tau \in T}{\text{max }} \mu_R(\tau, \cdot, \alpha)$, i.e. the type with the maximum payoff to $R$ given the action $\alpha$. One could think of $\alpha_\tau^*$ as the action $S$ wishes he could get $R$ to perform if $S$ of type $\tau$ and $\tau_\alpha^*$ is the type $R$ hopes $S$ if $R$ performs action $\alpha$.
 
 Define the relations $f_S: T \rightarrow A$ and $f_R: A \rightarrow T$ as:
 \begin{align*}
@@ -85,21 +101,22 @@ Define the relations $f_S: T \rightarrow A$ and $f_R: A \rightarrow T$ as:
     f_R(\alpha) = \tau_\alpha^*
 \end{align*}
 
-Consider the following interpretation of the utility functions motivated by rate-distortion functions in information theory.  The utility functions are functions of the form:
-\begin{equation}
-    \mu_S(\tau, \sigma, \alpha) = I_S(\tau, \sigma) + \lambda_S d_S(f_S(\tau), \alpha)
-\label{sig_sender_util}
-\end{equation}\begin{equation}
-    \mu_R(\tau, \sigma, \alpha) = I_R(\sigma, \alpha) + \lambda_R d_R(f_R(\alpha), \tau)
-\label{sig_receiver_util}
-\end{equation}
-\noindent The first term in \autoref{sig_sender_util} measures the amount of information conveyed by the signal about the type. The second term measures the difference between the desired action $\alpha_\tau^* = f_S(\tau)$ and the action performed by the receiver $\alpha$. Likewise the first term in \autoref{sig_receiver_util} measures the information gleaned from the signal in determining the action and the second term measures the difference between the sender's type and the ideal type $\tau_\alpha^*$ given the action $\alpha$.
+% In Casey\cite{casey1} we find the following interpretation of the utility functions motivated by rate-distortion functions in information theory.  The utility functions are functions of the form:
+% \begin{equation}
+%     \mu_S(\tau, \sigma, \alpha) = I_S(\tau, \sigma) + \lambda_S d_S(f_S(\tau), \alpha)
+% \label{sig_sender_util}
+% \end{equation}\begin{equation}
+%     \mu_R(\tau, \sigma, \alpha) = I_R(\sigma, \alpha) + \lambda_R d_R(f_R(\alpha), \tau)
+% \label{sig_receiver_util}
+% \end{equation}
+% \noindent The first term in \autoref{sig_sender_util} measures the amount of information conveyed by the signal about the type. The second term measures the difference between the desired action $\alpha_\tau^* = f_S(\tau)$ and the action performed by the receiver $\alpha$. Likewise the first term in \autoref{sig_receiver_util} measures the information gleaned from the signal in determining the action and the second term measures the difference between the sender's type and the ideal type $\tau_\alpha^*$ given the action $\alpha$.
 
-This interpretation of the utility functions is a natural one. The message $\sigma$ in a signaling game conveys information about the secret type $\tau$. For example, suppose $\vert \Sigma \vert < \vert T \vert$. In this case it is not possible for $S$ to send a unique message for each type. Conversely $R$ cannot always deduce the type from the message and therefore cannot always perform the optimal action. When a message allows $R$ to deduce $\tau$, the information contained in the message is maximized. Furthermore there is no distortion, i.e. $R$ can choose $\alpha$ such that $f_R(\alpha) = \tau$. One could think of the type $\tau$ as data to be compressed via the signal $\sigma$.
+The message $\sigma$ in a signaling game conveys information about the secret type $\tau$. For example, suppose $\vert \Sigma \vert < \vert T \vert$. In this case it is not possible for $S$ to send a unique message for each type. Conversely $R$ cannot always deduce the type from the message and therefore cannot always perform the optimal action. When a message allows $R$ to deduce $\tau$, the information contained in the message is maximized. Furthermore there is no deception, i.e. $R$ can choose $\alpha$ such that $f_R(\alpha) = \tau$.
 
-However things are not quite so simple as the sender may wish to be deceptive. For instance, suppose $\tau \ne f_R(\alpha_\tau^*)$. In other words $S$ benefits most from an action that is undesirable for $R$. In this case $S$ wants to send a message that does \emph{not} convey the true value of $\tau$. $S$ wishes $R$ would believe $S$ is actually type $\tau^\prime = f_R(\alpha_\tau^*)$.
+However things are not quite so simple as the sender may wish to be deceptive. For instance, suppose $\tau \ne f_R(\alpha_\tau^*)$. In other words $S$ benefits most from an action that is undesirable for $R$. In this case $S$ wants to send a message that does \emph{not} convey the true value of $\tau$. $S$ wishes $R$ would believe $S$ is actually type $\tau^\prime = f_R(\alpha_\tau^*)$. The degree to which $S$ is successful is doing this 
 
 \subsection{Simple Poker}
+\label{ssec:SimplePoker}
 
 Here we have a toy example of a signaling game: a simplified version of two-player poker. The sender $S$ is dealt either a winning hand or a losing hand and may check or bet. The receiver $R$ then may fold or call. The payoff matrix in \autoref{simplepokerpayoffs} shows the poker-inspired messages, actions, and payoffs.
 
@@ -115,45 +132,43 @@ Here we have a toy example of a signaling game: a simplified version of two-play
 		\multicolumn{1}{|l|}{}        & \textbf{Bet}   & (1,-1)  & (-2,2) \\ \hline
 	\end{tabular}
 \end{table}
+
+For a more formal statement of the game, we define $\left(T, \Sigma, A, \mu_S, \mu_R, \right)$, where:
+\begin{itemize}
+    \item $T = \lbrace 0, 1 \rbrace$ is the type set. To begin we chose some $\tau \in T$ as the type of $S$. 0 corresponds to loser and 1 to winner.
+    \item $\Sigma = \lbrace 0, 1 \rbrace$ is the signal set. 0 corresponds to check and 1 to bet.
+        \item $A = \lbrace 0, 1 \rbrace$ is the action set. 0 corresponds to fold and 1 to call.
+    \item $\mu_S: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is the sender's utility function:
+        \begin{align*}
+\mu_S(\tau, \sigma, \alpha) = \tau(1+\sigma\alpha) + (1-\tau)(1-\sigma\alpha-\alpha)s
+        \end{align*}
+    \item $\mu_R: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is the receiver's utility function:
+        \begin{align*}
+\mu_R(\tau, \sigma, \alpha) = \tau(-\sigma\alpha) + (1-\tau)(\sigma\alpha+\alpha)
+        \end{align*}
+\end{itemize}
+
+Let $H$ be set of mixed strategies for $S$ and $G$ the set of mixed strategies for $R$. A Nash equilibrium is a pair of mixed strategies $(h,g)$ such that for all $h^\prime \in H$ and $g^\prime \in G$
+\begin{align*}
+    \mu_S(h^\prime,g) \le \mu_S(h,g) \land
+    \mu_R(h,g^\prime) \le \mu_R(h,g)
+\end{align*}
+
 A bet by the sender signals a winner and a check signals a loser. The receiver should fold if the sender has a winner and call if the sender has a loser. However the sender can bluff by betting with a loser and so there is the capacity for deception.
 
 Suppose $S$ has a winning hand. Then bet dominates check for $S$ and fold dominates call for $R$. When $S$ has a losing hand then the opposite is true. Say $S$ bets all winners and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
 
 In considering $R$'s best response to $h_2$, we stumble across several interesting points. The first is that if $S$ bets every hand, i.e. the sender always sends the same signal regardless of the secret type, then $R$ cannot infer any information about the secret type from the signal. If this is the case, then $R$ has to make a guess about the sender's type $\tau$. For instance $R$ may guess that $S$ has a winning hand half the time, i.e. $P(\tau = \textbf{Winner}) = \frac{1}{2}$. Then $R$ could randomize uniformly between calling and folding ($g_2$). If the guess is correct then $(h_2, g_2)$ is a Nash equilibrium.
 
-For a more formal statement of the game, we define $\left(T, \Sigma, A, \mu_S, \mu_R, \right)$, where:
-\begin{itemize}
-	\item $T = \lbrace 0, 1 \rbrace$ is the type set. To begin we chose some $\tau \in T$ as the type of $S$. 0 corresponds to loser and 1 to winner.
-	\item $\Sigma = \lbrace 0, 1 \rbrace$ is the signal set. 0 corresponds to check and 1 to bet.
-		\item $A = \lbrace 0, 1 \rbrace$ is the action set. 0 corresponds to fold and 1 to call.
-	\item $\mu_S: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is the sender's utility function:
-		\begin{align*}
-\mu_S(\tau, \sigma, \alpha) = \tau(1+\sigma\alpha) + (1-\tau)(1-\sigma\alpha-\alpha)
-\mu_S(\tau, \sigma, \alpha) = \tau(1+\sigma\alpha) + (1-\tau)(1-\sigma\alpha-\alpha)
-		\end{align*}
-	\item $\mu_R: T \times \Sigma \times A \longrightarrow \mathbb{R}$ is the receiver's utility function:
-		\begin{align*}
-\mu_R(\tau, \sigma, \alpha) = \tau(-\sigma\alpha) + (1-\tau)(\sigma\alpha+\alpha)
-\mu_R(\tau, \sigma, \alpha) = \tau(-\sigma\alpha) + (1-\tau)(\sigma\alpha+\alpha)
-		\end{align*}
-\end{itemize}
-
-Let us further examine the above utility functions in terms of our rate-distortion interpretation. \todo{write these utility functions in the rate-distortion form}
-
-\begin{align*}
-\end{align*}
-
-With this example under our belt, we have some 
-
-We are particularly interested in how players can learn to play equilibrium strategies in repeated signaling games. First we note that signaling games are not zero-sum in general and so the standard minimax theorem of von Neumann does not apply. In order to make satisfying progress in this vein we look to the theory of learning with expert advice, online learning, and regret minimization alrogithms. These are topics from the theory of machine learning.
+We are particularly interested in how players can learn to play equilibrium strategies in repeated signaling games. First we note that signaling games are not zero-sum in general and so the standard minimax theorem of von Neumann does not apply. In order to make satisfying progress in this vein we look to machine learning theory. In particular, we consider online learning, learning with expert advice, and regret minimization algorithms.
 
 \section{Signaling Games in Advertising}
 
 As mentioned, advertisers may tailor ad content for a specific consumer using that consumer's personal data. Here we cast this scenario as a signaling game. The advertiser is the sender and the consumer is the receiver. The sender's type describes the products that advertiser promotes. The message represents ad content. The action is the consumer's interaction with the ad.
 
-We imagine ourselves in the common online advertiser scenario. A consumer visits a web page on which an advertiser may display an ad. The advertiser whatever data is available about the consumer to choose the ad to displayed. Finally the consumer may click on the ad if they find it appealing. In this game both sender and receiver have types: the sender's corresponding to the products the advertiser promotes the receiver's corresponding to the consumer's favored products.
+We imagine ourselves in a common web scenario. A consumer visits a web page on which an advertiser may display an ad. The advertiser uses whatever data is available about the consumer to choose an ad to be displayed. The consumer clicks on the ad if they find it appealing. In this game both sender and receiver have types: the sender's corresponding to the advertiser's products and the receiver's corresponding to the consumer's interests.
 
-The advertiser wants the consumer to click on the ad. The consumer, however, only wants to click on ads for the products they favor. This gives the advertiser an incentive to send an ad which appeals to consumer's type rather than represent their own type. This creates the potential for deception in the game.
+The advertiser wants the consumer to click on the ad. The consumer, however, only wants to click on ads that suit their interests. This gives the advertiser an incentive to send an ad which appeals to consumer's type rather than represent their own type. This creates the potential for deception in the game.
 
 Let us give a more formal statement. First we have the sender $S = (\tau_S, \pi_S, \Sigma, \mu_S, H)$, where:
 \begin{itemize}
@@ -183,24 +198,21 @@ Furthermore, the ad $\sigma$ is also a $D$-dimensional vector. Once again we can
 
 The sender's utility function $\mu_S$ punishes advertisers for deception, i.e. the advertiser incurs a cost as the ad differs from the advertiser's type. If the consumer clicks, the advertiser is rewarded for matching the consumer's type with their ad. 
 
-The receiver's utility function $\mu_R$ rewards the receiver for clicking on ads for advertisers with suitable types. 
+The receiver's utility function $\mu_R$ rewards the receiver for clicking on ads for advertisers with suitable types.
 
-Loss in the iterated game is average (internal) regret after $T$ rounds. We expose the types of the players when we give payoffs but not their identity, i.e. players cannot recognize each other after meeting. By exposing the types we make this into a supervised online learning problem for each player.
+Loss in the iterated game is swap regret after $T$ rounds. Want to consider both bandit and non-bandit setting. 
+
+\todo{code this up and have players play use the swamp regret min algo. Also expand this to population of players?}
 
 \section{Learning and Games}
 
-Learning theory is an appealing lens through which to examine games. It is natural to improve at a game as one plays. Following this experience, we imagine the players of our signaling games as learning algorithms. The data these algorithms learn from is the history of games they have played. Our presentation of the learning theory is inspired by \cite{mohri2012foundations}. 
+Learning theory is an appealing lens through which to examine games. It is natural to improve at a game as one plays and observes. Following this experience, we imagine the players of our signaling games as learning algorithms. The data these algorithms learn from is the history of games they have played. 
 
-As mentioned, we look to learning theory for direction in how players can learn to play equilibrium strategies in repeated signaling games. We begin with a review of online learning and learning with expert advice. This will bring us to regret minimization and how regret minimization can lead to equilbrium stratgies in games. Finally we discuss a refinement of regret minimization suitable for signaling games and the types of equilibirum we can hope to achieve.
-
+Specifically, we look to learning theory for direction in how players can learn to play equilibrium strategies in repeated signaling games. We begin with a review of online learning and learning with expert advice. This will bring us to regret minimization and how regret minimization can lead to equilibrium strategies in games. Finally we discuss a refinement of regret minimization suitable for signaling games and the types of equilibrium we can hope to achieve.
 
 \subsection{Online Learning}
 
-In the online learning setting, the learning algorithm is given one data point at a time over the course of $T$ rounds. This is in contrast to the batch setting in which the entire dataset is available to algorithm at once. Thus there are a inherent limitations to the online setting, e.g. global properties of the data cannot be exploited while running the algorithm and there is no possibility for preprocessing.
-
-This motivates techniques such as Sketched Online Newton\cite{luo2016efficient} which mitigate undesirable global properties without advance knowledge of them. In this example we may have ill-conditioned data which increases the error of algorithms like Online Gradient Descent\cite{zinkevich2003online}. If considered in the batch setting, the data could be made well-conditioned by application of a linear transformation to each point in the data set. However this option is unavailable in the online setting.
-
-Another important distinction from the typical batch setting or PAC learning\cite{valiant1984theory} is that online learning makes no distributional assumption about the data. In fact the data can be generated in an adversarial fashion. In the typical batch setting we assume that all training samples are drawn from the same distribution in an IID fashion.
+In the online learning setting, the learning algorithm is given one data point at a time over the course of $T$ rounds. Most importantly we make no distributional assumption about the data. This motivates a worst case adversarial analysis suited to the study of games. In each round $t$, the algorithm receives a point $x_t$ and predicts a label $\hat y_t$. The predicted label is compared with the true label $y_t$ and the algorithm incurs a loss according to the accuracy of its prediction.
 
 We can concisely present the standard online learning setting as follows:
 
@@ -210,43 +222,141 @@ We can concisely present the standard online learning setting as follows:
     \item receive $x_t$
     \item predict $\hat{y}_t = h(x_t; w_t)$
     \item receive $y_t$
-    \item incur loss $L(y_t, \hat{y}_t)$
-    \item update state $w_{t+1} \leftarrow w_t$
+    \item incur loss $L(\hat{y}_t, y_t)$
+    \item update state $w_{t+1}$ from $w_t$
     \end{itemize}
 \end{itemize}
-\todo{use algorithm package to make this look nicer}
+\todo{use algorithm package to make this look normal}
 
-Thus 
+Our goal is to minimize total loss $\mathcal{L}_T = \sum_{t=1}^T L(\hat{y}_t,y_t)$. The method to update the state $w_t+1$ after incuring the loss for a training point is the critical part of an online learning algorithm. 
 
 \subsection{Learning with Expert Advice}
 
-Learning with expert advice is a classic scenario in machine learning. For simplicity take the example of binary classification, i.e. we are given vector input $\textbf{X}$ and we must output a binary label $\textbf{Y} \in \lbrace -1,1 \rbrace$. We are given a set of experts who each predict a label for $X$. Our task is to accurately classify the inputs by using the predictions offered by the experts.
+Learning with expert advice is a classic scenario in machine learning. For simplicity take the example of binary classification, i.e. we are given input ${x_t}$ and we must output a binary label $\hat{y}_t \in \lbrace 0,1 \rbrace$. We are given a set of $N$ experts $H = \lbrace h_1,...,h_N \rbrace $ who each predict a label $\lbrace \hat y_{t,1},...,\hat y_{t,N} \rbrace$. Our task is to accurately classify the inputs using predictions offered by the experts.
 
-The experts need not be literal experts. A common scenario is to treat the input features as experts. A learning algrithm simply learn a linear combination of the features to make predictions. A similar treatment could use threshold functions of the features as experts, e.g. if $x_1 > \theta$ predict $1$ else $-1$. The experts could also simply be black boxes. For example each expert might be a machine learning algorithm itself.
-
-When considering game theory, we might begin by imaging the moves available to the players as experts. We might learn a distriution over the moves, i.e. a mixed strategy.
-
-\todo{incomplete. needs a couple references and better motivation}
+The experts need not be literal experts. In the case of games, we imagine the moves available to the players as our experts. A learning algorithm then produces a distribution overs the moves, i.e. a mixed strategy. As the number of rounds increases, we would like the mixed strategies produced by the algorithms to converge to equilibrium strategies. In our example of Simple Poker, which is zero-sum, we want this to be these to be Nash equilibrium strategies.
 
 \subsection{Regret}
 
+with distributional assumption we want good generalization error. however no distributional assumption here so regret + reference hypothesis. bewm
+
+Instead of minimizing the total loss, we will compare our performance with that of the best expert in hindsight $h^*$, i.e. $h^* = \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)$. This is in the spirit of our worst case analysis. Since we do not have a notion of generalization in the adversarial case, we instead compare our performance to a reference hypothesis. Our minimization objective then becomes
+
+\begin{align*}
+\mathcal{L}_T - \mathcal{L}_T^{\text{min}} = \sum_{t=1}^T L(\hat y_t, y_t) - \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)
+\end{align*}
+
+This quantity is called the external regret or simply regret $R_T$ after $T$ rounds. We are truly interested in the average regret per round $R_T/T$. If can we devise an algorithm with regret sublinear in $T$, then the average regret will go to 0. Such an algorithm is said to have vanishing regret.
+
+Critically, there is a connection between regret minimization and repeated games. First we consider the simplest case of the two-player zero-sum game, e.g. our game of simple poker. If a player plays using a regret minimization algorithm with vanishing regret then that player's expected payoff per round will approach the value of the game, i.e. the minimax payoff (See \textbf{Theorem 7.2} in \cite{cesa2006prediction}).
+
 \subsection{Weighted Majority}
 
-talk about \cite{littlestone1994weighted}
+The Weighted Majority algorithm \autoref{wmalgo} \cite{littlestone1994weighted} is a classic example of a regret minimization algorithm. Initially each expert is given equal weight. In each round we predict according to the weighted majority of the experts, e.g. in the first round this will be the usual majority. Whenever our prediction is incorrect, we reduce the weight of each expert who predicted incorrectly in that round. As an expert makes errors, its weight decreases and so its prediction counts less towards the overall prediction made by the algorithm.
 
-\subsection{Swap Regret}
+\begin{algorithm}[H]
+\caption{Weighted Majority}
+\label{wmalgo}
+\begin{algorithmic}[1]
+\For{$i=1$ to $N$}
+    \State{$w_{1,i} \leftarrow \frac{1}{N}$}
+\EndFor
+\For{$t=1$ to $T$}
+    \State \text{receive } $x_t$
+    \State $\hat y_t \leftarrow 1_{\sum_{i, y_{t,i}=1}^N w_t \ge \sum_{i, y_{t,i}=0}^N w_t}$
+    \State \text{receive } $y_t$
+    \If{$\hat y_t \ne y_t$}
+        \For{$i=1$ to $N$}
+            \If{$y_{t,i} \ne y_t$}
+                \State $w_{t+1,i} \leftarrow \beta w_{t+1,i}$
+            \Else
+                \State $w_{t+1,i} \leftarrow \beta w_{t,i}$
+            \EndIf
+        \EndFor
+    \EndIf
+\EndFor
+\State \Return $\textbf{w}_{T+1}$
+\end{algorithmic}
+\end{algorithm}
 
-talk about \cite{blum2007external}, \cite{mohri2014conditional}
+However, recall that we are focused on the adversarial case. This algorithm (or any deterministic algorithm, for that matter) will fare poorly against an adversary. To see this, suppose our adversary chooses data points for which the current weighted majority prediction will be wrong. We will predict incorrectly in every round. In the case of the binary loss our regret $R_T$ will be $T$ and so the algorithm has constant regret per round.
+
+The Randomized Weighted Majority algorithm\autoref{rwmalgo} alleviates this by making probabilistic predictions. Of course the adversary can still frustrate us to some degree but we shall see that this relatively simple modification to the algorithm produces a surprisingly promising result.
+
+\begin{algorithm}[H]
+\caption{Randomized Weighted Majority}
+\label{rwmalgo}
+\begin{algorithmic}[1]
+\For{$i=1$ to $N$}
+    \State{$w_{1,i} \leftarrow 1$}
+    \State{$p_{1,i} \leftarrow \frac{1}{N}$}
+\EndFor
+\For{$t=1$ to $T$}
+    \State \text{receive } $x_t$
+    \State $\hat y_t \leftarrow 1_{\sum_{i, y_{t,i}=1}^N w_t \ge \sum_{i, y_{t,i}=0}^N w_t}$
+    \State \text{receive } $y_t$
+    \If{$\hat y_t \ne y_t$}
+        \For{$i=1$ to $N$}
+            \If{$y_{t,i} \ne y_t$}
+                \State $w_{t+1,i} \leftarrow \beta w_{t+1,i}$
+            \Else
+                \State $w_{t+1,i} \leftarrow \beta w_{t,i}$
+            \EndIf
+        \EndFor
+    \EndIf
+\EndFor
+\State \Return $\textbf{w}_{T+1}$
+\end{algorithmic}
+\end{algorithm}
+
+This algorithm obeys the following standard regret bound \cite{mohri2012foundations}
+
+\begin{align*}
+\mathcal{L}_T - \mathcal{L}_T^{\text{min}} \le 2\sqrt{T \log N}
+%\iff \mathcal{L}_T \le \mathcal{L}_T^{\text{min}} + 2\sqrt{T \log N}
+\end{align*}
+
+This regret bound is sublinear in $T$ and so this algorithm has vanishing regret. This means that mixed strategies generated by Randomized Weighted Majority can approximate Nash equilibrium strategies in two-player zero-sum games given large enough $T$. While this is encouraging, it is not the case that a regret minimization algorithm can generate Nash equilibrium strategies for general games, e.g. non-zero-sum games. In fact this is known to be intractible (PPAD-complete\cite{daskalakis2009complexity}).
 
 \subsection{Correlated Equilibrium}
 
-talk about \cite{aumann1974subjectivity}, \cite{aumann1987correlated}, \cite{foster1997calibrated}
+In general signaling games are not zero sum and so Nash equilibrium is not a computationally attractive solution. Instead we turn to another sort of equilibrium called correlated equilibrium. Originally introduced by Aumann \cite{aumann1974subjectivity}\cite{aumann1987correlated}, correlated equilibrium is different from a Nash in that it specifies a joint distribution over the actions of all players rather than multiple distributions over the actions of each player. Once again, let $H$ be the set of mixed strategies for $S$ and $G$ the set of mixed strategies for $R$. A correlated equilibrium is a joint distribution $p$ over $G \times H$ such that for all $h\in H$ with $p(h) \> 0$ and all $h^\prime \in H$
+\begin{align*}
+\sum_{g \in G} p(h,g)\mu_S(h, g) \ge \sum_{g \in G} p(h^\prime,g)\mu_S(h^\prime, g)
+\end{align*}
+\noindent and similarly for $R$
+\begin{align*}
+\sum_{h \in H} p(h,g)\mu_S(h, g) \ge \sum_{h \in H} p(h,g^\prime)\mu_S(h, g^\prime)
+\end{align*}
 
-\section{Swap Regret Minimization in Signaling Games}
+The intuition behind correlated equilibrium is that players may rationally play strategies besides Nash equilibrium strategies when all players observe the value of some correlation device. The device chooses strategy assignments for each player with some probability and informs each player of their chosen strategy. If no player has an incentive to deviate from the assigned strategy given the distribution over strategy assignments then the distribution is a correlated equilibrium.
+
+First, we note that an explicit correlation device is not necessary to achieve correlated equilibrium in repeated games. Foster and Vohra \cite{foster1997calibrated} show that players who play myopic best responses to calibrated forecasts of the other player's strategies will converge to a correlated equilibrium. A calibrated forecast and the concept of calibration come from statistics. It roughly means that players assign probabilities to each other's actions that coincide with the actions' empirical probabilities in the limit. Here, the history of plays can be viewed as an implicit correlation device.
+
+\subsection{Swap Regret}
+
+As external regret minimization algorithms achieve Nash equilibrium in zero-sum games, swap regret minimization algorithms achieve correlated equilibrium in general games \cite{blum2007external}. First we introduce the concept of \emph{internal regret}. Internal regret is motivated by the sort of statement like "If only I had done $a$ every time I did $b$". Formally we give this as
+\begin{align*}
+\sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(a_t)] - \underset{f \in C_{a,b}}{\text{min }} \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(f(a_t))]
+\end{align*}
+Instead of using the best single expert in hindsight as our reference, we compare our performance to the ways in which we could have exchanged a single action for another. $C_{a,b}$ is the set of functions $f: A \rightarrow A$ that perform this single action exchange. \emph{Swap regret} considers all ways in which actions could be mapped between themselves, i.e. where we can swap as many actions as we please.
+\begin{align*}
+\sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(a_t)] - \underset{f \in C}{\text{min }} \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(f(a_t))]
+\end{align*}
+Here the set $C$ contains all functions $f: A \rightarrow A$. This implies that joint distribution over the players' actions is a correlated equilibrium if every player would have 0 internal regret or swap regret playing it. Recall we can imagine the actions or experts as the moves in the game, and so having zero swap regret implies no strategic modifications would be advantageous. Players minimizing swap regret will thereby converge to correlated equilibrium. 
+
+Blum and Mansour\cite{blum2007external} also give us a way to generate an algorithm with vanishing swap regret given an algorithm with vanishing external regret.  
+talk about\cite{mohri2014conditional}
+
+\section{Swap Regret Minimization in Signaling Games
+
+\todo{here is where i will put a technical treatment of the algorithm and an analysis of its performance on the game as well as simulation results}
 
 \section{References}
 
 \bibliographystyle{amsplain}
 \bibliography{dk_thesis}
+
+\section{Appendix}
 
 \end{document}
