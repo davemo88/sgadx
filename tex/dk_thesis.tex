@@ -1,4 +1,3 @@
-
 \documentclass{article}
 
 \usepackage[utf8]{inputenc}
@@ -48,14 +47,14 @@
 
 \section{Introduction}
 
-The goal of this paper is to demonstrate an application of game theory and machine learning in advertising. In particular, we model advertising interaction via signaling games and imagine the players as machine learning algorithms. Advertising is an appealing domain as it is a driving force in the success of the internet and motivates many challenging computer science problems.
+The goal of this paper is to demonstrate how of game theory and machine learning can be applied advertising. In particular, we model advertising interaction via signaling games and imagine the players as machine learning algorithms. Advertising is an appealing domain as it is a driving force in the success of the internet and motivates many challenging computer science problems.
 
 \section{Advertising}
 As the internet becomes the primary ad medium\cite{iab1}, advertising strategy, measurement, and implementation increasingly rely on big data, machine learning, and cloud computing. However twenty first century advertising has also motivated concerns about privacy.
 
 Much of the activity on the internet generates data potentially useful in advertising strategy, e.g. website analytics or user demographic data. There is an incentive to store an enormous amount of data for use by advertisers. In turn, advertisers need data storage and processing frameworks which are suited to this setting, e.g. MapReduce\cite{mapreduce1}. All of this new data has generated interest in techniques that can make sense of it, e.g. targeted advertising \cite{displayadsml1}, ad evaluation \cite{abhishek2012media}, and real-time bidding algorithms \cite{yuan2014survey}.
 
-There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to share or persist. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer. Consumers can be manipulated into making certain decisions \cite{akerlof2015phishing} and thus there is a balance to be struck between advertiser collection and exploitation of consumer data and consumer privacy.
+There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to be shared or stored. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer. Consumers can be manipulated into making certain decisions \cite{akerlof2015phishing} and thus there is a balance to be struck between advertiser collection and exploitation of consumer data and consumer privacy.
 
 \todo{too abrupt need to extend}
 Real-time bidding and personalized advertising are great examples of techniques in common use today. Advertisers use consumers' personal data in determining bid amounts in ad auctions as well as specific ad content to be shown. The main idea of this paper is to model personalized advertising as a game played by machine learning algorithms.
@@ -154,7 +153,7 @@ Let $H$ be set of mixed strategies for $S$ and $G$ the set of mixed strategies f
     \mu_R(h,g^\prime) \le \mu_R(h,g)
 \end{align*}
 
-A bet by the sender signals a winner and a check signals a loser. The receiver should fold if the sender has a winner and call if the sender has a loser. However the sender can bluff by betting with a loser and so there is the capacity for deception.
+A bet by the sender signals a winner and a check signals a loser. The receiver should fold if the sender has a winner and call if the sender has a loser. However the sender can bluff by betting with a loser and so there is an opportunity for deception.
 
 Suppose $S$ has a winning hand. Then bet dominates check for $S$ and fold dominates call for $R$. When $S$ has a losing hand then the opposite is true. Say $S$ bets all winners and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
 
@@ -240,13 +239,13 @@ The experts need not be literal experts. In the case of games, we imagine the mo
 
 with distributional assumption we want good generalization error. however no distributional assumption here so regret + reference hypothesis. bewm
 
-Instead of minimizing the total loss, we will compare our performance with that of the best expert in hindsight $h^*$, i.e. $h^* = \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)$. This is in the spirit of our worst case analysis. Since we do not have a notion of generalization in the adversarial case, we instead compare our performance to a reference hypothesis. Our minimization objective then becomes
+Instead of minimizing the total loss, we will compare our performance with that of the best expert in hindsight $h^*$, i.e. $h^* = \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)$. This is in the spirit of our worst case analysis. Since we do not have a notion of generalization in the adversarial case, it makes no sense to seek a bound on the generalization error. We instead compare our performance to a reference hypothesis. Our minimization objective then becomes
 
 \begin{align*}
 \mathcal{L}_T - \mathcal{L}_T^{\text{min}} = \sum_{t=1}^T L(\hat y_t, y_t) - \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)
 \end{align*}
 
-This quantity is called the external regret or simply regret $R_T$ after $T$ rounds. We are truly interested in the average regret per round $R_T/T$. If can we devise an algorithm with regret sublinear in $T$, then the average regret will go to 0. Such an algorithm is said to have vanishing regret.
+This quantity is called the external regret or simply regret $R_T$ after $T$ rounds. We are truly interested in the average regret per round $R_T/T$. If can we devise an algorithm with regret sublinear in $T$, then the average regret $R_T/T$ will go to 0. Such an algorithm is said to have vanishing regret.
 
 Critically, there is a connection between regret minimization and repeated games. First we consider the simplest case of the two-player zero-sum game, e.g. our game of simple poker. If a player plays using a regret minimization algorithm with vanishing regret then that player's expected payoff per round will approach the value of the game, i.e. the minimax payoff (See \textbf{Theorem 7.2} in \cite{cesa2006prediction}).
 
@@ -262,15 +261,14 @@ The Weighted Majority algorithm \autoref{wmalgo} \cite{littlestone1994weighted} 
     \State{$w_{1,i} \leftarrow \frac{1}{N}$}
 \EndFor
 \For{$t=1$ to $T$}
-    \State \text{receive } $x_t$
+    \State \text{receive } $x_t , y_t$
     \State $\hat y_t \leftarrow 1_{\sum_{i, y_{t,i}=1}^N w_t \ge \sum_{i, y_{t,i}=0}^N w_t}$
-    \State \text{receive } $y_t$
     \If{$\hat y_t \ne y_t$}
         \For{$i=1$ to $N$}
             \If{$y_{t,i} \ne y_t$}
                 \State $w_{t+1,i} \leftarrow \beta w_{t+1,i}$
             \Else
-                \State $w_{t+1,i} \leftarrow \beta w_{t,i}$
+                \State $w_{t+1,i} \leftarrow w_{t,i}$
             \EndIf
         \EndFor
     \EndIf
@@ -279,7 +277,7 @@ The Weighted Majority algorithm \autoref{wmalgo} \cite{littlestone1994weighted} 
 \end{algorithmic}
 \end{algorithm}
 
-However, recall that we are focused on the adversarial case. This algorithm (or any deterministic algorithm, for that matter) will fare poorly against an adversary. To see this, suppose our adversary chooses data points for which the current weighted majority prediction will be wrong. We will predict incorrectly in every round. In the case of the binary loss our regret $R_T$ will be $T$ and so the algorithm has constant regret per round.
+However, recall that we are focused on the adversarial case. This algorithm (or any deterministic algorithm, for that matter) will fare poorly against an adversary. To see this, suppose our adversary chooses data points for which the current weighted majority prediction will be wrong. We will predict incorrectly in every round. In the case of the binary loss our regret $R_T$ will be at least $T/2$ and so the algorithm has constant regret per round.
 
 The Randomized Weighted Majority algorithm\autoref{rwmalgo} alleviates this by making probabilistic predictions. Of course the adversary can still frustrate us to some degree but we shall see that this relatively simple modification to the algorithm produces a surprisingly promising result.
 
@@ -292,18 +290,18 @@ The Randomized Weighted Majority algorithm\autoref{rwmalgo} alleviates this by m
     \State{$p_{1,i} \leftarrow \frac{1}{N}$}
 \EndFor
 \For{$t=1$ to $T$}
-    \State \text{receive } $x_t$
-    \State $\hat y_t \leftarrow 1_{\sum_{i, y_{t,i}=1}^N w_t \ge \sum_{i, y_{t,i}=0}^N w_t}$
-    \State \text{receive } $y_t$
-    \If{$\hat y_t \ne y_t$}
-        \For{$i=1$ to $N$}
-            \If{$y_{t,i} \ne y_t$}
-                \State $w_{t+1,i} \leftarrow \beta w_{t+1,i}$
-            \Else
-                \State $w_{t+1,i} \leftarrow \beta w_{t,i}$
-            \EndIf
-        \EndFor
-    \EndIf
+    \State \text{receive } $x_t, y_t$
+    \For{$i=1$ to $N$}
+        \If{$\hat y_{t,i} \ne y_t$}
+            \State $w_{t+1,i} \leftarrow \beta w_{t+1,i} \quad\quad(0 \le \beta < 1)$
+        \Else
+            \State $w_{t+1,i} \leftarrow w_{t,i}$
+        \EndIf
+    \EndFor
+    \State $W_{t+1} \leftarrow \sum_{i=1}^N w_{t+1}$
+    \For{$i=1$ to $N$}
+        \State $p_{t,i} = w_{t+1, i}/W_{t+1}$
+    \EndFor
 \EndFor
 \State \Return $\textbf{w}_{T+1}$
 \end{algorithmic}
@@ -312,47 +310,61 @@ The Randomized Weighted Majority algorithm\autoref{rwmalgo} alleviates this by m
 This algorithm obeys the following standard regret bound \cite{mohri2012foundations}
 
 \begin{align*}
-\mathcal{L}_T - \mathcal{L}_T^{\text{min}} \le 2\sqrt{T \log N}
-%\iff \mathcal{L}_T \le \mathcal{L}_T^{\text{min}} + 2\sqrt{T \log N}
+R_T = \mathcal{L}_T - \mathcal{L}_T^{\text{min}} \le 2\sqrt{T \log N}
 \end{align*}
 
-This regret bound is sublinear in $T$ and so this algorithm has vanishing regret. This means that mixed strategies generated by Randomized Weighted Majority can approximate Nash equilibrium strategies in two-player zero-sum games given large enough $T$. While this is encouraging, it is not the case that a regret minimization algorithm can generate Nash equilibrium strategies for general games, e.g. non-zero-sum games. In fact this is known to be intractible (PPAD-complete\cite{daskalakis2009complexity}).
+This regret bound is sublinear in $T$ and so this algorithm has vanishing regret. This means that mixed strategies generated by Randomized Weighted Majority can approximate Nash equilibrium strategies in two-player zero-sum games given large enough $T$. While this is encouraging, it is not the case that a regret minimization algorithm can generate Nash equilibrium strategies for general games, e.g. non-zero-sum games. In fact finding Nash equilibrium in general games is known to be intractible (PPAD-complete\cite{daskalakis2009complexity}).
 
 \subsection{Correlated Equilibrium}
 
-In general signaling games are not zero sum and so Nash equilibrium is not a computationally attractive solution. Instead we turn to another sort of equilibrium called correlated equilibrium. Originally introduced by Aumann \cite{aumann1974subjectivity}\cite{aumann1987correlated}, correlated equilibrium is different from a Nash in that it specifies a joint distribution over the actions of all players rather than multiple distributions over the actions of each player. Once again, let $H$ be the set of mixed strategies for $S$ and $G$ the set of mixed strategies for $R$. A correlated equilibrium is a joint distribution $p$ over $G \times H$ such that for all $h\in H$ with $p(h) \> 0$ and all $h^\prime \in H$
+\todo{discuss bandit and non-bandit settings}
+
+Signaling games are not necessarily zero sum and so Nash equilibrium is not a computationally attractive solution. Instead we turn to another sort of equilibrium called correlated equilibrium. Originally introduced by Aumann \cite{aumann1974subjectivity}\cite{aumann1987correlated}, correlated equilibrium is different from Nash in that it specifies a joint distribution over the actions of all players rather than individual distributions over the actions of each player. Let $H$ be the set of mixed strategies for $S$ and $G$ the set of mixed strategies for $R$. A correlated equilibrium is a joint distribution $p$ over $G \times H$ such that for all $h\in H$ with $p(h) \> 0$ and all $h^\prime \in H$
 \begin{align*}
 \sum_{g \in G} p(h,g)\mu_S(h, g) \ge \sum_{g \in G} p(h^\prime,g)\mu_S(h^\prime, g)
 \end{align*}
 \noindent and similarly for $R$
 \begin{align*}
-\sum_{h \in H} p(h,g)\mu_S(h, g) \ge \sum_{h \in H} p(h,g^\prime)\mu_S(h, g^\prime)
+\sum_{h \in H} p(h,g)\mu_R(h, g) \ge \sum_{h \in H} p(h,g^\prime)\mu_R(h, g^\prime)
 \end{align*}
 
-The intuition behind correlated equilibrium is that players may rationally play strategies besides Nash equilibrium strategies when all players observe the value of some correlation device. The device chooses strategy assignments for each player with some probability and informs each player of their chosen strategy. If no player has an incentive to deviate from the assigned strategy given the distribution over strategy assignments then the distribution is a correlated equilibrium.
+The intuition behind correlated equilibrium is that players may rationally play strategies besides Nash equilibrium strategies when all players observe the value of a random variable, sometimes called a correlation device. The device chooses joint strategy assignments for each player with some probability and informs each player of their chosen strategy. If no player has an incentive to deviate from the assigned strategy (considering the known distribution over joint strategy assignments) then the joint distribution is a correlated equilibrium.
 
-First, we note that an explicit correlation device is not necessary to achieve correlated equilibrium in repeated games. Foster and Vohra \cite{foster1997calibrated} show that players who play myopic best responses to calibrated forecasts of the other player's strategies will converge to a correlated equilibrium. A calibrated forecast and the concept of calibration come from statistics. It roughly means that players assign probabilities to each other's actions that coincide with the actions' empirical probabilities in the limit. Here, the history of plays can be viewed as an implicit correlation device.
+First, we note that an explicit correlation device is not necessary to achieve correlated equilibrium in repeated games. Foster and Vohra \cite{foster1997calibrated} show that players who play myopic best responses to calibrated forecasts of the other player's strategies will converge to a correlated equilibrium. A calibrated forecast and the concept of calibration come from statistics. It roughly means that players assign probabilities to each other's actions that coincide with the actions' empirical probabilities in the limit. Here the history of plays can be viewed as an implicit correlation device.
 
-\subsection{Swap Regret}
+\subsection{Internal Regret and Swap Regret}
 
-As external regret minimization algorithms achieve Nash equilibrium in zero-sum games, swap regret minimization algorithms achieve correlated equilibrium in general games \cite{blum2007external}. First we introduce the concept of \emph{internal regret}. Internal regret is motivated by the sort of statement like "If only I had done $a$ every time I did $b$". Formally we give this as
+As external regret minimization algorithms achieve Nash equilibrium in zero-sum games, swap regret minimization algorithms achieve correlated equilibrium in general games \cite{blum2007external}. First we introduce the concept of \emph{internal regret} \cite{foster1998asymptotic}.
 \begin{align*}
 \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(a_t)] - \underset{f \in C_{a,b}}{\text{min }} \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(f(a_t))]
 \end{align*}
-Instead of using the best single expert in hindsight as our reference, we compare our performance to the ways in which we could have exchanged a single action for another. $C_{a,b}$ is the set of functions $f: A \rightarrow A$ that perform this single action exchange. \emph{Swap regret} considers all ways in which actions could be mapped between themselves, i.e. where we can swap as many actions as we please.
+Instead of using the best single expert in hindsight as our reference, we compare our performance to the ways in which we could have exchanged a single action for another. $C_{a,b}$ is the set of functions $f: A \rightarrow A$ that perform this single action exchange.
+
+Hart and Mas-Colell\cite{hart2000simple} give a method for playing repeated games in which the players update their strategies in proportion according to internal regret. Each player maintains a distribution over the available actions. Suppose at time $t$ player $i$ plays action $k$. $U_t$ is the cumulative payoff so far. Now for each other action $j$, $V_t(k)$ is what the cumulative payoff would have been if $i$ had always done $k$ instead of $j$. Only actions with $V_t(k) > U_t$ are appealing. The probability mass for each such $k$ is then updated by an amount proportional to the regret term $V_t(k) - U_t$. One could think of $U_t$ as the current reference point of $i$ from which he evaluates potential modifications to his choices in hindsight.
+
+\emph{Swap regret} considers all ways in which actions could be mapped between themselves, i.e. where we can swap as many actions as we please.
 \begin{align*}
 \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(a_t)] - \underset{f \in C}{\text{min }} \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(f(a_t))]
 \end{align*}
-Here the set $C$ contains all functions $f: A \rightarrow A$. This implies that joint distribution over the players' actions is a correlated equilibrium if every player would have 0 internal regret or swap regret playing it. Recall we can imagine the actions or experts as the moves in the game, and so having zero swap regret implies no strategic modifications would be advantageous. Players minimizing swap regret will thereby converge to correlated equilibrium. 
+Here the set $C$ contains all functions $f: A \rightarrow A$. Recall we can imagine the actions or experts as the moves in the game, and so having zero swap regret implies no strategic modifications would be advantageous. The joint distribution over the players' actions is a correlated equilibrium if every player would have 0 swap regret playing it. Players minimizing swap regret will thereby converge to correlated equilibrium.
 
-Blum and Mansour\cite{blum2007external} also give us a way to generate an algorithm with vanishing swap regret given an algorithm with vanishing external regret.  
-talk about\cite{mohri2014conditional}
+Blum and Mansour\cite{blum2007external} prove this and conveniently give us a way to generate an algorithm with vanishing swap regret given an algorithm with vanishing external regret. Given such a regret minimization algorithm, say Randomized Weighted Majority, we instantiate $N$ copies, one for each expert or pure strategy. At each step each instance $i$ generates a distribution $q_i$ which will form a component of the overall mixed strategy.
 
-\section{Swap Regret Minimization in Signaling Games
+When the algorithm receives a loss vector $l_t$, i.e. a vector of losses for each action, it is partitioned among the $N$ instances. Each instance $i$ receives a fraction of the loss $p_{t,i}$ equal to the probability mass instance $i$ currently puts on action $i$ with its distribution $q_i$. This means that the cumulative loss of some other action $j$ for instance $i$ is $\sum_{s=1}^t p_{t,i} l_{t,j}$. This matches the cost we could incur by putting the mass of instance $i$ on instance $j$.
 
-\todo{here is where i will put a technical treatment of the algorithm and an analysis of its performance on the game as well as simulation results}
+\todo{give more proof details, e.g. stationary distribution \textbf{Q} etc}
 
-\section{References}
+The idea is that instance $i$ will ensure low regret with respect to swaps for action $i$ , i.e. of functions $f_{i,j} \in C_{i,j}$. Finally we are able to exploit the underlying external regret guarantees for each instance to give a swap regret bound
+
+\begin{align*}
+R_T^{\text{swap}} = \mathcal{L}_T - \mathcal{L}_T^{\text{swap}} \le c N\sqrt{T \log N}
+\end{align*}
+
+where $c$ is some constant. Recall that for Randomized Weighted Majority, we have that the external regret $R_T \le 2\sqrt{T \log N}$. The great part about this bound is that the dependence on $N$ is only logarithmic and so we are relatively free to consider a very large numbers of expert. In the case of swap regret we cannot maintain this luxury and suffer a linear dependence on $N$. While we are able to apply swap regret minimization to a broader class of games, we have heavier restrictions on the number of experts. It is possible to achieve an $O(\sqrt{N T \log N})$ swap regret bound but that is not much next to the $\log N$ bound.
+
+\section{Swap Regret Minimization in Signaling Games}
+
+Finally we return to our ad game, armed with the theory of online learning and a swap regret minimizing algorithm. 
 
 \bibliographystyle{amsplain}
 \bibliography{dk_thesis}

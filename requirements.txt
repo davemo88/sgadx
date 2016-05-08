@@ -3,4 +3,4 @@ sqlalchemy
 flask
 flask-sqlalchemy
 nose
-sklearn
+#sklearn
