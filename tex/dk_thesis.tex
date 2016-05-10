@@ -56,8 +56,7 @@ Much of the activity on the internet generates data potentially useful in advert
 
 There are two privacy concerns here. The first is that businesses may be observing and storing personal data that the consumer does not wish to be shared or stored. The second is that businesses may treat the consumer differently based on personal data to the possible detriment of the consumer. Consumers can be manipulated into making certain decisions \cite{akerlof2015phishing} and thus there is a balance to be struck between advertiser collection and exploitation of consumer data and consumer privacy.
 
-\todo{too abrupt need to extend}
-Real-time bidding and personalized advertising are great examples of techniques in common use today. Advertisers use consumers' personal data in determining bid amounts in ad auctions as well as specific ad content to be shown. The main idea of this paper is to model personalized advertising as a game played by machine learning algorithms.
+Personalized advertising is a great examples of a technique in common use today that pushes the boundaries of consumer privacy. Advertisers use consumers' personal data in determining bid amounts in ad auctions as well as specific ad content to be shown. Ultimately advertisers would like to create a totally customized experience for each consumer, tuned to that user's interests and behavior.
 
 \section{Signaling Games}
 
@@ -69,23 +68,23 @@ The informed player is called the sender $S$ and the uninformed player the recei
 
 \subsection{In the Wild}
 
-Signaling games have been proposed as models in many disciplines. In 1973 Spence wrote about signaling games in the hiring process\cite{spence1973job}. Employers want to pay salaries commensurate with applicant skill and so applicants want to appear as skillful as possible. Applicant skill is the secret type $y$, the signal $x$ is the application, and the employer's offer is the action $a$. Spence concluded that deception by the applicant must be costly for the expected dynamics to obtain.
+Signaling games have been proposed as models in many disciplines. In 1973 Spence wrote about signaling games in the hiring process\cite{spence1973job}. Employers want to pay salaries commensurate with applicant skill and so applicants want to appear as skillful as possible. Applicant skill is the secret type $y$, the signal $x$ is the application, and the employer's offer is the action $a$. Spence concluded that deception by the applicant must be costly for the game to be interesting.
 
-Suppose each of $y, x, a$ lie in $[0,1]$. Then we could say $\mu_{\text{applicant}}(y, x, a)$ is decreasing in $x$. This means it is harder to produce a stronger application. The key would be so that $\mu_{\text{applicant}}$ decreases faster for small $y$ than large, i.e. it is more difficult for weak applicants to produce strong applications. This is known as costly signaling and we employ it in our ad signaling game later on.
+Suppose each of $y, x, a$ lie in $[0,1]$. Then we could say $\mu_{\text{applicant}}(y, x, a)$ is decreasing in $x$. In the job application setting this means it is harder to produce a stronger application. The key would be so that $\mu_{\text{applicant}}$ decreases faster for small $y$ than large, i.e. it is more difficult for weak applicants to produce strong applications. This is known as costly signaling and we employ it in our ad signaling game later on. Costly signaling penalizes the sender somehow in proportion to the signal, e.g. to its magnitude.
 
-About the same time a biologist named Zahavi \cite{zahavi1} formulated the hypothesis that animal handicaps like deer antlers and peacock plumage could be explained because fitter animals are better able to endure such handicaps. Zahavi mentioned this in the context of mate selection, suggesting that animals use handicaps to communicate fitness to potential mates.
+About the same time a biologist named Zahavi \cite{zahavi1} formulated the hypothesis that animal handicaps like deer antlers and peacock plumage could be explained because fitter animals are better able to endure such handicaps. Zahavi mentioned this in the context of mate selection, suggesting that animals use handicaps to communicate fitness to potential mates. Handicaps, like clumsy antlers and extravagant plumage, are costly signals.
 
 Grafen\cite{grafen1} later interpreted Zahavi's so-called handicap principle using game theory in the language of Smith\cite{smith1982evolution}. He reasoned that imposition of the handicap principle does not preclude the existence of evolutionarily stable signaling equilibrium in biological signaling systems. These biological signaling systems are signaling games, e.g. the secret type $y$ is the fitness of the animal, the message $x$ its handicap, the action $a$ is mate selection. An evolutionarily stable strategy is a refinement of Nash equilibrium strategy.
 
 Crawford and Sobel\cite{crawford1982strategic} present a clean and mathematical description of signaling games motivated by economic bargaining. The authors start with the concept of Bayesian Nash Equilibrium, an extension of Nash equilibrium to games of imperfect information, as well as a notion of learning in repeated games with Bayes' Rule. It is exciting to see learning appear here as we wish to examine signaling games through the lens of machine learning theory.
 
-Casey\cite{casey1} uses signaling games to model management of insiders threats in organizations. Here the sender $S$ is a member of the organization, e.g. an employee, and the receiver is the organization itself. In large organizations it is prohibitively difficult and expensive to monitor the entire potential vulnerability surface. Thus organizations must find ways to minimize their insider security risk without auditing every member of the organization.
+Casey\cite{casey1} uses signaling games to model management of insiders threats in organizations. Here the sender $S$ is a member of the organization, e.g. an employee, and the receiver is the organization itself. In large organizations it is prohibitively difficult and expensive to monitor the entire potential vulnerability surface. Thus organizations must find ways to minimize their insider security risk without constantly auditing every member of the organization.
 
-Here the secret type $y$ is the member's status: either compliant $y_C$ or deceptive $y_D$. A deceptive member is the aforementioned insider threat. Each member sends a signal indicating his type, either $x_C$ or $x_D$. The organization must then choose to trust $a_C$ or audit $a_D$. If the member is compliant, then the organization should trust and if the member is deceptive then the organization should audit. However auditing compliant members is more costly than trusting them and so the organization cannot simply audit every member.
+Here the secret type $y$ is the member's status: either compliant $y_C$ or deceptive $y_D$. A deceptive member is the aforementioned insider threat. Each member sends a signal indicating its type, either $x_C$ or $x_D$. The organization must then choose to trust $a_C$ or audit $a_D$. If the member is compliant, then the organization should trust and if the member is deceptive then the organization should audit. However auditing compliant members is more costly than trusting them and so the organization cannot simply audit every member.
 
 These examples highlight the expressivity and potential depth of signaling game models. They show how signaling games can describe situations in which privacy, trust, deception, and negotiation are the most salient features. From here we give a mathematical formulation of signaling games and give a simple example of our own.
 
-\subsection{Definition of Signaling Game}
+\subsection{Mathematical Definition}
 To define a signaling game we specify the following:
 \begin{itemize}
     \item a type set $Y$ of possible sender types
@@ -115,7 +114,7 @@ In Casey\cite{casey1} we find the following interpretation of utility functions 
 \end{align*}
 \noindent The first term in $\mu_S$ measures the amount of information conveyed by the signal about the type. The second term measures the difference between the desired action $a_y^* = f_S(y)$ and the action performed by the receiver $a$. Likewise the first term in $\mu_R$ measures the information gleaned from the signal in determining the action and the second term measures the difference between the sender's type and the ideal type $y_a^*$ given the action $a$.
 
-Additionally Casey suggests the following measure of deception in a signaling game. Suppose the sender type $y$ is drawn according to a distribution $D_T$ over $T$. Then the receiver may have a prior $\pi_R$ over $T$, which $R$ hopes matches $D_T$. The relative entropy or KL-divergence of these distributions $D(D_T\vert\vert\pi_R)$ is a measure of deception because it compares the actual type generating distribution with the prior type distribution of $R$ and the actual type generating distribution is unknown to $R$. 
+Additionally Casey suggests the following measure of deception in a signaling game. Suppose the sender type $y$ is drawn according to a distribution $D_Y$ over $Y$. Then the receiver may have a prior $\pi_R$ over $Y$, which $R$ hopes matches $D_Y$. The relative entropy or KL-divergence of $\pi_R$ from $D_Y$, $D(D_Y\vert\vert\pi_R)$, is a measure of deception because it compares the prior type distribution of $R$ with the actual type generating distribution and the actual type generating distribution is unknown to $R$. 
 
 \subsection{Simple Poker}
 \label{ssec:SimplePoker}
@@ -135,7 +134,7 @@ We give a toy example of a signaling game: a simplified version of two-player po
 	\end{tabular}
 \end{table}
 
-To use our formal definition of a signaling game, we define $\left(T, X, A, \mu_S, \mu_R, \right)$, where:
+To use our formal definition of a signaling game, we define $\left(Y, X, A, \mu_S, \mu_R, \right)$, where:
 \begin{itemize}
     \item $Y = \lbrace 0, 1 \rbrace$ is the type set. To begin we chose some $y \in Y$ as the type of $S$. 0 corresponds to loser and 1 to winner.
     % \item $D_T = \lbrace 1/2,1/2 \rbrace$ is the type generating distribution.
@@ -152,63 +151,64 @@ To use our formal definition of a signaling game, we define $\left(T, X, A, \mu_
         \end{align*}
 \end{itemize}
 
-Let $H$ be set of mixed strategies for $S$ and $G$ the set of mixed strategies for $R$. A Nash equilibrium is a pair of mixed strategies $(h,g)$ such that for all $h^\prime \in H$ and $g^\prime \in G$
-\begin{align*}
-    \mu_S(h^\prime,g) \le \mu_S(h,g) \land
-    \mu_R(h,g^\prime) \le \mu_R(h,g)
-\end{align*}
-
 A bet by the sender signals a winner and a check signals a loser. The receiver should fold if the sender has a winner and call if the sender has a loser. However the sender can bluff by betting with a loser and so there is an opportunity for deception.
 
 Suppose $S$ has a winning hand. Then bet dominates check for $S$ and fold dominates call for $R$. When $S$ has a losing hand then the opposite is true. Say $S$ bets all winners and checks all losers. Call this strategy $h_1$. If $S$ plays $h_1$, then $R$'s best response is to fold to all bets and call all checks ($g_1$). However $(h_1, g_1)$ is clearly not a Nash equilibrium of the game since $S$ has a different best response to $g_1$: bet every hand ($h_2$).
 
-In considering $R$'s best response to $h_2$, we stumble across several interesting points. The first is that if $S$ bets every hand, i.e. the sender always sends the same signal regardless of the secret type, then $R$ cannot infer any information about the secret type from the signal. If this is the case, then $R$ has to make a guess about the sender's type $y$. For instance $R$ may guess that $S$ has a winning hand half the time, i.e. $P(y = \textbf{Winner}) = \frac{1}{2}$. Then $R$ could randomize uniformly between calling and folding ($g_2$). If the guess is correct then $(h_2, g_2)$ is a Nash equilibrium.
+In considering $R$'s best response to $h_2$, we stumble across several interesting points. The first is that if $S$ bets every hand, i.e. the sender always sends the same signal regardless of the secret type, then $R$ cannot infer any information about the secret type from the signal. If this is the case, then $R$ has to make a guess about the sender's type $y$. For instance $R$ may guess that $S$ has a winning hand half the time, i.e. $P(y = \textbf{Winner}) = \frac{1}{2}$. Then $R$ could randomize uniformly between calling and folding ($g_2$). If the guess is correct then $(h_2, g_2)$ is a Nash equilibrium and the value of the game is $1/2$.
 
+Poker is a great example of a mathematical signaling game played in real life. It has secret types, costly signaling, and plenty of deception.
 
+\subsection{In Advertising}
 
-We are particularly interested in how players can learn to play equilibrium strategies in repeated signaling games. First we note that signaling games are not zero-sum in general and so the standard minimax theorem of von Neumann does not apply. In order to make satisfying progress in this vein we look to machine learning theory. In particular, we consider online learning, learning with expert advice, and regret minimization algorithms.
+In personalized advertising, advertisers tailor ad content for a specific consumer using that consumer's personal data. This is sometimes presented as a multiarmed bandit problem. We cast it as a signaling game.
 
-\section{Signaling Games in Advertising}
+We imagine ourselves in a common web scenario. A consumer visits a web page on which an advertiser may display an ad. The advertiser uses whatever data is available about the consumer to choose an ad. The consumer clicks on the ad if they find it appealing. In this game both sender and receiver have types: the sender's corresponding to the advertiser's products and the receiver's corresponding to the consumer's interests.
 
-As mentioned, advertisers may tailor ad content for a specific consumer using that consumer's personal data. Here we cast this scenario as a signaling game. The advertiser is the sender and the consumer is the receiver. The sender's type describes the products that advertiser promotes. The message represents ad content. The action is the consumer's interaction with the ad.
+The advertiser wants brand exposure and, even better, for the consumer to click on the ad. The consumer, however, only wants to click on ads for products that suit their interests. This gives the advertiser an incentive to send ads which appeal to the consumer's type rather than represent their own type and creates an opportunity for deception.
 
-We imagine ourselves in a common web scenario. A consumer visits a web page on which an advertiser may display an ad. The advertiser uses whatever data is available about the consumer to choose an ad to be displayed. The consumer clicks on the ad if they find it appealing. In this game both sender and receiver have types: the sender's corresponding to the advertiser's products and the receiver's corresponding to the consumer's interests.
-
-The advertiser wants the consumer to click on the ad. The consumer, however, only wants to click on ads that suit their interests. This gives the advertiser an incentive to send an ad which appeals to consumer's type rather than represent their own type. This creates the potential for deception in the game.
-
-Let us give a more formal statement. First we have the sender $S = (y_S, \pi_S, X, \mu_S, H)$, where:
+Let us give a more formal statement. Let $U^D$ be the set of unit vectors in dimension $D$.
 \begin{itemize}
-    \item $y_S \in Y_S = \mathbb{R}^D$. $y_S$ is the type of $S$. $Y_S$ is the type space of $S$.
-    % \item $\pi_S$ is a probability distribution over $Y_R$, the type space of $R$.
-    \item Signal space $X = \lbrace x_1, ..., x_n \vert x_i \in \mathbb{R}^D \rbrace$ .
+    \item Sender type $y_S \in Y_S = U^D$.
+    \item Receiver type $y_R \in Y_R = \mathbb{R}^D $.
+    \item Signal space $X = \lbrace x_1, ..., x_N \vert x_i \in U^D \rbrace$.
+    \item Action space $A = \lbrace 0,1 \rbrace$. 0 corresponds to no click, 1 to click.
     \item Utility function $\mu_S: Y_S \times X \times A \rightarrow \mathbb{R}$ is defined as:
-    \begin{equation}
-        \mu_S = \langle y_S, x \rangle + \lambda_S a \langle x, y_R \rangle
-    \end{equation}
-\end{itemize}
-
-\noindent Next we have the receiver $R = (y_R, \pi_R, A, \mu_R, G)$, where:
-\begin{itemize}
-    \item $y_R \in Y_R = \mathbb{R}^D$.
-    \item $\pi_R(\cdot|x)$ is a conditional distribution over $Y_S$.
-    \item $A = \lbrace 0,1 \rbrace$. 0 corresponds to no click, 1 to click.
+    \begin{align*}
+        \mu_S = \langle y_S, x \rangle + a %\langle x, y_R \rangle
+    \end{align*}
     \item Utility function $\mu_R: Y_S \times Y_R \times A \rightarrow \mathbb{R}$ is defined as:
-    \begin{equation}
-        \mu_R = \langle y_R, x \rangle + \lambda_R a \langle x, y_S \rangle
-    \end{equation}
+    \begin{align*}
+        \mu_R = a \langle y_R, y_S \rangle
+    \end{align*}
 \end{itemize}
 
-\noindent The first twist in this game is that both $S$ and $R$ have types $y_S$ and $y_R$ respectively. These types are $D$-dimensional vectors. Each component of these vectors can be interpreted as an affinity for a product category. We can compare the types of $S$ and $R$ to determine the suitability of the advertiser's products for the consumer. Similarly both $S$ and $R$ have priors $\pi_S$ and $\pi_R$ over the other player's type space.
+\noindent The twist in this game is that both $S$ and $R$ have types $y_S$ and $y_R$ respectively. These types are $D$-dimensional unit vectors. Each component of these vectors can be interpreted as an interest or product affinity. We can compare the types of $S$ and $R$, say via inner product, to determine the suitability of the advertiser's products for the consumer.
 
-Furthermore, the ad $x$ is also a $D$-dimensional vector. Once again we can interpret the components as product category affinities and imagine that the ad promotes certain types of products. The action $a$ is binary, corresponding to whether or not the consumer clicks on the ad.
+Furthermore, the ad $x$ is also a $D$-dimensional unit vector. Once again we can interpret the components as interests or product affinities and imagine that the ad promotes certain types of products. The action $a$ is binary, corresponding to whether or not the consumer clicks on the ad.
 
-The sender's utility function $\mu_S$ punishes advertisers for deception, i.e. the advertiser incurs a cost as the ad differs from the advertiser's type. If the consumer clicks, the advertiser is rewarded for matching the consumer's type with their ad. 
+The advertiser's utility function $\mu_S$ is an example of costly signaling. It is more costly for an advertisers to send an ad farther from $y_S$. This punishes advertisers for deception, i.e. the advertiser incurs a cost as the signal $x$ diverges from $y_S$. This is similar to the job application game of Spence in which it was more costly for weak applicants to send strong applications, i.e. there was a signaling cost associated with misrepresentation of the sender's type. However in this case the cost is symmetric in that there are no weak and strong senders and all senders pay equally to diverge from their true type.
 
-The receiver's utility function $\mu_R$ rewards the receiver for clicking on ads for advertisers with suitable types.
+The utility function $\mu_S$ is motivated by actual advertising techniques. The first term describes inherent costs and benefits in showing ad $x$. The second term describes the reward if the consumer $R$ clicks. Let us examine the first term.
 
-Loss in the iterated game is swap regret after $T$ rounds. Want to consider both bandit and non-bandit setting. 
+The least costly ad is $x = y_S$ with $\langle x, y_S \rangle = 1$. In our the ad interpretation, it perfectly represents the advertiser's products. However this utility value lines up with two other advertising ideas.
+\begin{itemize}
+\item The default ad should be the cheapest.
+\item All other things equal, prefer the brand.
+\end{itemize}
+The ad $x = y_S$ is the most generic ad for advertiser with type $y_S$. It is therefore the cheapest ad to produce form the perspective of personalized advertising. It is the default ad. Second, this ad best represents the brand. Consistent brand identity is a big part of advertising and it is valued by advertisers. All other things being equal, the advertiser prefers to show the most brand-similar ad.
 
-\todo{code this up and have players play use the swamp regret min algo. Also expand this to population of players?}
+The $\langle x, y_S \rangle$ term reflects these inherent costs and benefits to showing ad $x$. The second term, $a$, is $1$ when $R$ clicks and $0$ otherwise. What may be surprisingly about this term is that the advertiser gets one unit of credit if $R$ clicks, regardless of $y_R$. There are many possible refinements here. A natural thought is that consumer may be worth more or less to an advertiser depending on the similarity of their types $\langle y_S, y_R \rangle$. Here we assume the advertiser is indifferent to who clicks on the ads so long as they do. 
+
+The consumer's utility function $\mu_R$ rewards the receiver for clicking on ads for advertisers with suitable types. The intuition here is that ads are prevalent on the net and usually ignored. However if a consumer clicks on an ad, they will be diverted from their usual browsing activity onto another page.
+
+In this game, we imagine the content of that page to be aligned with $y_S$, i.e. represent the advertisers' true type. However the consumer does not observe $y_S$ and so must to infer the advertiser's type given only $x$ and $y_R$. Clearly $R$ hopes to end up on a suitable page rather than an unsuitable one whenever $R$ opts to click.
+
+There is also a subtle point about $R$'s actions $A=\lbrace 0, 1\rbrace$. To faithfully model the strategies available to $R$, we would need to give distributions over $A$ conditioned on the possible messages $x \in X$. However there are infinitely many possible messages since the messages can be any $D$-dimensional unit vector. To address this we define these distributions implicitly with threshold functions.
+
+Since $\mu_R$ depends on $\langle y_R, y_S \rangle$, if $x \approx y_R$ and $x \approx y_S$ then $R$ should click on $x$. Also $x \approx y_R$ is some evidence that $x \approx y_S$ since it is costly for $R$ when $x$ departs from $y_S$. Therefore we define $R$'s strategies in terms of some threshold of the dot product $\langle y_R, x \rangle$. Since $y_R$ and $x$ are unit vectors, these are simply values in $[-1,1]$. Thus we amend the definition of the game so that we have $A = [0,1]$ but also $A_\theta = [\theta_1,...\theta_M]$ where each $\theta_j$ is a threshold value. These thresholds can be interpreted in advertising as how "clicky" the consumer is.
+ 
+This game depicts a ubiquitous event in today's world: personalized advertising interaction. The game itself is best suited to be simulated as a repeated game among populations of advertisers and consumers. It is also not a zero-sum game. What types of equilibria can we hope to achieve in such games? We look to machine learning theory for ideas of how to proceed with our account of this matter.
 
 \section{Learning and Games}
 
@@ -222,39 +222,38 @@ In the online learning setting, the learning algorithm is given one data point a
 
 We can concisely present the standard online learning setting as follows:
 
-\begin{itemize}
-\item for $t = 1$ to $T$:
-    \begin{itemize}
-    \item receive $x_t$
-    \item predict $\hat{y}_t = h(x_t; w_t)$
-    \item receive $y_t$
-    \item incur loss $L(\hat{y}_t, y_t)$
-    \item update state $w_{t+1}$ from $w_t$
-    \end{itemize}
-\end{itemize}
-\todo{use algorithm package to make this look normal}
-
-Our goal is to minimize total loss $\mathcal{L}_T = \sum_{t=1}^T L(\hat{y}_t,y_t)$. The method to update the state $w_t+1$ after incuring the loss for a training point is the critical part of an online learning algorithm. 
+\begin{algorithm}[H]
+\caption{Generic Online Learning}
+\label{olalgo}
+\begin{algorithmic}[1]
+\For{$t=1$ to $T$}
+    \State \text{receive } $x_t , y_t$
+    \State \text{predict } $\hat{y}_t = h(x_t; w_t)$
+    \State \text{incur loss } $L(\hat{y}_t, y_t)$
+    \State \text{update state } $w_{t+1}$ from $w_t$
+\EndFor
+\State \Return $\textbf{w}_{T+1}$
+\end{algorithmic}
+\end{algorithm}
+Our goal is to minimize the total loss $\mathcal{L}_T = \sum_{t=1}^T L(\hat{y}_t,y_t)$. The method to update the state $w_t+1$ after incuring the loss for a point $x$ is the critical part of an online learning algorithm.
 
 \subsection{Learning with Expert Advice}
 
 Learning with expert advice is a classic scenario in machine learning. For simplicity take the example of binary classification, i.e. we are given input ${x_t}$ and we must output a binary label $\hat{y}_t \in \lbrace 0,1 \rbrace$. We are given a set of $N$ experts $H = \lbrace h_1,...,h_N \rbrace $ who each predict a label $\lbrace \hat y_{t,1},...,\hat y_{t,N} \rbrace$. Our task is to accurately classify the inputs using predictions offered by the experts.
 
-The experts need not be literal experts. In the case of games, we imagine the moves available to the players as our experts. A learning algorithm then produces a distribution overs the moves, i.e. a mixed strategy. As the number of rounds increases, we would like the mixed strategies produced by the algorithms to converge to equilibrium strategies. In our example of Simple Poker, which is zero-sum, we want these to be Nash equilibrium strategies.
+The experts need not be literal experts. In the case of games, we imagine the moves available to the players as our experts. A learning algorithm then produces a distribution overs the moves, i.e. a mixed strategy. As the number of rounds $T$ increases, we would like the mixed strategies produced by the algorithms to converge to equilibrium strategies. In our example of Simple Poker, which is zero-sum, we want these to be Nash equilibrium strategies.
 
 \subsection{Regret}
 
-with distributional assumption we want good generalization error. however no distributional assumption here so regret + reference hypothesis. bewm
+Following our signaling game motivation, we focus on the adversarial case of online learning as opposed to the stochastic case. In the stochastic case we assume that all points $x$ are drawn independently from some data generating distribution $D_X$. In the study of games our data are the moves of other players, which are chosen strategically.
 
-Instead of minimizing the total loss, we will compare our performance with that of the best expert in hindsight $h^*$, i.e. $h^* = \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)$. This is in the spirit of our worst case analysis. Since we do not have a notion of generalization in the adversarial case, it makes no sense to seek a bound on the generalization error. We instead compare our performance to a reference hypothesis. Our minimization objective then becomes
-
+Instead of minimizing the total loss, we will compare our performance with that of the best expert in hindsight $h^*$, i.e. $h^* = \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)$. This is in the spirit of our worst-case adversarial analysis. In the stochastic case, we would like to bound the generalization error of the hypothesis our algorithms produces. However we do not have a notion of generalization in the adversarial case. We instead compare our performance to the best expert as a reference hypothesis. Our minimization objective then becomes
 \begin{align*}
 \mathcal{L}_T - \mathcal{L}_T^{\text{min}} = \sum_{t=1}^T L(\hat y_t, y_t) - \underset{i}{\text{min }} \sum_{t=1}^T L(\hat y_{t,i}, y_t)
 \end{align*}
-
 This quantity is called the external regret or simply regret $R_T$ after $T$ rounds. We are truly interested in the average regret per round $R_T/T$. If can we devise an algorithm with regret sublinear in $T$, then the average regret $R_T/T$ will asymptotically go to 0. Such an algorithm is said to have vanishing regret.
 
-Critically, there is a connection between regret minimization and repeated games. First we consider the simplest case of the two-player zero-sum game, e.g. our game of simple poker. If a player plays using a regret minimization algorithm with vanishing regret then that player's expected payoff per round will approach the value of the game, i.e. the minimax payoff (See \textbf{Theorem 7.2} in \cite{cesa2006prediction}).
+Critically, there is a connection between regret minimization and repeated games. First we consider the simplest case of the two-player zero-sum game, e.g. our game of simple poker. If a player plays using an external regret minimization algorithm with vanishing regret then that player's expected payoff per round will approach the value of the game, i.e. the minimax payoff (See \textbf{Theorem 7.2} in \cite{cesa2006prediction}).
 
 \subsection{Weighted Majority}
 
@@ -339,8 +338,9 @@ Now we compare our bounds:
 \begin{align*}
     \mathcal{L_T^\text{min}}\log\beta & \le \log\left(N \prod_{t=1}^T (1-(1-\beta)L_t)\right)\\
     & \le \log N - (1-\beta)\sum_{t=1}^T L_t\\
-    & = \log N - (1-\beta) \mathcal{L}_t\\
+    & = \log N - (1-\beta) \mathcal{L}_t
 \end{align*}
+\noindent A bit of algebra and a further application of the inequality allow us to conclude:
 \begin{align*}
 \mathcal{L}_T \le \frac{\log N}{1-\beta} + (2-\beta)\mathcal{L_T^\text{min}}
 \end{align*}
@@ -348,13 +348,13 @@ Now we compare our bounds:
 \begin{align*}
 \mathcal{L}_T \le \frac{\log N}{1-\beta} + (1-\beta)T + \mathcal{L_T^\text{min}}
 \end{align*}
-\noindent Now we differentiate this upper bound with respect to $\beta$ and set it to zero to find the optimal value. This gives us $\frac{\log N}{(1-\beta)^2} = 0$ which we can solve to find $\beta = \beta_0 = 1 - \sqrt{(\log N)\ T}$. Thus $\beta_0$ is the optimizing value if $1 - \sqrt{(\log N)\ T} \ge 1/2$ and $1/2$ is otherwise.
+\noindent We differentiate this upper bound with respect to $\beta$ and set it to zero to find the optimal value. This gives us $\frac{\log N}{(1-\beta)^2} = 0$ which we can solve to find $\beta = \beta_0 = 1 - \sqrt{(\log N)\ T}$. Thus $\beta_0$ is the optimizing value if $1 - \sqrt{(\log N)\ T} \ge 1/2$ and $1/2$ is otherwise. The given bound is the result of the substitution of $\beta_0$ for $\beta$ in the last inequality.
 
-This regret bound is sublinear in $T$ and so this algorithm has vanishing regret, i.e. $\lim_{t\rightarrow\infty} R_T/T = 0$. As per the theorem from Cesa-Bianchi\cite{cesa2006prediction}, we may conclude that mixed strategies generated by Randomized Weighted Majority can approximate Nash equilibrium strategies in two-player zero-sum games given large enough $T$. While this is encouraging, it is not the case that a regret minimization algorithm can generate Nash equilibrium strategies for general games, e.g. non-zero-sum games. 
+This regret bound is sublinear in $T$ and so this algorithm has vanishing regret. As per the theorem from Cesa-Bianchi\cite{cesa2006prediction}, we may conclude that mixed strategies generated by Randomized Weighted Majority can approximate Nash equilibrium strategies in two-player zero-sum games given large enough $T$. While this is encouraging, it is not the case that a regret minimization algorithm can generate Nash equilibrium strategies for general games, e.g. non-zero-sum games. 
 
 In fact finding Nash equilibrium in general games is known to be intractible (PPAD-complete\cite{daskalakis2009complexity}). PPAD problems are distinct from NP problems in that we always know that a solution exists but these solutions may be very hard to find. Specifically, PPAD problems are concerned with polynomial time verification of a binary relation $r(x,y)$ for which it is known that for all $x$ there exists a $y$ such that $(x,y)$ holds. For example we always know that a Nash equilibrium exists for any given game. A related example of a PPAD problem is finding a fixed point of a continuous function over a compact convex set, as in Brouwer's fixed point theorem which inspired Nash.
 
-\subsection{Correlated Equilibrium}
+\section{Correlated Equilibrium}
 
 Signaling games are not necessarily zero sum and so Nash equilibrium is not a computationally attractive solution. Instead we turn to another sort of equilibrium called correlated equilibrium. Originally introduced by Aumann \cite{aumann1974subjectivity}\cite{aumann1987correlated}, correlated equilibrium is different from Nash in that it specifies a joint distribution over the actions of all players rather than individual distributions over the actions of each player. Let $H$ be the set of mixed strategies for $S$ and $G$ the set of mixed strategies for $R$. A correlated equilibrium is a joint distribution $p$ over $G \times H$ such that for all $h\in H$ with $p(h) > 0$ and all $h^\prime \in H$
 \begin{align*}
@@ -367,45 +367,165 @@ Signaling games are not necessarily zero sum and so Nash equilibrium is not a co
 
 The intuition behind correlated equilibrium is that players may rationally play strategies besides Nash equilibrium strategies when all players observe the value of a random variable, sometimes called a correlation device. The device chooses joint strategy assignments for each player with some probability and informs each player of their chosen strategy. If no player has an incentive to deviate from the assigned strategy (considering the known distribution over joint strategy assignments) then the joint distribution is a correlated equilibrium.
 
-First, we note that an explicit correlation device is not necessary to achieve correlated equilibrium in repeated games. Foster and Vohra \cite{foster1997calibrated} show that players who play myopic best responses to calibrated forecasts of the other player's strategies will converge to a correlated equilibrium. A calibrated forecast and the concept of calibration come from statistics. It roughly means that players assign probabilities to each other's actions that coincide with the actions' empirical probabilities in the limit. Here the history of plays can be viewed as an implicit correlation device.
+However an explicit correlation device is not necessary to achieve correlated equilibrium in repeated games. Foster and Vohra \cite{foster1997calibrated} show that players who play myopic best responses to calibrated forecasts of the other player's strategies will converge to a correlated equilibrium. A calibrated forecast and the concept of calibration come from statistics. It roughly means that players assign probabilities to each other's actions that coincide with the actions' empirical probabilities in the limit. Here the history of plays can be viewed as an implicit correlation device.
+
+This is plausible in advertising. A consumer's history of ad experiences on the internet certainly inform his future potential ad interaction. The salient bad practices of so many internet advertisers comes to mind, e.g. the demand for spam block and ad block. 
 
 \subsection{Internal Regret and Swap Regret}
 
-As external regret minimization algorithms achieve Nash equilibrium in zero-sum games, swap regret minimization algorithms achieve correlated equilibrium in general games \cite{blum2007external}. First we introduce the concept of \emph{internal regret} \cite{foster1998asymptotic}.
+As external regret minimization algorithms achieve Nash equilibrium in zero-sum games, swap regret minimization algorithms achieve correlated equilibrium in general games \cite{blum2007external}. To begin we introduce the concept of \emph{internal regret} \cite{foster1998asymptotic}. 
 \begin{align*}
-\sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(a_t)] - \underset{f \in C_{a,b}}{\text{min }} \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(f(a_t))]
+\mathcal{L_T} - \underset{f \in C_{j,k}}{\text{min }}\mathcal{L}_T^{j\rightarrow k}
 \end{align*}
-Instead of using the best single expert in hindsight as our reference, we compare our performance to the ways in which we could have exchanged a single action for another. $C_{a,b}$ is the set of functions $f: A \rightarrow A$ that perform this single action exchange.
+Instead of using the best single expert in hindsight as our reference, we compare our performance to the ways in which we could have exchanged a single action for another. $C_{j,k}$ is the set of functions $f: A \rightarrow A$ that perform this single action exchange.
 
-Hart and Mas-Colell\cite{hart2000simple} give a method for playing repeated games in which the players update their strategies in proportion to internal regret. At each step $t$ each player sticks with his last move $j$ or switches to a different one $k$ with some probability. We compare the cumulative loss of the sequence formed by replacing $j$ with $k$ in a player's sequence of moves thus far with the actual cumulative loss $\mathcal{L}_t$.
+Hart and Mas-Colell\cite{hart2000simple} give a method for playing repeated games in which the players update their strategies in proportion to internal regret. At each step $t$ each player sticks with the last move $j$ or switches to a different one $k$ with some probability. We compare the cumulative loss of the sequence formed by replacing $j$ with $k$ in a player's sequence of moves thus far with the actual cumulative loss $\mathcal{L}_t$.
 
-Call this alternative loss $\mathcal{L}_t^{j\rightarrow k}$. As we wish to minimize internal regret, the only moves with positive probabilities are those with $\mathcal{L}_t^{j\rightarrow k} < \mathcal{L}_t$. The probability on move $k$ is then proportional to the regret for playing $j$ instead of $k$, $\mathcal{L}_t - \mathcal{L}_t^{j\rightarrow k}$. The last strategy $j$ always retains some probability mass as well.
+Call this alternative loss $\mathcal{L}_t^{j\rightarrow k}$. As we wish to minimize internal regret, the only moves with positive probabilities are those with $\mathcal{L}_t^{j\rightarrow k} < \mathcal{L}_t$. The probability on move $k$ is then proportional to the internal regret for playing $j$ instead of $k$, $\mathcal{L}_t - \mathcal{L}_t^{j\rightarrow k}$. The last strategy $j$ always retains some probability mass as well.
 
 \emph{Swap regret} considers all ways in which actions could be mapped between themselves, i.e. where we can swap as many actions as we please.
 \begin{align*}
-\sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(a_t)] - \underset{f \in C}{\text{min }} \sum_{t=1}^T \underset{a_t \sim p_t}{E}[l(f(a_t))]
-\end{align*}
-Here the set $C$ contains all functions $f: A \rightarrow A$. Recall we can imagine the actions or experts as the moves in the game, and so having zero swap regret implies no strategic modifications would be advantageous. The joint distribution over the players' actions is a correlated equilibrium if every player would have 0 swap regret playing it. Players minimizing swap regret will thereby converge to correlated equilibrium.
+R_T^{\text{swap}} = \mathcal{L_T} - \underset{f \in C}{\text{min }}\mathcal{L}_T^{\text{swap}}\end{align*}
+Here the set $C$ contains all functions $f: [1,...,N] \rightarrow [1,...,N]$ when there are $N$ experts. As we imagine the actions or experts as moves in a game, having zero swap regret implies no strategic modifications would be advantageous. The joint distribution over the players' actions is a correlated equilibrium if every player would have 0 swap regret playing it. Players minimizing swap regret will thereby converge to correlated equilibrium.
+
+\subsection{Swap Regret Minimization}
 
 Blum and Mansour\cite{blum2007external} prove this and conveniently give us a way to generate an algorithm with vanishing swap regret given an algorithm with vanishing external regret. Given such a regret minimization algorithm, say Randomized Weighted Majority, we instantiate $N$ copies, one for each expert or pure strategy. At each step each instance $i$ generates a distribution $q_i$ which will form a component of the overall mixed strategy.
 
-When the algorithm receives a loss vector $l_t$, i.e. a vector of losses for each action, it is partitioned among the $N$ instances. Each instance $i$ receives a fraction of the loss $p_{t,i}$ equal to the probability mass instance $i$ currently puts on action $i$ with its distribution $q_i$. This means that the cumulative loss of some other action $j$ for instance $i$ is $\sum_{s=1}^t p_{t,i} l_{t,j}$. This matches the cost we could incur by putting the mass of instance $i$ on instance $j$.
+At each time step $t$ we form the stochastic matrix $Q_t$, where row $i$ equals $q_i$. We then find a vector $p_t$ such that $p_t Q_t = p_t$, i.e. $p_t$ is the corresponding stationary distribution of the stochastic matrix. This distribution $p_t$ can be interpreted in two ways. Most directly, it can be seen as choosing action $j$ with probability $p_j$. However it can also be interpreted as selecting sub algorithm $j$ with probability $p_j$ and then using that algorithm to select the action. 
 
-\todo{give more proof details, e.g. stationary distribution \textbf{Q} etc}
+When the algorithm receives a loss vector $L_t$, i.e. an $N$-dimensional vector of losses for each action, it is partitioned among the $N$ instances. Each instance $i$ receives a fraction of the loss $p_{t,i} L_t$ so the expected loss $L_{i,t}$ for algorithm $i$ is $p_{t,i} (q_{t,i} \cdot L_t)$. 
+Each instance has vanishing external regret by assumption. This means that for any $i,j$:
+\begin{align*}
+\sum_{t=1}^T p_{t,i} (q_{t,i}\cdot L_t) \le \sum_{t=1}^T p_{t,i} L_{t,j} + R_{T,i}
+\end{align*}
+\noindent where $R_{T,i}$ is the regret bound we have for instance $i$. If we sum the losses over all algorithms at any time $t$ we will recover the original loss $L_t$ since get $\sum_{i=1}^N p_{t,i}(q_{t,i}\cdot L_t) = p_t Q_t L_t = p_t L_t$ as $p_t Q_t = p_t$ by design. Thus summing over the left hand side of inequality yields $\mathcal{L}_T$, the cumulative loss of the algorithm. Since the inequality holds for all $j$, we have that for any function $f : [1,...,N] \rightarrow [1,...,N]$
+\begin{align*}
+    \mathcal{L}_T & \le \sum_{i=1}^N\sum_{t=1}^T p_{t,i} L_{t,f(i)} + \sum_{i=1}^N R_{T,i}\\
+    & = \mathcal{L}_T^{\text{swap}} + \sum_{i=1}^N R_{T,i}\\
+    & \implies R_T^{\text{swap}} = \mathcal{L_T} - \mathcal{L}_T^{\text{swap}} \le \sum_{i=1}^N R_{T,i}
+\end{align*}
 
-\todo{discuss bandit and non-bandit settings}
-
-The idea is that instance $i$ will ensure low regret with respect to swaps for action $i$ , i.e. of functions $f_{i,j} \in C_{i,j}$. Finally we are able to exploit the underlying external regret guarantees for each instance to give a swap regret bound
+The main idea of this proof is that instance $i$ will provide low regret with respect to swaps for action $i$ , i.e. of functions $f_{i,j} \in C_{i,j}$. Finally we are able to exploit the underlying external regret guarantees (e.g. $2\sqrt{T \log N}$ for Randomized Weighted Majority) for each instance to give a swap regret bound
 
 \begin{align*}
 R_T^{\text{swap}} = \mathcal{L}_T - \mathcal{L}_T^{\text{swap}} \le c N\sqrt{T \log N}
 \end{align*}
 
-where $c$ is some constant. Recall that for Randomized Weighted Majority, we have that the external regret $R_T \le 2\sqrt{T \log N}$. The great part about this bound is that the dependence on $N$ is only logarithmic and so we are relatively free to consider a very large numbers of expert. In the case of swap regret we cannot maintain this luxury and suffer a linear dependence on $N$. While we are able to apply swap regret minimization to a broader class of games, we have heavier restrictions on the number of experts. It is possible to achieve an $O(\sqrt{N T \log N})$ swap regret bound but that is not much next to the $\log N$ bound.
+with some constant $c$. Recall that for Randomized Weighted Majority, we have that the external regret $R_T \le 2\sqrt{T \log N}$. The great part about this bound is that the dependence on $N$ is only logarithmic and so we are relatively free to consider a very large numbers of expert. In the case of swap regret we cannot maintain this luxury and suffer a linear dependence on $N$. While we are able to apply swap regret minimization to a broader class of games, we have a different type of restriction on the complexity of the games. It is possible to achieve an $O(\sqrt{N T \log N})$ swap regret bound but that is not much next to the $\log N$ external regret bound.
+
+\subsection{Bandit Setting}
+
+A final and necessary distinction is that between the partial information or bandit setting and the full information setting. In the proof of the swap regret bound, the algorithm received a loss vector $L_t$ containing a loss for each of the $N$ moves. This is the full information setting and we update every value of the matrix $Q_t$ each round. In the bandit setting, the algorithm only receives loss for the move it actually played.
+
+Suppose the algorithm plays action $j$ in round $t$. In place of a loss vector $L_t$, the algorithm receives a pair $(j, l_{t,j})$. Each instance $i$ then receives a pair $(j, g_{t,j})$ where $g_{t,j} = p_{t,i}l_{t,j}q_{t,i,j}/p_{t,j}$. This is the probability the overall algorithm plays move $i$ times the loss for move $j$ times the probability instance $i$ plays move $j$ divided by the probability that the overall algorithm plays $j$. The proof goes through similarly as before in that the swap regret of the overall algorithm is bounded by the sum of the external regret bounds of the instance algorithms.
+
+The bandit setting is important to consider in games because it allows one to study in which the players only know their own payoff functions but not those of the other players. A version of this is examined in \cite{kalai1993rational} where the authors show that players can learn to play Nash equilibrium without knowledge of the other players' payoff functions. We will tackle our advertising-inspired signaling game in the bandit setting as well.
 
 \section{Swap Regret Minimization in Signaling Games}
 
-Finally we return to our ad game, armed with the theory of online learning and a swap regret minimizing algorithm. 
+Finally we return to our ad game, armed with the theory of online learning and a swap regret minimizing algorithm. Our goal here is to present our ad game as a game played by online learning algorithms. In particular, we model our players swap regret minimization algorithms using Randomized Weighted Majority as the subroutine. For convenience, here is our game again:
+\begin{itemize}
+    \item Sender type $y_S \in Y_S = U^D$.
+    \item Receiver type $y_R \in Y_R = \mathbb{R}^D $.
+    \item Signal space $X = \lbrace x_1, ..., x_N \vert x_i \in U^D \rbrace$.
+    \item Action space $A = \lbrace 0,1 \rbrace$ with thresholds $A_\theta = \lbrace \theta_1,...,\theta_M \rbrace$, $\theta_j \in [-1,1]$.
+    \item Utility function $\mu_S: Y_S \times X \times A \rightarrow \mathbb{R}$ is defined as:
+    \begin{align*}
+        \mu_S = \langle y_S, x \rangle + a% \langle y_R, x \rangle
+    \end{align*}
+    \item Utility function $\mu_R: Y_S \times Y_R \times A \rightarrow \mathbb{R}$ is defined as:
+    \begin{align*}
+        \mu_R = a \langle y_R, y_S \rangle% + \langle y_R, x \rangle
+    \end{align*}
+\end{itemize}
+
+In order to apply the algorithm here we need to make a few adjustments. First, we need to modify the Randomized Weighted Majority algorithm to work with losses in $[0,1]$ rather than the binary loss. To do so we replace the weight update step
+\begin{algorithmic}
+\If{$\hat y_{t,i} \ne y_t$}
+    \State $w_{t+1,i} \leftarrow \beta w_{t+1,i} \quad\quad(0 \le \beta < 1)$
+\Else
+    \State $w_{t+1,i} \leftarrow w_{t,i}$
+\EndIf
+\end{algorithmic}
+with the following:
+\begin{algorithmic}
+\State $w_{t+1,i} \leftarrow w_{t+1,i} \exp(-\eta L_{t,i}) \quad\quad \eta = O\left(1/\sqrt{t}\right)$
+\end{algorithmic}
+Instead of being multiplied by a constant $\beta$, the weights are reduced in proportion to the loss they incur. This modification applied to the Weighted Majority Algorithm yields the Exponential Weighted Average algorithm, which has similar properties. Note that when $L_{t,i} = 0$, i.e. no loss is suffered, then the weights remain unchanged just as in the previous update. Finally we transform the utility functions into loss functions to be minimized since they are originally given as utilities to be maximized. First we apply a linear transform to scale their values to $[0,1]$ and then subtract them from 1.
+The complete simulation procedure is as follows.
+\begin{algorithmic}[1]
+\State{$p_{1}^S \leftarrow \frac{1}{N}\textbf{1}$}
+\State{$p_{1}^R \leftarrow \frac{1}{N}\textbf{1}$}
+\For{$i=1$ to $N$}
+    \State{$W_{1,i}^S \leftarrow \textbf{1}$}
+    \State{$Q_{1,i}^S \leftarrow \frac{1}{N}\textbf{1}$}
+\EndFor
+\For{$i=1$ to $M$}
+    \State{$W_{1,i}^R \leftarrow \textbf{1}$}
+    \State{$Q_{1,i}^R \leftarrow \frac{1}{N}\textbf{1}$}
+\EndFor
+\end{algorithmic}
+First we initialize swap regret minimization algorithms for the players $S$ with $N$ ads and $R$ with $M$ thresholds. Initially each player plays the uniform distribution over his moves and all instance weights are $1$. The rows of $N\times N$ matrix $Q_t^S$ and and $M\times M$ matrix $Q_t^R$ represent the probability distributions maintained by the Randomized Weighted Majority instances. The $W$ matrices represent the weights of the instances. Then in each round $t=1$ up to $T$ we do:
+\begin{algorithmic}
+\State $x_t \leftarrow \texttt{Sample}(p_t^S)$
+\State $\theta_t \leftarrow \texttt{Sample}(p_t^R)$
+\State $a_t \leftarrow 1_{\langle x, y_R \rangle > \theta_t}$
+\State $L_t^S \leftarrow \mu_S(y_S,x_t,a_t)$
+\State $L_t^R \leftarrow \mu_R(y_S,y_R,a_t)$
+\end{algorithmic}
+First we sample from each player's distribution to generate a move. We test if the ad $x$ meets $R$'s threshold for clicking and calculate the utility for the players. To update the distribution $p_{t}^S\rightarrow p_{t+1}^S$, we update first the stochastic $Q$ matrices. Suppose $x_t = j$:
+\begin{algorithmic}
+\For{$i=1$ to $N$}
+    \State $l_{t,i}^S = p_{t,i}^S L_t^S Q_{t,i,j}^S / p_{t,j}^S$
+    \State $W_{t+1,i,j}^S \leftarrow W_{t,i,j}^S\exp(-\eta l_{t,i}^S) \quad\quad \eta = O(1\sqrt{t})$
+    \State $Q_{t+1,i}^S \leftarrow \texttt{Normalize}(W_{t+1,i}^S)$
+\EndFor
+\State $p_{t+1}^S \leftarrow \texttt{Stationary}(Q_{t+1}^S)$
+\end{algorithmic}
+We can find the stationary distribution $p$ associated right stochastic matrix $Q$ by finding a left eigenvector of $Q$ with eigenvalue $1$. The procedure is symmetric for $R$. For the sake of completeness we also present the procedure in its entirety \autoref{adgamesim}.
+\begin{algorithm}
+\caption{Ad Game Simulation Procedure}
+\label{adgamesim}
+\begin{algorithmic}[1]
+\State{$p_{1}^S \leftarrow \frac{1}{N}\textbf{1}$}
+\State{$p_{1}^R \leftarrow \frac{1}{N}\textbf{1}$}
+\For{$i=1$ to $N$}
+    \State{$W_{1,i}^S \leftarrow \textbf{1}$}
+    \State{$Q_{1,i}^S \leftarrow \frac{1}{N}\textbf{1}$}
+\EndFor
+\For{$i=1$ to $M$}
+    \State{$W_{1,i}^R \leftarrow \textbf{1}$}
+    \State{$Q_{1,i}^R \leftarrow \frac{1}{N}\textbf{1}$}
+\EndFor
+    \For{$t=1$ to $T$}
+    \State $x_t \leftarrow \texttt{Sample}(p_t^S)$
+    \State $\theta_t \leftarrow \texttt{Sample}(p_t^R)$
+    \State $a_t \leftarrow 1_{\langle x, y_R \rangle > \theta_t}$
+    \State $L_t^S \leftarrow \mu_S(y_S,x_t,a_t)$
+    \State $L_t^R \leftarrow \mu_R(y_S,y_R,a_t)$
+    \For{$i=1$ to $N$}
+        \State $l_{t,i}^S = p_{t,i}^S L_t^S Q_{t,i,j}^S / p_{t,j}^S$
+        \State $W_{t+1,i,j}^S \leftarrow W_{t,i,j}^S\exp(-\eta l_{t,i}^S)$
+        \State $Q_{t+1,i}^S \leftarrow \texttt{Normalize}(W_{t+1,i}^S)$
+    \EndFor
+    \For{$i=1$ to $M$}
+        \State $l_{t,i}^R = p_{t,i}^R L_t^R Q_{t,i,j}^R / p_{t,j}^R$
+        \State $W_{t+1,i,j}^R \leftarrow W_{t,i,j}^R\exp(-\eta l_{t,i}^R)$
+        \State $Q_{t+1,i}^R \leftarrow \texttt{Normalize}(W_{t+1,i}^R)$
+    \EndFor
+    \State $p_{t+1}^S \leftarrow \texttt{Stationary}(Q_{t+1}^S)$
+    \State $p_{t+1}^R \leftarrow \texttt{Stationary}(Q_{t+1}^R)$
+\EndFor
+\State \Return $p_{T+1}^S, p_{T+1}^R$
+\end{algorithmic}
+\end{algorithm}
+To play with a population of advertisers and consumers, we could simply sample each player from their respective population at the beginning of each round.
+
+\subsection{Simulation Results}
+
+\subsection{Conclusion}
+This paper gives an account of advertising from the perspective of game theory and machine learning. It suggests the signaling game as an appropriate model for advertising interaction and online learning as an appealing approach to player behavior. It shows that it is possible to efficiently compute correlated equilibria in multiplayer signaling games using a flavor of regret minimization algorithms. This paper provides direction for future exploration of signaling games and online learning in advertising.
 
 \bibliographystyle{amsplain}
 \bibliography{dk_thesis}
