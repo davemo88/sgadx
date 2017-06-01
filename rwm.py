@@ -51,7 +51,8 @@ class Sender(Player):
         loss = np.dot(s_type, signal) + action
 
     ## convert to [0,1] loss to be minimized
-        return 1 - ((loss + 1)/float(3))
+##        return 1 - ((loss + 1)/float(3))
+        return loss
 
 class Receiver(Player):
 
@@ -59,7 +60,9 @@ class Receiver(Player):
 
         loss = action * np.dot(r_type, s_type)
 
-        return 1-((loss + 1)/float(2))
+#        return 1-((loss + 1)/float(2))
+
+        return loss 
 
 class BudSender(Player):
 
@@ -90,7 +93,12 @@ class SwapBanditRWM(object):
         self.Q = np.ones((self.N, self.N)) / self.N
         self.Q_weights = np.ones((self.N, self.N)) / self.N
 
+## implemented doubling trick to reduce etc_c over time
         self.eta_c = eta_c
+##        self.eta_c = np.sqrt(8*np.log(self.N)/float(self.t))
+
+    def get_eta(self):
+        return np.sqrt(8*np.log(self.N)/float(self.t))
 
     def predict(self):
 
@@ -102,8 +110,10 @@ class SwapBanditRWM(object):
 
             g = (self.p[i]*loss*self.Q[i][move_idx])/self.p[move_idx]
 
+##            self.Q_weights[i][move_idx] = self.Q_weights[i][move_idx] * \
+##                        np.exp((-np.sqrt(self.eta_c/float(self.t)))*g)
             self.Q_weights[i][move_idx] = self.Q_weights[i][move_idx] * \
-                        np.exp((-np.sqrt(self.eta_c/float(self.t)))*g)
+                        np.exp(self.get_eta()*g)
 
         self.t += 1
 
@@ -133,7 +143,7 @@ def unit_vector_avg(u,v):
 
     return (u + v) / np.linalg.norm(u + v)
 
-def rwm_ad_sg(s=None,r=None,T=10):
+def rwm_ad_sg(s=None,r=None,T=100):
 
     if not s:
         s_type = random_unit_vector()
