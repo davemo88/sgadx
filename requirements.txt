@@ -1,6 +1,3 @@
 numpy
-sqlalchemy
-flask
-flask-sqlalchemy
 nose
-#sklearn
+typing

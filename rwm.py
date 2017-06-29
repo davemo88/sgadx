@@ -1,9 +1,9 @@
-"""RWM Player
+"""EXP3 Player
 
 all distributions initially uniform
 each round do
     form Q matrix of subdistributions
-    sample prediction, receive loss l
+    sample prediction, receive gain l
     get stationary distribution of matrix Q
     find stationary distribution p of matrix Q (using eigenvectors)
     distribute l among subalgorithms according to p
@@ -25,6 +25,8 @@ each round do
 """
 
 import numpy as np
+#import typing
+from typing import List
 # import scipy as sp
 
 STATIONARITY_TOLERANCE = 2.22044604925e-15
@@ -32,87 +34,104 @@ PLAYER_D = 10
 N_ADS = 10
 N_THS = 5
 
-class Player(object):
+class Expert:
 
-    def __init__(self, type, moves):
+    def __init__(self, player:Player, **kwargs):
+
+        self.player = player
+
+    def __call__(**kwargs) -> int:
+        """ return the index of a move in player.moves
+
+        """
+
+        return 0
+
+class MoveExpert:
+
+    def __init__(self, player:Player, move_idx:int):
+
+        Expert.__init__(self, player)
+        self.move_idx = move_idx
+
+    def __call__() -> int:
+
+        return self.move_idx
+
+class ThresholdExpert:
+
+    def __init__(self, player:Player, threshold:float):
+
+        Expert.__init__(self, player)
+        self.threshold = threshold
+
+    def __call__(signal):
+
+        return np.dot(signal, player.type) > self.threshold
+
+class Player:
+
+    def __init__(self, type, moves:List=[], experts:List[Expert]=[], min_gain:float=float(0), max_gain:float=float(1)):
 
         self.type = type
         self.moves = moves
-        self.rwm = SwapBanditRWM(len(moves))
+        self.experts = [MoveExpert(i) for i in range(len(self.moves))] if not experts else experts 
+        self.exp3 = SwapBanditEXP3(len(self.experts))
+        self.min_gain = min_gain
+        self.max_gain = max_gain
 
-    def get_loss(self, s_type, r_type, signal, action):
+    def get_gain(self, s_type, r_type, signal, action, scale=False) -> float:
 
-        pass
+        return float(0) 
+
+    def scale_gain(self, gain:float) -> float:
+
+        return (gain - self.min_gain)/(self.max_gain - self.min_gain)
 
 class Sender(Player):
 
-    def get_loss(self, s_type, r_type, signal, action):
+    def get_gain(self, s_type, r_type, signal, action, scale=False):
 
-        loss = np.dot(s_type, signal) + action
+        gain = np.dot(s_type, signal) + action
 
-    ## convert to [0,1] loss to be minimized
-##        return 1 - ((loss + 1)/float(3))
-        return loss
+        return gain if not scale else self.scale_gain(gain)
 
 class Receiver(Player):
 
-    def get_loss(self, s_type, r_type, signal, action):
+    def get_gain(self, s_type, r_type, signal, action, scale=False):
 
-        loss = action * np.dot(r_type, s_type)
+        gain = action * np.dot(r_type, s_type)
 
-#        return 1-((loss + 1)/float(2))
+        return gain if not scale else self.scale_gain(gain) 
 
-        return loss 
+class SwapBanditEXP3(object):
 
-class BudSender(Player):
-
-    def get_loss(self, s_type, r_type, signal, action):
-
-        loss = np.dot(s_type, signal) + action
-
-    ## convert to [0,1] loss to be minimized
-        return 1 - ((loss + 1)/float(3))
-
-class BudReceiver(Player):
-
-    def get_loss(self, s_type, r_type, signal, action):
-
-        loss = np.dot(r_type, signal) \
-        + action * np.dot(r_type, s_type)
-
-    ## convert to [0,1] loss to be minimized
-        return (1 - (loss + 2)/4)
-
-class SwapBanditRWM(object):
-
-    def __init__(self, N, eta_c=5):
+    def __init__(self, N:int):
 
         self.N = N
         self.t = 1
         self.p = np.ones(self.N) / self.N
         self.Q = np.ones((self.N, self.N)) / self.N
-        self.Q_weights = np.ones((self.N, self.N)) / self.N
-
-## implemented doubling trick to reduce etc_c over time
-        self.eta_c = eta_c
-##        self.eta_c = np.sqrt(8*np.log(self.N)/float(self.t))
+        self.Q_weights = np.ones((self.N, self.N))# / self.N
 
     def get_eta(self):
         return np.sqrt(8*np.log(self.N)/float(self.t))
 
-    def predict(self):
+    def get_expert_idx(self):
 
-        return list(np.random.multinomial(1, self.p)).index(1)
+        expert = np.random.multinomial(1, self.p)
 
-    def update_Q_weights(self, move_idx, loss):
+        print(expert)
+
+        return list(expert).index(1)
+
+    def update_Q_weights(self, expert_idx:int, gain:float):
 
         for i in range(self.N):
 
-            g = (self.p[i]*loss*self.Q[i][move_idx])/self.p[move_idx]
+            g = (self.p[i]*gain*self.Q[i][expert_idx])/self.p[expert_idx]
 
-##            self.Q_weights[i][move_idx] = self.Q_weights[i][move_idx] * \
-##                        np.exp((-np.sqrt(self.eta_c/float(self.t)))*g)
-            self.Q_weights[i][move_idx] = self.Q_weights[i][move_idx] * \
+            self.Q_weights[i][expert_idx] = self.Q_weights[i][expert_idx] * \
                         np.exp(self.get_eta()*g)
 
         self.t += 1
@@ -143,7 +162,7 @@ def unit_vector_avg(u,v):
 
     return (u + v) / np.linalg.norm(u + v)
 
-def rwm_ad_sg(s=None,r=None,T=100):
+def exp3_ad_sg(s=None,r=None,T=100):
 
     if not s:
         s_type = random_unit_vector()
@@ -154,50 +173,50 @@ def rwm_ad_sg(s=None,r=None,T=100):
 
     if not r:
         r_type = random_unit_vector()
-        r = Receiver(r_type,range(N_THS))
+        r = Receiver(r_type, ths)
 
-    print "Similarity: {}".format(np.dot(s_type, r_type))
-    print "Ad Similarity: "
+    print("Similarity: {}".format(np.dot(s_type, r_type)))
+    print("Ad Similarity: ")
     for n in range(N_ADS):
-        print "Ad {}: {}".format(n, np.dot(s.moves[n],r.type))
+        print("Ad {}: {}".format(n, np.dot(s.moves[n],r.type)))
 
     for t in range(1, T+1):
-        signal_idx = s.rwm.predict()
-        signal = s.moves[signal_idx]
-        th_idx = r.rwm.predict()
+        s_expert_idx = s.exp3.predict()
+        signal = s.experts[signal_idx]()
+        r_expert_idx = r.exp3.predict()
+        
 ## th_idx go from 0 to N_THS-1
 ## dot products go from -1 to 1
         th = ((2*th_idx)-(N_THS-1))  / float(N_THS-1)
         action = int(np.dot(s.type, r.type)>th)
-        s_loss = s.get_loss(s.type, r.type, signal, action)
-        r_loss = r.get_loss(s.type, r.type, signal, action)
+        s_gain = s.get_gain(s.type, r.type, signal, action)
+        r_gain = r.get_gain(s.type, r.type, signal, action)
 
-        s.rwm.update_Q_weights(signal_idx, s_loss)
-        s.rwm.update_Q()
-        print "p_S: ", s.rwm.p#, s_rwm.p.sum()
-        s.rwm.update_p()
+        s.exp3.update_Q_weights(signal_idx, s_gain)
+        s.exp3.update_Q()
+        print("p_S: ", s.exp3.p, s_exp3.p.sum())
+        s.exp3.update_p()
 
-        r.rwm.update_Q_weights(th_idx, r_loss)
-        r.rwm.update_Q()
-        r.rwm.update_p()
+        r.exp3.update_Q_weights(th_idx, r_gain)
+        r.exp3.update_Q()
+        r.exp3.update_p()
 
-        print "===> round {}".format(t)
-        print "Signal: {} S_Loss: {}".format(signal_idx, s_loss)
-        print "Action: {} ({}) R_Loss: {}".format(action, th, r_loss)
-        print "p_S: ", s.rwm.p#, s_rwm.p.sum()
-        # print "Q_weights_S: ", s.rwm.Q_weights
-        print "p_R: ", r.rwm.p#, r_rwm.p.sum()
-        # print "Q_weights_R: ", r.rwm.Q_weights
+        print("===> round {}".format(t))
+        print("Signal: {} S_Loss: {}".format(signal_idx, s_gain))
+        print("Action: {} ({}) R_Loss: {}".format(action, th, r_gain))
+        print("p_S: ", s.exp3.p)#, s_exp3.p.sum()
+        # print "Q_weights_S: ", s.exp3.Q_weights
+        print("p_R: ", r.exp3.p)#, r_exp3.p.sum()
+        # print "Q_weights_R: ", r.exp3.Q_weights
 
 ## sanity check on stationary-ness of p
-## seems like code could have numerical stability problems
-        # assert np.linalg.norm(s.rwm.p - np.dot(s.rwm.p, s.rwm.Q)) \
+        # assert np.linalg.norm(s.exp3.p - np.dot(s.exp3.p, s.exp3.Q)) \
         # < STATIONARITY_TOLERANCE
 
 
 if __name__ == "__main__":
 
-    rwm_ad_sg()
+    exp3_ad_sg()
 
 
 
