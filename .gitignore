@@ -7,5 +7,5 @@
 *.toc
 *.synctex.gz
 *.pdf
-config.py
-db_repository/
+sim_sum*
+sim_rec*

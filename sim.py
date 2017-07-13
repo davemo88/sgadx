@@ -28,19 +28,22 @@ import numpy as np
 #import typing
 from typing import List
 # import scipy as sp
+import json, time
 
 STATIONARITY_TOLERANCE = 2.22044604925e-15
 PLAYER_D = 10
 N_ADS = 10
 N_THS = 5
+T = 100
+
 
 class Expert:
 
-    def __init__(self, player:Player, **kwargs):
+    def __init__(self, **kwargs):
 
-        self.player = player
+        self.kwargs = kwargs
 
-    def __call__(**kwargs) -> int:
+    def __call__(self, **kwargs) -> int:
         """ return the index of a move in player.moves
 
         """
@@ -49,36 +52,55 @@ class Expert:
 
 class MoveExpert:
 
-    def __init__(self, player:Player, move_idx:int):
+    def __init__(self, move_idx:int):
 
-        Expert.__init__(self, player)
+        Expert.__init__(self)
         self.move_idx = move_idx
 
-    def __call__() -> int:
+    def __call__(self, **kwargs) -> int:
 
         return self.move_idx
 
 class ThresholdExpert:
 
-    def __init__(self, player:Player, threshold:float):
+    def __init__(self, threshold:float):
 
-        Expert.__init__(self, player)
+        Expert.__init__(self)
         self.threshold = threshold
 
-    def __call__(signal):
+    def __call__(self, signal, type, **kwargs) -> int:
 
-        return np.dot(signal, player.type) > self.threshold
+#        print(signal,type)
+
+        return int(np.dot(signal, type) > self.threshold)
+
+class DmpExpert:
+
+    def __init__(self, accuracy:float):
+
+        Expert.__init__(self)
+        self.accuracy = accuracy
+
+    def __call__(self, ads, receiver_type,**kwargs):
+
+        rv = random_unit_vector()
+
+        guess = (1 - self.accuracy) * rv + self.accuracy * receiver_type
+
+        vals = [np.dot(guess,ad) for ad in ads]
+
+        return vals.index(max(vals))
 
 class Player:
 
-    def __init__(self, type, moves:List=[], experts:List[Expert]=[], min_gain:float=float(0), max_gain:float=float(1)):
+    def __init__(self, type, moves:List=[], experts:List[Expert]=[]):
 
         self.type = type
         self.moves = moves
         self.experts = [MoveExpert(i) for i in range(len(self.moves))] if not experts else experts 
         self.exp3 = SwapBanditEXP3(len(self.experts))
-        self.min_gain = min_gain
-        self.max_gain = max_gain
+        self.min_gain = float(0)
+        self.max_gain = float(1)
 
     def get_gain(self, s_type, r_type, signal, action, scale=False) -> float:
 
@@ -90,6 +112,11 @@ class Player:
 
 class Sender(Player):
 
+    def __init__(self, type, moves, experts=[]):
+        Player.__init__(self, type, moves, experts)
+        self.min_gain = float(-1)
+        self.max_gain = float(1)
+
     def get_gain(self, s_type, r_type, signal, action, scale=False):
 
         gain = np.dot(s_type, signal) + action
@@ -98,11 +125,17 @@ class Sender(Player):
 
 class Receiver(Player):
 
+    def __init__(self, type, moves=[0,1], experts=[]):
+        Player.__init__(self, type, moves, experts)
+        self.min_gain = float(-1)
+        self.max_gain = float(2) 
+
     def get_gain(self, s_type, r_type, signal, action, scale=False):
 
         gain = action * np.dot(r_type, s_type)
 
         return gain if not scale else self.scale_gain(gain) 
+
 
 class SwapBanditEXP3(object):
 
@@ -112,7 +145,7 @@ class SwapBanditEXP3(object):
         self.t = 1
         self.p = np.ones(self.N) / self.N
         self.Q = np.ones((self.N, self.N)) / self.N
-        self.Q_weights = np.ones((self.N, self.N))# / self.N
+        self.Q_weights = np.ones((self.N, self.N))
 
     def get_eta(self):
         return np.sqrt(8*np.log(self.N)/float(self.t))
@@ -121,7 +154,7 @@ class SwapBanditEXP3(object):
 
         expert = np.random.multinomial(1, self.p)
 
-        print(expert)
+     #   print(expert)
 
         return list(expert).index(1)
 
@@ -162,61 +195,106 @@ def unit_vector_avg(u,v):
 
     return (u + v) / np.linalg.norm(u + v)
 
-def exp3_ad_sg(s=None,r=None,T=100):
+def setup_sender(): 
 
-    if not s:
-        s_type = random_unit_vector()
-        signals = [unit_vector_avg(s_type, 
-                                   random_unit_vector())\
-                    for _ in range(N_ADS)]
-        s = Sender(s_type,signals)
+    type = random_unit_vector()
+    moves = [unit_vector_avg(type, random_unit_vector()) for _ in range(N_ADS)]
+    experts = [MoveExpert(i) for i in range(len(moves))] + \
+            [DmpExpert(accuracy=0), DmpExpert(accuracy=1)]
+    return Sender(type, moves=moves, experts=experts)
 
-    if not r:
-        r_type = random_unit_vector()
-        r = Receiver(r_type, ths)
+def setup_receiver():
 
-    print("Similarity: {}".format(np.dot(s_type, r_type)))
-    print("Ad Similarity: ")
-    for n in range(N_ADS):
-        print("Ad {}: {}".format(n, np.dot(s.moves[n],r.type)))
+    type = random_unit_vector()
+    experts = [ThresholdExpert(float(2*i-N_THS+1)/float(N_THS-1)) for i in range(N_THS)]
+    return Receiver(type, experts=experts)
+
+def write_summary_json(s, r, sim_id):
+
+    summary = {
+            'player_d': PLAYER_D,
+            'n_ads': N_ADS,
+            'n_ths': N_THS,
+            'T': T,
+            'player_sim': np.dot(s.type, r.type),
+            's_ad_sim': [np.dot(s.type,ad) for ad in s.moves],
+            'r_ad_sim': [np.dot(r.type,ad) for ad in s.moves],
+            's_p_T': s.exp3.p.tolist(),
+            'r_p_T': r.exp3.p.tolist()
+            } 
+    with open('sim_sum_{}.json'.format(sim_id), 'w') as jsonf:
+        json.dump(summary, jsonf)
+
+def write_rec_json(sim_rec, sim_id):
+    with open('sim_rec_{}.json'.format(sim_id), 'w') as jsonf:
+        json.dump(sim_rec, jsonf)
+
+def exp3_ad_sg(T=T):
+
+    s = setup_sender()
+    r = setup_receiver()
+
+##    print("Similarity: {}".format(np.dot(s.type, r.type)))
+##    print("Ad Similarity: ")
+##    for n in range(N_ADS):
+##        print("Ad {}: {}".format(n, np.dot(s.moves[n],r.type)))
+    sim_rec = []
 
     for t in range(1, T+1):
-        s_expert_idx = s.exp3.predict()
-        signal = s.experts[signal_idx]()
-        r_expert_idx = r.exp3.predict()
+        s_expert_idx = s.exp3.get_expert_idx()
+        s_move_idx = s.experts[s_expert_idx](ads=s.moves,receiver_type=r.type)
+        signal = s.moves[s_move_idx]
+        r_expert_idx = r.exp3.get_expert_idx()
+        th = r.experts[r_expert_idx].threshold
+        r_move_idx = r.experts[r_expert_idx](signal, r.type)
+        action = r.moves[r_move_idx]
         
-## th_idx go from 0 to N_THS-1
-## dot products go from -1 to 1
-        th = ((2*th_idx)-(N_THS-1))  / float(N_THS-1)
-        action = int(np.dot(s.type, r.type)>th)
         s_gain = s.get_gain(s.type, r.type, signal, action)
         r_gain = r.get_gain(s.type, r.type, signal, action)
 
-        s.exp3.update_Q_weights(signal_idx, s_gain)
+        s.exp3.update_Q_weights(s_expert_idx, s_gain)
         s.exp3.update_Q()
-        print("p_S: ", s.exp3.p, s_exp3.p.sum())
+#        print("p_S: ", s.exp3.p, s.exp3.p.sum())
         s.exp3.update_p()
 
-        r.exp3.update_Q_weights(th_idx, r_gain)
+        r.exp3.update_Q_weights(r_expert_idx, r_gain)
         r.exp3.update_Q()
         r.exp3.update_p()
 
-        print("===> round {}".format(t))
-        print("Signal: {} S_Loss: {}".format(signal_idx, s_gain))
-        print("Action: {} ({}) R_Loss: {}".format(action, th, r_gain))
-        print("p_S: ", s.exp3.p)#, s_exp3.p.sum()
-        # print "Q_weights_S: ", s.exp3.Q_weights
-        print("p_R: ", r.exp3.p)#, r_exp3.p.sum()
+        rec = {
+                't':t,
+                's_expert_idx':s_expert_idx,
+                'r_expert_idx':r_expert_idx,
+                'th':th,
+                'signal':signal.tolist(),
+                'action':action,
+                's_ad_sim':np.dot(signal,s.type),
+                'r_ad_sim':np.dot(signal,r.type),
+                's_p_t':s.exp3.p.tolist(),
+                'r_p_t':r.exp3.p.tolist(),
+                's_gain':s_gain,
+                'r_gain':r_gain,
+                } 
+
+        sim_rec.append(rec)
+
+##        print("===> round {}".format(t))
+##        print("Expert: {} ({}) Signal: {} S_Gain: {}".format(s_expert_idx, type(s.experts[s_expert_idx]).__name__, s_move_idx, s_gain))
+##        print("Expert: {} (th={}) Action: {} R_Gain: {}".format(r_expert_idx, th, r_move_idx, r_gain))
+##        print("p_S: ", s.exp3.p)#, s_exp3.p.sum()
+##        # print "Q_weights_S: ", s.exp3.Q_weights
+##        print("p_R: ", r.exp3.p)#, r_exp3.p.sum()
         # print "Q_weights_R: ", r.exp3.Q_weights
 
 ## sanity check on stationary-ness of p
         # assert np.linalg.norm(s.exp3.p - np.dot(s.exp3.p, s.exp3.Q)) \
-        # < STATIONARITY_TOLERANCE
+        # < STATIONARITY_TOLERANC
+    sim_id = int(round(time.time())) 
+    write_summary_json(s,r,sim_id)
+    write_rec_json(sim_rec,sim_id)
 
 
 if __name__ == "__main__":
 
     exp3_ad_sg()
-
-
 
